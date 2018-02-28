@@ -2724,7 +2724,7 @@ namespace FIA_Biosum_Manager
 
                     this.m_ado.m_strSQL = "SELECT TRIM(p.biosum_plot_id) + TRIM(CSTR(t.condid)) AS biosum_cond_id,9 AS biosum_status_cd,t.* INTO temptree FROM " + strSourceTableLink + " t " +
                         " INNER JOIN " + this.m_strPlotTable + " p ON t.plt_cn=p.cn " +
-                        " WHERE p.biosum_status_cd=9";
+                        " WHERE p.biosum_status_cd=9 AND t.statuscd<>0;";
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
