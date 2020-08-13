@@ -685,7 +685,7 @@ namespace FIA_Biosum_Manager
 			}
 			public void CreateBestRxSummaryCycle1TableIndexes(FIA_Biosum_Manager.ado_data_access p_oAdo,System.Data.OleDb.OleDbConnection p_oConn,string p_strTableName)
 			{
-				p_oAdo.AddPrimaryKey(p_oConn,p_strTableName,p_strTableName + "_pk","biosum_cond_id,rx");
+				p_oAdo.AddPrimaryKey(p_oConn,p_strTableName,p_strTableName + "_pk","biosum_cond_id,rxpackage,rx");
 			}
 			static public string CreateBestRxSummaryCycle1TableSQL(string p_strTableName)
 			{

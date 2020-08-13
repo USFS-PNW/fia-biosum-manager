@@ -8065,7 +8065,7 @@ namespace FIA_Biosum_Manager
                 //update the tiebreaker and rx intensity fields for each plot
 				strSql = "UPDATE cycle1_best_rx_summary_optimization_and_tiebreaker_work_table a " + 
 					"INNER JOIN tiebreaker b " + 
-					"ON a.biosum_cond_id=b.biosum_cond_id AND a.rxpackage=b.rxpackage " +
+					"ON a.biosum_cond_id=b.biosum_cond_id AND a.rxpackage=b.rxpackage AND a.rx=b.rx " +
                     "SET a.tiebreaker_value = b." + strTiebreakerValueField + ",a.last_tiebreak_rank=b.last_tiebreak_rank";
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + strSql + "\r\n");
@@ -8171,105 +8171,13 @@ namespace FIA_Biosum_Manager
 				}
 
 			}
-            //Stand OR Economic Attribute selected but NOT Last Tie-Break Rank
-			else if (oTieBreakerCollection.Item(0).bSelected ||
-                     oTieBreakerCollection.Item(1).bSelected)
-			{
-                string strTiebreakerValueField = "post_variable1_value";    //Economic attributes will always write the post value
-                if (oTieBreakerCollection.Item(0).strValueSource == "PRE")
-                {
-                    strTiebreakerValueField = "pre_variable1_value";
-                }
-                else if (oTieBreakerCollection.Item(0).strValueSource == "POST-PRE")
-                {
-                    strTiebreakerValueField = "variable1_change";
-                }
-                
-                //update the tiebreakerfields for each plot
-				strSql = "UPDATE cycle1_best_rx_summary_optimization_and_tiebreaker_work_table a " + 
-					"INNER JOIN tiebreaker b " + 
-					"ON a.biosum_cond_id=b.biosum_cond_id AND a.rx=b.rx " +
-                    "SET a.tiebreaker_value = b." + strTiebreakerValueField + ",a.last_tiebreak_rank=b.last_tiebreak_rank";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + strSql + "\r\n\r\n");
-			    m_ado.SqlNonQuery(m_TempMDBFileConn,strSql);
-						
-
-				m_ado.m_strSQL ="INSERT INTO " + ReferenceOptimizerScenarioForm.OutputTablePrefix +
-                    Tables.OptimizerScenarioResults.DefaultScenarioResultsBestRxSummaryBeforeTiebreaksTableSuffix +
-                    " SELECT DISTINCT * FROM cycle1_best_rx_summary_optimization_and_tiebreaker_work_table";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + m_ado.m_strSQL + "\r\n");
-				m_ado.SqlNonQuery(this.m_TempMDBFileConn,m_ado.m_strSQL);
-
-
-				//find the treatment for each plot that produces the MAX/MIN tiebreaker value
-                m_ado.m_strSQL = "SELECT a.biosum_cond_id,a.acres,a.owngrpcd,a.optimization_value,a.tiebreaker_value,a.rxpackage,a.rx,a.last_tiebreak_rank " + 
-					"FROM cycle1_best_rx_summary_optimization_and_tiebreaker_work_table a," +
-					"(SELECT biosum_cond_id," + strTieBreakerAggregate + "(tiebreaker_value) AS tiebreaker " +
-					"FROM cycle1_best_rx_summary_optimization_and_tiebreaker_work_table " + 
-					"GROUP BY biosum_cond_id) c " + 
-					"WHERE a.biosum_cond_id=c.biosum_cond_id AND a.tiebreaker_value=c.tiebreaker";
-
-
-					
-				m_ado.m_strSQL = "INSERT INTO cycle1_best_rx_summary_optimization_and_tiebreaker_work_table2 " + m_ado.m_strSQL;
-
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile,"--break any ties by finding the " + strTieBreakerAggregate + " tie breaker value--\r\n");
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + m_ado.m_strSQL + "\r\n\r\n");
-				m_ado.SqlNonQuery(this.m_TempMDBFileConn,m_ado.m_strSQL);
-                if (this.UserCancel(FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic) == true) return;
-				
-				if (this.m_ado.m_intError != 0)
-				{
-                    if (frmMain.g_bDebug)
-                        frmMain.g_oUtils.WriteText(m_strDebugFile, "!!!Error Executing SQL!!!\r\n");
-					this.m_intError = this.m_ado.m_intError;
-                    FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic.TextColor = Color.Red;
-                    FIA_Biosum_Manager.uc_optimizer_scenario_run.UpdateThermText(FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic, "!!Error!!");
-					return;
-				}
-				m_ado.m_strSQL = "UPDATE cycle1_best_rx_summary_work_table a " + 
-					"INNER JOIN cycle1_best_rx_summary_optimization_and_tiebreaker_work_table2 b " + 
-					"ON a.biosum_cond_id=b.biosum_cond_id " + 
-					"SET a.optimization_value=b.optimization_value," + 
-					"a.tiebreaker_value=b.tiebreaker_value," + 
-                    "a.rxpackage=b.rxpackage," +
-					"a.rx=b.rx," +
-                    "a.last_tiebreak_rank=b.last_tiebreak_rank";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + m_ado.m_strSQL + "\r\n");
-				m_ado.SqlNonQuery(m_TempMDBFileConn,m_ado.m_strSQL);
-				m_ado.m_strSQL="INSERT INTO " + ReferenceOptimizerScenarioForm.OutputTablePrefix +
-                    Tables.OptimizerScenarioResults.DefaultScenarioResultsBestRxSummaryTableSuffix +
-                    " SELECT * FROM cycle1_best_rx_summary_work_table";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile,"--insert the work table records into the best_rx_summary table--\r\n");
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + m_ado.m_strSQL + "\r\n\r\n");
-				m_ado.SqlNonQuery(this.m_TempMDBFileConn,m_ado.m_strSQL);
-                if (this.UserCancel(FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic) == true) return;
-				
-				if (this.m_ado.m_intError != 0)
-				{
-                    if (frmMain.g_bDebug)
-                        frmMain.g_oUtils.WriteText(m_strDebugFile, "!!!Error Executing SQL!!!\r\n");
-					this.m_intError = this.m_ado.m_intError;
-                    FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic.TextColor = Color.Red;
-                    FIA_Biosum_Manager.uc_optimizer_scenario_run.UpdateThermText(FIA_Biosum_Manager.RunOptimizer.g_oCurrentProgressBarBasic, "!!Error!!");
-					return;
-				}
-
-			}
 			// Last tie-break rank ONLY
             else if (oTieBreakerCollection.Item(2).bSelected)
 			{
 				//update the rx intensity fields for each plot
 				strSql = "UPDATE cycle1_best_rx_summary_optimization_and_tiebreaker_work_table a " + 
-					"INNER JOIN tiebreaker b " + 
-					"ON a.biosum_cond_id=b.biosum_cond_id AND a.rx=b.rx " +
+					"INNER JOIN tiebreaker b " +
+                    "ON a.biosum_cond_id=b.biosum_cond_id AND a.rx=b.rx AND a.rxpackage=b.rxpackage " +
                     "SET a.last_tiebreak_rank=b.last_tiebreak_rank";
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL:" + strSql + "\r\n");
