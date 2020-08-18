@@ -1299,7 +1299,6 @@ namespace FIA_Biosum_Manager
 			{
 				case "WOOD PROCESSING SITES":
                     m_helpChapter = "WOOD_PROCESSING_SITES";
-                    btnHelp.Enabled = true;
 					if (((Control)this.tbPSites).Enabled)
 					    this.uc_scenario_psite1.lblTitle.Text = "Wood Processing Sites";
 					else
@@ -1315,7 +1314,6 @@ namespace FIA_Biosum_Manager
                     {
                         m_helpChapter = "PROCESSOR_SCENARIO";
                     }
-                    btnHelp.Enabled = true;
 					if (((Control)this.tbCosts).Enabled)
 						this.uc_scenario_costs1.lblTitle.Text = "Cost And Revenue";
 					else
@@ -1323,7 +1321,6 @@ namespace FIA_Biosum_Manager
 					break;
 				case "FILTER PLOT RECORDS":
                     m_helpChapter = "FILTER_PLOT";
-                    btnHelp.Enabled = true;
 					if (((Control)this.tbFilterPlots).Enabled)
 						this.uc_scenario_filter1.lblTitle.Text = "Plot Filter";
 					else
@@ -1331,7 +1328,6 @@ namespace FIA_Biosum_Manager
 					break;
                 case "FILTER CONDITION RECORDS":
                     m_helpChapter = "FILTER_CONDITION";
-                    btnHelp.Enabled = true;
                     if (((Control)this.tbFilterPlots).Enabled)
                         this.uc_scenario_filter1.lblTitle.Text = "Condition Filter";
                     else
@@ -1339,7 +1335,6 @@ namespace FIA_Biosum_Manager
                     break;
 				case "LAND OWNERSHIP GROUPS":
                     m_helpChapter = "LAND_OWNERSHIP_GROUPS";
-                    btnHelp.Enabled = true;
 					if (((Control)this.tbOwners).Enabled)
 						this.uc_scenario_owner_groups1.lblTitle.Text = "Owner Groups";
 					else
@@ -1347,10 +1342,9 @@ namespace FIA_Biosum_Manager
 					break;
                 case "FVS VARIABLES":
                     // This logic is in the HelpChapter getter
-                    btnHelp.Enabled = true;
                     break;
                 case "FILTER RXPACKAGE":
-                    btnHelp.Enabled = false;
+                    m_helpChapter = "FILTER_RXPACKAGE";
                     if (((Control)this.tbFilterPkg).Enabled)
 						this.uc_scenario_run1.lblTitle.Text = "Run";
 					else
@@ -1358,14 +1352,11 @@ namespace FIA_Biosum_Manager
 					break;
 				case "RUN":
                     m_helpChapter = "RUN";
-                    btnHelp.Enabled = true;
 					if (((Control)this.tbRun).Enabled)
 						this.uc_scenario_run1.lblTitle.Text = "Run";
 					else
 						this.uc_scenario_run1.lblTitle.Text = "Run (Read Only)";
 					break;
-
-
 
 			}
 		}

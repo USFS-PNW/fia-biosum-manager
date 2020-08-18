@@ -41,8 +41,11 @@ namespace FIA_Biosum_Manager
         private CheckBox chkFvsContext;
         private CheckBox chkContext;
         private CheckBox chkResults;
-        private ComboBox cboResultsDb;
-        private Button BtnTestConnection;
+        private ComboBox cboResultsDb;        private Button BtnTestConnection;
+        private Button btnHelp;
+        private env m_oEnv;
+        private Help m_oHelp;
+        private string m_xpsFile = Help.DefaultTreatmentOptimizerFile;
 
         /// <summary> 
         /// Required designer variable.
@@ -56,6 +59,7 @@ namespace FIA_Biosum_Manager
             this.m_frmMain = p_frmMain;
 
             // TODO: Add any initialization after the InitializeComponent call
+            this.m_oEnv = new env();
             load_values();
         }
 
@@ -93,11 +97,13 @@ namespace FIA_Biosum_Manager
             this.lstScenario = new System.Windows.Forms.ListBox();
             this.BtnExport = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnHelp);
             this.groupBox1.Controls.Add(this.BtnTestConnection);
             this.groupBox1.Controls.Add(this.cboResultsDb);
             this.groupBox1.Controls.Add(this.chkFvsContext);
@@ -237,6 +243,16 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Size = new System.Drawing.Size(658, 32);
             this.lblTitle.TabIndex = 26;
             this.lblTitle.Text = "Export to SQLITE";
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnHelp.Location = new System.Drawing.Point(9, 407);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(115, 37);
+            this.btnHelp.TabIndex = 49;
+            this.btnHelp.Text = "Help";
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // uc_optimizer_sqlite_export
             // 
@@ -1731,6 +1747,15 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n");
                 MessageBox.Show("Unable to connect with an SQLite database. Check the log file at " + strTestDbPath + "!!", "FIA Biosum");
             }
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            if (m_oHelp == null)
+            {
+                m_oHelp = new Help(m_xpsFile, m_oEnv);
+            }
+            m_oHelp.ShowHelp(new string[] { "TREATMENT_OPTIMIZER", "EXPORT_SQLITE" });
         }
 
     }
