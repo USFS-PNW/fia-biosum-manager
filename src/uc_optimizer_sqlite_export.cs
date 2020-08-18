@@ -42,6 +42,10 @@ namespace FIA_Biosum_Manager
         private CheckBox chkContext;
         private CheckBox chkResults;
         private ComboBox cboResultsDb;
+        private Button btnHelp;
+        private env m_oEnv;
+        private Help m_oHelp;
+        private string m_xpsFile = Help.DefaultTreatmentOptimizerFile;
 
 		/// <summary> 
 		/// Required designer variable.
@@ -55,6 +59,7 @@ namespace FIA_Biosum_Manager
             this.m_frmMain = p_frmMain;
 
             // TODO: Add any initialization after the InitializeComponent call
+            this.m_oEnv = new env();
             load_values();
         }
 
@@ -81,6 +86,7 @@ namespace FIA_Biosum_Manager
 		private void InitializeComponent()
 		{
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.cboResultsDb = new System.Windows.Forms.ComboBox();
             this.chkFvsContext = new System.Windows.Forms.CheckBox();
             this.chkContext = new System.Windows.Forms.CheckBox();
             this.chkResults = new System.Windows.Forms.CheckBox();
@@ -90,12 +96,13 @@ namespace FIA_Biosum_Manager
             this.lstScenario = new System.Windows.Forms.ListBox();
             this.BtnExport = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.cboResultsDb = new System.Windows.Forms.ComboBox();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnHelp);
             this.groupBox1.Controls.Add(this.cboResultsDb);
             this.groupBox1.Controls.Add(this.chkFvsContext);
             this.groupBox1.Controls.Add(this.chkContext);
@@ -112,6 +119,17 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Size = new System.Drawing.Size(664, 424);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // cboResultsDb
+            // 
+            this.cboResultsDb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboResultsDb.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboResultsDb.FormattingEnabled = true;
+            this.cboResultsDb.Location = new System.Drawing.Point(235, 255);
+            this.cboResultsDb.Name = "cboResultsDb";
+            this.cboResultsDb.Size = new System.Drawing.Size(406, 26);
+            this.cboResultsDb.TabIndex = 35;
+            this.cboResultsDb.SelectedIndexChanged += new System.EventHandler(this.cboResultsDb_SelectedIndexChanged);
             // 
             // chkFvsContext
             // 
@@ -212,16 +230,15 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 26;
             this.lblTitle.Text = "Export to SQLITE";
             // 
-            // cboResultsDb
+            // btnHelp
             // 
-            this.cboResultsDb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboResultsDb.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboResultsDb.FormattingEnabled = true;
-            this.cboResultsDb.Location = new System.Drawing.Point(235, 255);
-            this.cboResultsDb.Name = "cboResultsDb";
-            this.cboResultsDb.Size = new System.Drawing.Size(406, 26);
-            this.cboResultsDb.TabIndex = 35;
-            this.cboResultsDb.SelectedIndexChanged += new System.EventHandler(this.cboResultsDb_SelectedIndexChanged);
+            this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnHelp.Location = new System.Drawing.Point(6, 381);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(115, 37);
+            this.btnHelp.TabIndex = 49;
+            this.btnHelp.Text = "Help";
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // uc_optimizer_sqlite_export
             // 
@@ -1659,6 +1676,16 @@ namespace FIA_Biosum_Manager
                 string selectedDb = cboResultsDb.GetItemText(cboResultsDb.SelectedItem);
                 m_strResultsAccdbPath = m_frmMain.getProjectDirectory() + @"\optimizer\" + m_strOptimizerScenario + @"\db\" + selectedDb;
             }
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+
+                if (m_oHelp == null)
+                {
+                    m_oHelp = new Help(m_xpsFile, m_oEnv);
+                }
+                m_oHelp.ShowHelp(new string[] { "TREATMENT_OPTIMIZER", "EXPORT_SQLITE" });
         }
 
      }
