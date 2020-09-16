@@ -4861,9 +4861,9 @@ namespace FIA_Biosum_Manager
 		}
 		public class ProcessorScenarioRun
 		{
-			static public string DefaultHarvestCostsTableDbFile {get {return @"db\scenario_results.mdb";}}
+			static public string DefaultHarvestCostsTableDbFile {get {return @"db\processor_scenario_results.accdb";}}
 			static public string DefaultHarvestCostsTableName {get {return "harvest_costs";}}
-			static public string DefaultTreeVolValSpeciesDiamGroupsDbFile {get {return @"db\scenario_results.mdb";}}
+			static public string DefaultTreeVolValSpeciesDiamGroupsDbFile {get {return @"db\processor_scenario_results.accdb";}}
 			static public string DefaultTreeVolValSpeciesDiamGroupsTableName {get {return "tree_vol_val_by_species_diam_groups";}}
             static public string DefaultDiametersLowSlopeTableName {get { return "DiametersLowSlope"; } }
             static public string DefaultDiametersSteepSlopeTableName { get { return "DiametersSteepSlope"; } }
@@ -4875,6 +4875,7 @@ namespace FIA_Biosum_Manager
             static public string DefaultTreeHwdBinSteepSlopeTableName { get { return "Hwd_BinsSteepSlope"; } }
             static public string DefaultFiaTreeSpeciesRefTableName { get { return "FIA_TREE_SPECIES_REF"; } }
             static public string DefaultOpcostErrorsTableName { get { return @"opcost_errors"; } }
+            static public string OldTreeVolValSpeciesDiamGroupsDbFile { get { return @"db\scenario_results.mdb"; } }
 
 			public ProcessorScenarioRun()
 			{

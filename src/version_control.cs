@@ -6165,6 +6165,19 @@ namespace FIA_Biosum_Manager
                     oAdo.SqlNonQuery(oUpdateConn, strSQL);
                 }
             }
+            // convert scenario_results.mdb to processor_scenario_results.accdb in each scenario
+            string[] arrScenarios = System.IO.Directory.GetDirectories(ReferenceProjectDirectory.Trim() + @"\processor");
+
+            foreach (var scenarioPath in arrScenarios)
+            {
+                string strMdbFile = scenarioPath + "\\" + Tables.ProcessorScenarioRun.OldTreeVolValSpeciesDiamGroupsDbFile;
+                strAccdbFile = scenarioPath + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
+                if (System.IO.File.Exists(strMdbFile))
+                {
+                    oDao.ConvertMDBToAccdb(strMdbFile, strAccdbFile, true);
+                    System.IO.File.Delete(strMdbFile);
+                }
+            }
 
 
             if (oDao != null)

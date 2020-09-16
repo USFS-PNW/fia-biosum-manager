@@ -490,7 +490,7 @@ namespace FIA_Biosum_Manager
 				if (this.txtScenarioPath.Text.Length > 0) 
 				{
     				//create the scenario path if it does not exist and
-					//copy the scenario_results.mdb to it
+					//copy the processor_scenario_results.accdb to it
 					try
 					{
 						if (!System.IO.Directory.Exists(this.txtScenarioPath.Text)) 
@@ -498,8 +498,8 @@ namespace FIA_Biosum_Manager
 							System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text);
 							System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text.ToString() + "\\db");
 							//copy default scenario_results database to the new project directory
-							string strSourceFile = ((frmMain)this.ParentForm.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\" + ScenarioType + "\\db\\scenario_results.mdb";
-							string strDestFile = this.txtScenarioPath.Text + "\\db\\scenario_results.mdb";
+							string strSourceFile = ((frmMain)this.ParentForm.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\" + ScenarioType + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
+                            string strDestFile = this.txtScenarioPath.Text + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
 							System.IO.File.Copy(strSourceFile, strDestFile,true);	
 							
 						}

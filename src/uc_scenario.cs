@@ -428,7 +428,7 @@ namespace FIA_Biosum_Manager
 			oAdo.m_OleDbDataReader=null;
 			//
 			//create the scenario path if it does not exist and
-			//copy the scenario_results.mdb to it
+			//copy the processor_scenario_results.accdb to it
 			//
 			try
 			{

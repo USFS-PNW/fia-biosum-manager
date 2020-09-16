@@ -587,7 +587,7 @@ namespace FIA_Biosum_Manager
 		}
 		
 		/// <summary>
-		/// every scenario_results.mdb table is viewed in a uc_gridview control
+		/// every processor_scenario_results.accdb table is viewed in a uc_gridview control
 		/// </summary>
 		private void viewScenarioTables()
 		{
@@ -599,7 +599,7 @@ namespace FIA_Biosum_Manager
 			dao_data_access p_dao = new dao_data_access();
 			
 			
-			strMDBPathAndFile = m_frmScenario.uc_scenario1.txtScenarioPath.Text.Trim() + "\\db\\scenario_results.mdb";
+			strMDBPathAndFile = m_frmScenario.uc_scenario1.txtScenarioPath.Text.Trim() + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
 
 			int intCount = p_dao.getTableNames(strMDBPathAndFile,ref strTableNames);
 			if (p_dao.m_intError==0)
@@ -1342,9 +1342,9 @@ namespace FIA_Biosum_Manager
 			
 			
 			/*******************************************************************
-			 ** get scenario_results.mdb path
+			 ** get processor_scenario_results.accdb path
 			 *******************************************************************/
-			string strMDBPathAndFile = this.m_frmRunCoreScenario.m_frmScenario.uc_scenario1.txtScenarioPath.Text.Trim() + "\\db\\scenario_results.mdb";
+			string strMDBPathAndFile = this.m_frmRunCoreScenario.m_frmScenario.uc_scenario1.txtScenarioPath.Text.Trim() + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
 			/********************************************************
 			 **get the user defined PLOT filter sql
 			 ********************************************************/
