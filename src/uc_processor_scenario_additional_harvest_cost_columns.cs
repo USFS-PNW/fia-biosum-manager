@@ -72,7 +72,7 @@ namespace FIA_Biosum_Manager
             //
             string strScenarioMDB =
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
             //
             //SCENARIO ID
             //
@@ -359,7 +359,7 @@ namespace FIA_Biosum_Manager
             //
             string strScenarioMDB =
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
             //
             //SCENARIO ID
             //
@@ -739,7 +739,7 @@ namespace FIA_Biosum_Manager
                 //
                 string strScenarioMDB =
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                    "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
                 System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
 
                 m_oAdo.OpenConnection(m_oAdo.getMDBConnString(strScenarioMDB, "", ""), ref oConn);

@@ -287,7 +287,7 @@ namespace FIA_Biosum_Manager
             string[] strProcessorColumnsArray = null;
 
             System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
-            oConn.ConnectionString = m_oAdo.getMDBConnString(frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\processor\\db\\scenario_processor_rule_definitions.mdb","","");
+            oConn.ConnectionString = m_oAdo.getMDBConnString(frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultProcessorRuleDefinitionsDbFile,"","");
             m_oAdo.OpenConnection(oConn.ConnectionString,ref oConn);
             string strProcessorColumnsList = m_oAdo.CreateCommaDelimitedList(oConn, "SELECT DISTINCT ColumnName FROM scenario_harvest_cost_columns", ",");
             m_oAdo.CloseConnection(oConn);

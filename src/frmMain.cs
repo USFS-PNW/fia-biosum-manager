@@ -1577,8 +1577,8 @@ namespace FIA_Biosum_Manager
 					oFrmScenario.Text = "Processor: Scenario (" + oFrmProcessorScenario.uc_scenario_open1.strScenarioId.Trim() + ")";
 					oFrmScenario.m_bScenarioOpen = true;
 
-                    
-					oFrmScenario.uc_datasource1.strDataSourceMDBFile =  frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+
+                    oFrmScenario.uc_datasource1.strDataSourceMDBFile = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + @"\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
 					oFrmScenario.uc_datasource1.strDataSourceTable = "scenario_datasource";
 					oFrmScenario.uc_datasource1.strScenarioId = oFrmProcessorScenario.uc_scenario_open1.txtScenarioId.Text.Trim();
 					oFrmScenario.uc_datasource1.strProjectDirectory = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
@@ -1612,7 +1612,7 @@ namespace FIA_Biosum_Manager
 					frmProcessorScenario oFrmScenario = new frmProcessorScenario(this);
 					oFrmScenario.Text = "Processor: Scenario (" + oFrmProcessorScenario.uc_scenario1.txtScenarioId.Text.Trim() + ")";
 					oFrmScenario.m_bScenarioOpen = true;
-					oFrmScenario.uc_datasource1.strDataSourceMDBFile =  frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+					oFrmScenario.uc_datasource1.strDataSourceMDBFile =  frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsDbFile;
 					oFrmScenario.uc_datasource1.strDataSourceTable = "scenario_datasource";
 					oFrmScenario.uc_datasource1.strScenarioId = oFrmProcessorScenario.uc_scenario1.txtScenarioId.Text.Trim();
 					oFrmScenario.uc_datasource1.strProjectDirectory = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
@@ -2569,17 +2569,11 @@ namespace FIA_Biosum_Manager
         }
         public void StartBiosumProcessorDialog()
         {
-            System.Text.StringBuilder strFullPath;
-
             System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
-            string strProjDir = getProjectDirectory();
-            string strScenarioDir = strProjDir.Trim() + "\\processor\\db";
-            string strFile = "scenario_processor_rule_definitions.mdb";
-            strFullPath = new System.Text.StringBuilder(strScenarioDir);
-            strFullPath.Append("\\");
-            strFullPath.Append(strFile);
+            string strFullPath = getProjectDirectory() + @"\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
+
             ado_data_access oAdo = new ado_data_access();
-            string strConn = oAdo.getMDBConnString(strFullPath.ToString(), "admin", "");
+            string strConn = oAdo.getMDBConnString(strFullPath, "admin", "");
             int intCount = Convert.ToInt32(oAdo.getRecordCount(strConn, "select count(*) from scenario", "scenario"));
             if (oAdo.m_intError == 0)
             {

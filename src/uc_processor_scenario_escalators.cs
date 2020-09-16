@@ -313,9 +313,9 @@ namespace FIA_Biosum_Manager
 			//
 			//SCENARIO MDB
 			//
-			string strScenarioMDB = 
-				frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +  
-				"\\processor\\db\\scenario_processor_rule_definitions.mdb";
+            string strScenarioMDB =
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsDbFile;
 			//
 			//SCENARIO ID
 			//

@@ -117,7 +117,7 @@ namespace FIA_Biosum_Manager
 			m_oDataSource.LoadTableColumnNamesAndDataTypes=false;
 			m_oDataSource.m_strScenarioId=p_strScenarioId.Trim();
 			m_oDataSource.LoadTableRecordCount=false;
-			m_oDataSource.m_strDataSourceMDBFile = strProjDir.Trim() + "\\" + p_strScenarioType + "\\db\\scenario_" + p_strScenarioType + "_rule_definitions.mdb";
+			m_oDataSource.m_strDataSourceMDBFile = strProjDir.Trim() + "\\" + p_strScenarioType + "\\db\\scenario_" + p_strScenarioType + "_rule_definitions.accdb";
 			m_oDataSource.m_strDataSourceTableName = "scenario_datasource";
 			m_oDataSource.populate_datasource_array();
 			

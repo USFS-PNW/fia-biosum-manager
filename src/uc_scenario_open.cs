@@ -328,7 +328,7 @@ namespace FIA_Biosum_Manager
 			string strProjDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
 
 			string strScenarioDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
-			string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb";
+			string strFile = "scenario_" + ScenarioType + "_rule_definitions.accdb";
 			StringBuilder strFullPath = new StringBuilder(strScenarioDir);
 			strFullPath.Append("\\");
 			strFullPath.Append(strFile);
@@ -854,7 +854,7 @@ namespace FIA_Biosum_Manager
 		{
 			
 			string strScenarioDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
-			string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb"; 
+			string strFile = "scenario_" + ScenarioType + "_rule_definitions.accdb";
 			StringBuilder strFullPath = new StringBuilder(strScenarioDir);
 			strFullPath.Append("\\");
 			strFullPath.Append(strFile);

@@ -218,6 +218,8 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "version_control.PerformVersionCheck: !!Error opening Application.Version File!! ERROR=" + error.Message + "r\n");
             }
 
+            UpdateDatasources_5_8_9();
+            
             //check for partial update
             if (bPerformCheck)
             {
@@ -6103,6 +6105,66 @@ namespace FIA_Biosum_Manager
                 oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
             }
             oAdo.m_OleDbConnection.Close();
+
+
+            if (oDao != null)
+            {
+                oDao.m_DaoWorkspace.Close();
+                oDao = null;
+            }
+            if (oAdo != null)
+            {
+                oAdo.CloseConnection(oAdo.m_OleDbConnection);
+                oAdo = null;
+            }
+        }
+
+        private void UpdateDatasources_5_8_9()
+        {
+            dao_data_access oDao = new dao_data_access();
+            ado_data_access oAdo = new ado_data_access();
+
+            // convert scenario_optimizer_rule_definitions.mdb to .accdb
+            string strAccdbFile = ReferenceProjectDirectory.Trim() + "\\" + Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioTableDbFile;            
+            if (! System.IO.File.Exists(strAccdbFile))
+            {
+                string strMdbFile = ReferenceProjectDirectory.Trim() + "\\" + Tables.OptimizerScenarioRuleDefinitions.OldScenarioTableDbFile;
+                oDao.ConvertMDBToAccdb(strMdbFile, strAccdbFile, true);
+                string strMdbName = System.IO.Path.GetFileNameWithoutExtension(Tables.OptimizerScenarioRuleDefinitions.OldScenarioTableDbFile);
+                string strFullArchiveName = ReferenceProjectDirectory.Trim() + @"\optimizer\db\" + strMdbName + "_" + DateTime.Now.ToString("MMddyyyy") + ".mdb";
+                if (!System.IO.File.Exists(strFullArchiveName))
+                {
+                    System.IO.File.Move(strMdbFile, strFullArchiveName);
+                }
+                string strUpdateConn = oAdo.getMDBConnString(strAccdbFile, "", "");
+                using (var oUpdateConn = new OleDbConnection(strUpdateConn))
+                {
+                    oUpdateConn.Open();
+                    string strSQL = "update scenario set file = 'scenario_optimizer_rule_definitions.accdb'";
+                    oAdo.SqlNonQuery(oUpdateConn, strSQL);
+                }
+            }
+
+            // convert scenario_processor_rule_definitions.mdb to .accdb
+            strAccdbFile = ReferenceProjectDirectory.Trim() + @"\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
+            if (!System.IO.File.Exists(strAccdbFile))
+            {
+                string strMdbFile = ReferenceProjectDirectory.Trim() + "\\" + Tables.ProcessorScenarioRuleDefinitions.OldScenarioTableDbFile;
+                oDao.ConvertMDBToAccdb(strMdbFile, strAccdbFile, true);
+                string strMdbName = System.IO.Path.GetFileNameWithoutExtension(Tables.ProcessorScenarioRuleDefinitions.OldScenarioTableDbFile);
+                string strFullArchiveName = ReferenceProjectDirectory.Trim() + @"\processor\db\" + strMdbName + "_" + DateTime.Now.ToString("MMddyyyy") + ".mdb";
+                if (!System.IO.File.Exists(strFullArchiveName))
+                {
+                    System.IO.File.Move(strMdbFile, strFullArchiveName);
+                }
+                string strUpdateConn = oAdo.getMDBConnString(strAccdbFile, "", "");
+                using (var oUpdateConn = new OleDbConnection(strUpdateConn))
+                {
+                    oUpdateConn.Open();
+                    string strSQL = "update scenario set file = 'scenario_processor_rule_definitions.accdb'";
+                    oAdo.SqlNonQuery(oUpdateConn, strSQL);
+                }
+            }
 
 
             if (oDao != null)

@@ -2493,6 +2493,37 @@ namespace FIA_Biosum_Manager
             return p_bResult;
         }
 
+        public void ConvertMDBToAccdb(string strMDBFile, string strAccdbFile, bool overwriteAccdbFile)
+        {
+
+            try
+            {
+                if (System.IO.File.Exists(strAccdbFile) && overwriteAccdbFile == false)
+                {
+                    MessageBox.Show("Unable to overwrite existing file: " + strAccdbFile);
+                    return;
+                }
+                
+                if (System.IO.File.Exists(strMDBFile))
+                {
+                    this.m_DaoDbEngine.CompactDatabase(strMDBFile, strAccdbFile,
+                        Microsoft.Office.Interop.Access.Dao.LanguageConstants.dbLangGeneral,
+                        Microsoft.Office.Interop.Access.Dao.DatabaseTypeEnum.dbVersion120, null);
+
+                }
+            }
+            catch (Exception e)
+            {
+                if (DisplayErrors)
+                {
+                    MessageBox.Show(e.Message, "DAO Error",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Exclamation);
+                }
+                this.m_intError = -1;
+            }
+        }
+
     }
 
 

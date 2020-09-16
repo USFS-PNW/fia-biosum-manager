@@ -331,7 +331,7 @@ namespace FIA_Biosum_Manager
      
             ReferenceProcessorScenarioForm.m_oProcessorScenarioTools.LoadMoveInCosts
                 (frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb",
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsDbFile,
                 ReferenceProcessorScenarioForm.m_oProcessorScenarioItem);
 
             FIA_Biosum_Manager.ProcessorScenarioItem oItem = ReferenceProcessorScenarioForm.m_oProcessorScenarioItem;
@@ -370,7 +370,7 @@ namespace FIA_Biosum_Manager
             ado_data_access oAdo = new ado_data_access();
             string strScenarioMDB =
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsDbFile;
             oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
             if (oAdo.m_intError != 0)
             {

@@ -139,8 +139,8 @@ namespace FIA_Biosum_Manager
 			System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
             string strProjDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
             string strScenarioDir = strProjDir + "\\" + ScenarioType + "\\db";
-            string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb"; //((frmMain)this.ParentForm.ParentForm).frmProject.uc_project1.m_strProjectFile;
-			StringBuilder strFullPath = new StringBuilder(strScenarioDir);
+            string strFile = "scenario_" + ScenarioType + "_rule_definitions.accdb"; 
+            StringBuilder strFullPath = new StringBuilder(strScenarioDir);
 			strFullPath.Append("\\");
 			strFullPath.Append(strFile);
 			string strNotes = this.txtNotes.Text;
@@ -169,7 +169,7 @@ namespace FIA_Biosum_Manager
 			string strNotes="";
 			FIA_Biosum_Manager.ado_data_access oAdo = new ado_data_access();
 			string strScenarioDBDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
-			string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.mdb"; 
+			string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.accdb";
 			StringBuilder strScenarioFullPath = new StringBuilder(strScenarioDBDir);
 			strScenarioFullPath.Append("\\");
 			strScenarioFullPath.Append(strScenarioFile);

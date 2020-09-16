@@ -692,7 +692,7 @@ namespace FIA_Biosum_Manager
                 //scenario mdb connection
                 string strScenarioMDB =
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                    "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsDbFile;
                 ado_data_access oAdo = new ado_data_access();
                 oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
                 if (oAdo.m_intError != 0)

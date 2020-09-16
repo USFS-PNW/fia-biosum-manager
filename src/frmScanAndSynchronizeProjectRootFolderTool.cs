@@ -168,8 +168,8 @@ namespace FIA_Biosum_Manager
              //
             //PROCESSOR SCENARIO DATA SOURCE
             //
-            strFullPath = this.lblCurrentProjectRootFolder.Text.Trim() + 
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+            strFullPath = this.lblCurrentProjectRootFolder.Text.Trim() +
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultProcessorRuleDefinitionsDbFile ;
             if (System.IO.File.Exists(strFullPath))
             {
                 oDao.CreateTableLink(

@@ -344,7 +344,7 @@ namespace FIA_Biosum_Manager
             //
             string strScenarioMDB =
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsDbFile;
             //
             //SCENARIO RESULTS MDB
             //

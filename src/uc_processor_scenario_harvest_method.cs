@@ -741,7 +741,7 @@ namespace FIA_Biosum_Manager
 
             ReferenceProcessorScenarioForm.m_oProcessorScenarioTools.LoadHarvestMethod
                 (frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb",
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodDbFile,
                 ReferenceProcessorScenarioForm.m_oProcessorScenarioItem);
 
             FIA_Biosum_Manager.ProcessorScenarioItem oItem = ReferenceProcessorScenarioForm.m_oProcessorScenarioItem;
@@ -842,9 +842,9 @@ namespace FIA_Biosum_Manager
 			//
 			//scenario mdb connection
 			ado_data_access oAdo = new ado_data_access();
-			string strScenarioMDB = 
-				frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + 
-				"\\processor\\db\\scenario_processor_rule_definitions.mdb";
+            string strScenarioMDB =
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodDbFile;
 			oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB,"",""));	
 			if (oAdo.m_intError != 0)
 			{

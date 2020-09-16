@@ -1067,7 +1067,7 @@ namespace FIA_Biosum_Manager
 				//
 				p_frmTherm.lblMsg.Text = strDestFile;
 				p_frmTherm.lblMsg.Refresh();
-				CreateProcessorScenarioRuleDefinitionDbAndTables(this.txtRootDirectory.Text.Trim() + "\\processor\\db\\scenario_processor_rule_definitions.mdb");
+				CreateProcessorScenarioRuleDefinitionDbAndTables(this.txtRootDirectory.Text.Trim() + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultProcessorRuleDefinitionsDbFile);
 				p_frmTherm.Increment(10);
 				//p_frmTherm.lblMsg.Text = strDestFile;
 				p_frmTherm.lblMsg.Refresh();
@@ -2492,7 +2492,7 @@ namespace FIA_Biosum_Manager
             //
             //PROCESSOR SCENARIO DATA SOURCE
             //
-            strFullPath = strProjDir + "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+            strFullPath = strProjDir + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultProcessorRuleDefinitionsDbFile;
             if (System.IO.File.Exists(strFullPath))
             {
                 strConn = oAdo.getMDBConnString(strFullPath, "", "");
