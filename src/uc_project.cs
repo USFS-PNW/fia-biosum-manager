@@ -991,8 +991,8 @@ namespace FIA_Biosum_Manager
 				//fvsmaster file
 				//
 				//copy default fvsmaster database to the new project directory
-				strSourceFile = this.m_oEnv.strAppDir + "\\db\\fvsmaster.mdb";
-				strDestFile = this.txtRootDirectory.Text.Trim() + "\\db\\fvsmaster.mdb";
+				strSourceFile = this.m_oEnv.strAppDir + "\\db\\fvsmaster.accdb";
+				strDestFile = this.txtRootDirectory.Text.Trim() + "\\db\\fvsmaster.accdb";
 				p_frmTherm.Increment(5);
 				p_frmTherm.lblMsg.Text = strDestFile;
 				p_frmTherm.lblMsg.Refresh();
@@ -1209,14 +1209,14 @@ namespace FIA_Biosum_Manager
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Prescriptions'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rx');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
                     strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Prescriptions Harvest Cost Columns'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'" + Tables.FVS.DefaultRxHarvestCostColumnsTableName + "');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
@@ -1225,7 +1225,7 @@ namespace FIA_Biosum_Manager
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Prescriptions Assigned FVS Commands'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rx_fvs_commands');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
@@ -1247,28 +1247,28 @@ namespace FIA_Biosum_Manager
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Packages'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rxpackage');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Package Members'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rxpackage_members');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Package Assigned FVS Commands'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rxpackage_fvs_commands');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
 					strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
 						"('Treatment Package FVS Commands Order'," + 
 						"'" + this.txtRootDirectory.Text.ToString().Trim()  + "\\db'," + 
-						"'fvsmaster.mdb'," + 
+						"'fvsmaster.accdb'," + 
 						"'rxpackage_fvs_commands_order');";
 					p_ado.SqlNonQuery(p_ado.m_OleDbConnection,strSQL);
 
@@ -1282,14 +1282,14 @@ namespace FIA_Biosum_Manager
                     strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
                         "('FVS PRE-POST SeqNum Definitions'," +
                         "'" + this.txtRootDirectory.Text.ToString().Trim() + "\\db'," +
-                        "'fvsmaster.mdb'," +
+                        "'fvsmaster.accdb'," +
                         "'" + Tables.FVS.DefaultFVSPrePostSeqNumTable + "');";
                     p_ado.SqlNonQuery(p_ado.m_OleDbConnection, strSQL);
 
                     strSQL = "INSERT INTO datasource (table_type,Path,file,table_name) VALUES " +
                         "('FVS PRE-POST SeqNum Treatment Package Assign'," +
                         "'" + this.txtRootDirectory.Text.ToString().Trim() + "\\db'," +
-                        "'fvsmaster.mdb'," +
+                        "'fvsmaster.accdb'," +
                         "'" + Tables.FVS.DefaultFVSPrePostSeqNumRxPackageAssgnTable + "');";
                     p_ado.SqlNonQuery(p_ado.m_OleDbConnection, strSQL);
 

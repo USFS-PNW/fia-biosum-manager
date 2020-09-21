@@ -218,7 +218,7 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "version_control.PerformVersionCheck: !!Error opening Application.Version File!! ERROR=" + error.Message + "r\n");
             }
 
-            UpdateDatasources_5_8_9();
+            //UpdateDatasources_5_8_9();
             
             //check for partial update
             if (bPerformCheck)
@@ -6125,6 +6125,7 @@ namespace FIA_Biosum_Manager
             ado_data_access oAdo = new ado_data_access();
 
             // convert scenario_optimizer_rule_definitions.mdb to .accdb
+            frmMain.g_sbpInfo.Text = "Version Update: Converting scenario_optimizer_rule_definitions.mdb to .accdb ...Stand by";
             string strAccdbFile = ReferenceProjectDirectory.Trim() + "\\" + Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioTableDbFile;            
             if (! System.IO.File.Exists(strAccdbFile))
             {
@@ -6146,6 +6147,7 @@ namespace FIA_Biosum_Manager
             }
 
             // convert scenario_processor_rule_definitions.mdb to .accdb
+            frmMain.g_sbpInfo.Text = "Version Update: Converting scenario_processor_rule_definitions.mdb to .accdb ...Stand by";
             strAccdbFile = ReferenceProjectDirectory.Trim() + @"\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
             if (!System.IO.File.Exists(strAccdbFile))
             {
@@ -6179,6 +6181,47 @@ namespace FIA_Biosum_Manager
                 }
             }
 
+            // convert fvsmaster.mdb to accdb
+            frmMain.g_sbpInfo.Text = "Version Update: Converting fvsmaster.mdb to .accdb ...Stand by";
+            strAccdbFile = ReferenceProjectDirectory.Trim() + @"\\" + Tables.FVS.DefaultRxTableDbFile;
+            if (!System.IO.File.Exists(strAccdbFile))
+            {
+                string strMdbFile = ReferenceProjectDirectory.Trim() + "\\" + Tables.FVS.OldRxTableDbFile;
+                oDao.ConvertMDBToAccdb(strMdbFile, strAccdbFile, true);
+                string strMdbName = System.IO.Path.GetFileNameWithoutExtension(Tables.FVS.OldRxTableDbFile);
+                string strFullArchiveName = ReferenceProjectDirectory.Trim() + @"\db\" + strMdbName + "_" + DateTime.Now.ToString("MMddyyyy") + ".mdb";
+                if (!System.IO.File.Exists(strFullArchiveName))
+                {
+                    System.IO.File.Move(strMdbFile, strFullArchiveName);
+                }
+                // update project datasources table
+                string strProjectMdb = ReferenceProjectDirectory.Trim() + "\\" + Tables.Project.DefaultProjectDatasourceTableDbFile;
+                string strUpdateConn = oAdo.getMDBConnString(strProjectMdb, "", "");
+                using (var oUpdateConn = new OleDbConnection(strUpdateConn))
+                {
+                    oUpdateConn.Open();
+                    string strSQL = "update datasource set file = 'fvsmaster.accdb' where file = 'fvsmaster.mdb'";
+                    oAdo.SqlNonQuery(oUpdateConn, strSQL);
+                }
+                // update processor datasources table
+                strProjectMdb = ReferenceProjectDirectory.Trim() + @"\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
+                strUpdateConn = oAdo.getMDBConnString(strProjectMdb, "", "");
+                using (var oUpdateConn = new OleDbConnection(strUpdateConn))
+                {
+                    oUpdateConn.Open();
+                    string strSQL = "update scenario_datasource set file = 'fvsmaster.accdb' where file = 'fvsmaster.mdb'";
+                    oAdo.SqlNonQuery(oUpdateConn, strSQL);
+                }
+                // update optimizer datasources table
+                strProjectMdb = ReferenceProjectDirectory.Trim() +"\\" + Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioTableDbFile;  
+                strUpdateConn = oAdo.getMDBConnString(strProjectMdb, "", "");
+                using (var oUpdateConn = new OleDbConnection(strUpdateConn))
+                {
+                    oUpdateConn.Open();
+                    string strSQL = "update scenario_datasource set file = 'fvsmaster.accdb' where file = 'fvsmaster.mdb'";
+                    oAdo.SqlNonQuery(oUpdateConn, strSQL);
+                }
+            }
 
             if (oDao != null)
             {

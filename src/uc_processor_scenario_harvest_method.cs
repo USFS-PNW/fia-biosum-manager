@@ -1280,7 +1280,7 @@ namespace FIA_Biosum_Manager
             {
                 string strFvsMDB =
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                    "\\db\\fvsmaster.mdb";
+                    "\\db\\fvsmaster.accdb";
                 m_oAdo.OpenConnection(m_oAdo.getMDBConnString(strFvsMDB, "", ""));
                 string strRxClause = "AND RX IN (";
                 foreach (string strRx in lstRx)

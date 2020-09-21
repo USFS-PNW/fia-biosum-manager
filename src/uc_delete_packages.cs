@@ -158,7 +158,7 @@ namespace FIA_Biosum_Manager
                 {
                     projectFiles.AddRange(Directory
                         .GetFiles(m_strProjDir + "\\db\\", "*.*", SearchOption.AllDirectories)
-                        .Where(s => !s.ToLower().Contains("fvsmaster.mdb")));
+                        .Where(s => !s.ToLower().Contains("fvsmaster.accdb")));
                 }
 
                 if (Directory.Exists(m_strProjDir + "\\fvs\\"))

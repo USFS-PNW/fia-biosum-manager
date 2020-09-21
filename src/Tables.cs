@@ -2433,25 +2433,26 @@ namespace FIA_Biosum_Manager
                                                               "FVS_ECONHARVESTVALUE",
                                                               "FVS_CUSTOM"};
 
-			static public string DefaultRxTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxTableName {get {return "rx";}}
+            static public string OldRxTableDbFile { get { return @"db\fvsmaster.mdb"; } }
 
-			static public string DefaultRxFvsCommandTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxFvsCommandTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxFvsCommandTableName {get {return "rx_fvs_commands";}}
 
-			static public string DefaultRxHarvestCostColumnsTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxHarvestCostColumnsTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxHarvestCostColumnsTableName {get {return "rx_harvest_cost_columns";}}
 
-			static public string DefaultRxPackageFvsCommandTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxPackageFvsCommandTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxPackageFvsCommandTableName {get {return "rxpackage_fvs_commands";}}
 
-			static public string DefaultRxPackageTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxPackageTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxPackageTableName {get {return "rxpackage";}}
 
-			static public string DefaultRxPackageMembersTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxPackageMembersTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxPackageMembersTableName {get {return "rxpackage_members";}}
 
-			static public string DefaultRxPackageFvsCommandsOrderTableDbFile {get {return @"db\fvsmaster.mdb";}}
+			static public string DefaultRxPackageFvsCommandsOrderTableDbFile {get {return @"db\fvsmaster.accdb";}}
 			static public string DefaultRxPackageFvsCommandsOrderTableName {get {return "rxpackage_fvs_commands_order";}}
 
 			static public string DefaultFVSTreeTableName {get {return "FVS_Tree";}}
@@ -2462,10 +2463,10 @@ namespace FIA_Biosum_Manager
             static public string DefaultFVSTreeIdWorkTable { get { return "fvs_tree_id_work_table"; } }
 
             static public string DefaultFVSPrePostSeqNumTable { get { return "fvs_output_prepost_seqnum"; } }
-            static public string DefaultFVSPrePostSeqNumTableDbFile { get { return @"db\fvsmaster.mdb"; } }
+            static public string DefaultFVSPrePostSeqNumTableDbFile { get { return @"db\fvsmaster.accdb"; } }
 
             static public string DefaultFVSPrePostSeqNumRxPackageAssgnTable { get { return "fvs_output_prepost_seqnum_rxpackage_assignment"; } }
-            static public string DefaultFVSPrePostSeqNumRxPackageAssgnTableDbFile { get { return @"db\fvsmaster.mdb"; } }
+            static public string DefaultFVSPrePostSeqNumRxPackageAssgnTableDbFile { get { return @"db\fvsmaster.accdb"; } }
 
             static public string DefaultPreFVSSummaryTableName { get { return "PRE_FVS_SUMMARY"; } }
             static public string DefaultPreFVSSummaryDbFile { get { return @"\fvs\db\PREPOST_FVS_SUMMARY.ACCDB"; } }
