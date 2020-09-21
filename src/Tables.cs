@@ -685,7 +685,7 @@ namespace FIA_Biosum_Manager
 			}
 			public void CreateBestRxSummaryCycle1TableIndexes(FIA_Biosum_Manager.ado_data_access p_oAdo,System.Data.OleDb.OleDbConnection p_oConn,string p_strTableName)
 			{
-				p_oAdo.AddPrimaryKey(p_oConn,p_strTableName,p_strTableName + "_pk","biosum_cond_id,rxpackage,rx");
+				p_oAdo.AddPrimaryKey(p_oConn,p_strTableName,p_strTableName + "_pk","biosum_cond_id,rx");
 			}
 			static public string CreateBestRxSummaryCycle1TableSQL(string p_strTableName)
 			{
@@ -2686,8 +2686,7 @@ namespace FIA_Biosum_Manager
             }
             public void CreateOracleInputFCSBiosumVolumesTableIndexes(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {
-                p_oAdo.AddPrimaryKey(p_oConn, p_strTableName, p_strTableName + "_pk", "TRE_CN");
-               
+                    p_oAdo.AddPrimaryKey(p_oConn, p_strTableName, p_strTableName + "_pk", "TRE_CN");
             }
             public string CreateOracleInputFCSBiosumVolumesTableSQL(string p_strTableName)
             {
@@ -2720,6 +2719,43 @@ namespace FIA_Biosum_Manager
                     "VOLTSGRS_CALC DOUBLE)";
 
             }
+            public void CreateOracleInputFCSBiosumVolumesWorkTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
+            {
+                p_oAdo.SqlNonQuery(p_oConn, CreateOracleInputFCSBiosumVolumesWorkTableSQL(p_strTableName));
+            }
+            public string CreateOracleInputFCSBiosumVolumesWorkTableSQL(string p_strTableName)
+            {
+                return "CREATE TABLE " + p_strTableName + " (" +
+                    "ID AUTOINCREMENT," +
+                    "STATECD INTEGER," +
+                    "COUNTYCD INTEGER," +
+                    "PLOT INTEGER," +
+                    "INVYR INTEGER," +
+                    "TREE INTEGER," +
+                    "VOL_LOC_GRP CHAR(10)," +
+                    "SPCD INTEGER," +
+                    "DIA DOUBLE," +
+                    "HT DOUBLE," +
+                    "ACTUALHT DOUBLE," +
+                    "CR DOUBLE," +
+                    "STATUSCD BYTE," +
+                    "TREECLCD BYTE," +
+                    "ROUGHCULL DOUBLE," +
+                    "CULL DOUBLE," +
+                    "DECAYCD BYTE," +
+                    "TOTAGE DOUBLE," +
+                    "TRE_CN CHAR(34)," +
+                    "CND_CN CHAR(34)," +
+                    "PLT_CN CHAR(34)," +
+                    "VOLCFGRS_CALC DOUBLE," +
+                    "VOLCSGRS_CALC DOUBLE," +
+                    "VOLCFNET_CALC DOUBLE," +
+                    "DRYBIOM_CALC DOUBLE," +
+                    "DRYBIOT_CALC DOUBLE," +
+                    "VOLTSGRS_CALC DOUBLE)";
+
+            }
+
 			//
 			//RX table
 			//
