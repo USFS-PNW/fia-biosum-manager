@@ -689,7 +689,7 @@ namespace FIA_Biosum_Manager
 			string strVariant="";
             string strCurVariant = "";
             int intCurVariantPotFire = -1;
-            int intPotFireBaseYrRecordCount = -1;
+            uint intPotFireBaseYrRecordCount = 0;
             bool bFound = false;
 			Tables oTables = new Tables();
 			try
@@ -954,6 +954,11 @@ namespace FIA_Biosum_Manager
 				oDao2.m_DaoWorkspace.Close();
 				oDao.m_DaoDatabase.Close();
 				oDao.m_DaoWorkspace.Close();
+
+                oDao2.m_DaoWorkspace = null;
+                oDao.m_DaoDatabase = null;
+                oDao.m_DaoWorkspace = null;
+
 				m_ado.m_OleDbDataReader.Close();
 
 				
@@ -963,9 +968,23 @@ namespace FIA_Biosum_Manager
                 strVariant="";
                 strCurVariant="";
 
+               
 				for (x=0;x<=intCount-1;x++)
 				{
-					strVariantRxPackage=strLinkedTables[x].Substring(strLinkedTables[x].Length-23,23);
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel  >2)
+                    {
+                        long memused = GC.GetTotalMemory(true);
+                        this.WriteText(m_strDebugFile, "uc_fcs_output.loadvalues Memory Used: " + String.Format("{0:n0}" + " MB",memused));
+
+                    }
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    oAdo.DisplayErrors = false;
+
+                    strVariantRxPackage =strLinkedTables[x].Substring(strLinkedTables[x].Length-23,23);
 					if (strVariantRxPackage.Trim() != strCurVariantRxPackage.Trim())
 					{
 						
@@ -1033,13 +1052,13 @@ namespace FIA_Biosum_Manager
                        
 						if (strLinkedTables[x].ToUpper().IndexOf("FVS_SUMMARY",0)==0)
 						{
-							if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_SUMMARYCOUNT].Text = Convert.ToString(Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection,"select count(*) from " + strLinkedTables[x].Trim(),"fvs_summary")));
+							if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_SUMMARYCOUNT].Text = Convert.ToString(Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection,"select count(*) from " + strLinkedTables[x].Trim(),"fvs_summary")));
 						}
                         else if (strLinkedTables[x].ToUpper().IndexOf("FVS_CASES", 0) == 0)
                         {
                             string strUpdateStatus = "";
 
-                            if (Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection, "select count(*) from " + strLinkedTables[x].Trim() + " WHERE BIOSUM_Append_YN='N'", "fvs_cases")) > 0)
+                            if (Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection, "select count(*) from " + strLinkedTables[x].Trim() + " WHERE BIOSUM_Append_YN='N'", "fvs_cases")) > 0)
                             {
                                 strUpdateStatus = strUpdateStatus + "a";
                             }
@@ -1048,16 +1067,16 @@ namespace FIA_Biosum_Manager
                         }
                         else if (strLinkedTables[x].ToUpper().IndexOf("FVS_CUTLIST", 0) == 0)
                         {
-                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_CUTCOUNT].Text = Convert.ToString(Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection, "select count(*) from " + strLinkedTables[x].Trim(), "fvs_cutlist")));
+                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_CUTCOUNT].Text = Convert.ToString(Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection, "select count(ht) from " + strLinkedTables[x].Trim(), "fvs_cutlist")));
                         }
 
                         else if (strLinkedTables[x].ToUpper().IndexOf("FVS_TREELIST", 0) == 0)
                         {
-                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_LEFTCOUNT].Text = Convert.ToString(Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection, "select count(*) from " + strLinkedTables[x].Trim(), "fvs_treelist")));
+                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_LEFTCOUNT].Text = Convert.ToString(Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection, "select count(ht) from " + strLinkedTables[x].Trim(), "fvs_treelist")));
                         }
                         else if (strLinkedTables[x].ToUpper().IndexOf("FVS_POTFIRE", 0) == 0)
                         {
-                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_POTFIRECOUNT].Text = Convert.ToString(Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection, "select count(*) from " + strLinkedTables[x].Trim(), "fvs_potfire")));
+                            if (!frmMain.g_bSuppressFVSOutputTableRowCount) entryListItem.SubItems[COL_POTFIRECOUNT].Text = Convert.ToString(Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection, "select count(year) from " + strLinkedTables[x].Trim(), "fvs_potfire")));
                         }
 					}
                     //process the potfire base year table by variant and not rxpackage
@@ -1065,7 +1084,7 @@ namespace FIA_Biosum_Manager
                     {
                         strCurVariant = strVariant;
                         intCurVariantPotFire = -1;
-                        intPotFireBaseYrRecordCount= - 1;
+                        intPotFireBaseYrRecordCount= 0;
                         //find the potfire arrayitem
                         for (y = 0; y <= intPotFireBaseYrCount - 1; y++)
                         {
@@ -1073,7 +1092,7 @@ namespace FIA_Biosum_Manager
                                 "FVS_POTFIRE_" + strVariant.ToUpper() + "_POTFIRE_BASEYR")
                             {
                                 intCurVariantPotFire = y;
-                                if (!frmMain.g_bSuppressFVSOutputTableRowCount) intPotFireBaseYrRecordCount = Convert.ToInt32(oAdo.getRecordCount(oAdo.m_OleDbConnection, "select count(*) from " + strPotFireBaseYrLinkedTables[intCurVariantPotFire].Trim(), "fvs_potfire"));
+                                if (!frmMain.g_bSuppressFVSOutputTableRowCount) intPotFireBaseYrRecordCount = Convert.ToUInt32(oAdo.getRecordCountUInt(oAdo.m_OleDbConnection, "select count(*) from " + strPotFireBaseYrLinkedTables[intCurVariantPotFire].Trim(), "fvs_potfire"));
                                 break;
                             }
                             else if (strPotFireBaseYrLinkedTables[y].Trim().ToUpper() ==
@@ -1132,7 +1151,7 @@ namespace FIA_Biosum_Manager
                     }
 				
 				}
-			    oAdo.CloseConnection(oAdo.m_OleDbConnection);
+			    oAdo.CloseAndDisposeConnection(oAdo.m_OleDbConnection,true);
                 
 
 			}
