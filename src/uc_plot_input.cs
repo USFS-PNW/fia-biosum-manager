@@ -334,6 +334,7 @@ namespace FIA_Biosum_Manager
             this.btnFilterNext = new System.Windows.Forms.Button();
             this.btnFilterCancel = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.cmbGrmComponentTable = new System.Windows.Forms.ComboBox();
             this.chkGrmImport = new System.Windows.Forms.CheckBox();
             this.chkDwmImport = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -372,7 +373,6 @@ namespace FIA_Biosum_Manager
             this.txtMDBPlotTable = new System.Windows.Forms.TextBox();
             this.btnMDBPlotBrowse = new System.Windows.Forms.Button();
             this.txtMDBPlot = new System.Windows.Forms.TextBox();
-            this.cmbGrmComponentTable = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.grpboxMDBFiadbInput.SuspendLayout();
             this.groupBox24.SuspendLayout();
@@ -997,6 +997,15 @@ namespace FIA_Biosum_Manager
             this.groupBox7.TabIndex = 1;
             this.groupBox7.TabStop = false;
             // 
+            // cmbGrmComponentTable
+            // 
+            this.cmbGrmComponentTable.Enabled = false;
+            this.cmbGrmComponentTable.FormattingEnabled = true;
+            this.cmbGrmComponentTable.Location = new System.Drawing.Point(61, 208);
+            this.cmbGrmComponentTable.Name = "cmbGrmComponentTable";
+            this.cmbGrmComponentTable.Size = new System.Drawing.Size(328, 21);
+            this.cmbGrmComponentTable.TabIndex = 12;
+            // 
             // chkGrmImport
             // 
             this.chkGrmImport.AutoSize = true;
@@ -1370,17 +1379,10 @@ namespace FIA_Biosum_Manager
             this.txtMDBPlot.Size = new System.Drawing.Size(383, 26);
             this.txtMDBPlot.TabIndex = 0;
             // 
-            // cmbGrmComponentTable
-            // 
-            this.cmbGrmComponentTable.Enabled = false;
-            this.cmbGrmComponentTable.FormattingEnabled = true;
-            this.cmbGrmComponentTable.Location = new System.Drawing.Point(61, 208);
-            this.cmbGrmComponentTable.Name = "cmbGrmComponentTable";
-            this.cmbGrmComponentTable.Size = new System.Drawing.Size(328, 21);
-            this.cmbGrmComponentTable.TabIndex = 12;
-            // 
             // uc_plot_input
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_plot_input";
             this.Size = new System.Drawing.Size(704, 2700);
