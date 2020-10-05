@@ -192,14 +192,13 @@ namespace FIA_Biosum_Manager
         //OPCOST settings
         public static string g_strRDirectory = "";
         public static string g_strOPCOSTDirectory = "";
-
-		//substitution macro variable
-		public static FIA_Biosum_Manager.SQLMacroSubstitutionVariable_Collection g_oSQLMacroSubstitutionVariable_Collection= new SQLMacroSubstitutionVariable_Collection();
+        //substitution macro variable
+        public static FIA_Biosum_Manager.SQLMacroSubstitutionVariable_Collection g_oSQLMacroSubstitutionVariable_Collection= new SQLMacroSubstitutionVariable_Collection();
         public static FIA_Biosum_Manager.GeneralMacroSubstitutionVariable_Collection g_oGeneralMacroSubstitutionVariable_Collection = new GeneralMacroSubstitutionVariable_Collection();
         public const int PROJDIR = 0;
         public const int OLDPROJDIR = 1;
 
-		public static string g_strAppVer = "5.8.8";
+		public static string g_strAppVer = "5.8.9";
         public static string g_strBiosumDataDir = "\\FIABiosum";
         public static int g_intRefDbVer = 2;
         public static bool g_bUseOracleXE = false;

@@ -508,7 +508,7 @@ namespace FIA_Biosum_Manager
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) <= 8 &&
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR2]) < 7))
                     {
-                        UpdateDatasources_5_8_8();  // Allow v5.8.6 to upgrade directly to v5.8.8
+                        UpdateDatasources_5_8_9();  // Allow v5.8.6 to upgrade directly to v5.8.9
                         UpdateProjectVersionFile(strProjVersionFile);
                         bPerformCheck = false;
                     }
@@ -520,7 +520,7 @@ namespace FIA_Biosum_Manager
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) <= 8 &&
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR2]) < 8))
                     {
-                        UpdateDatasources_5_8_8();
+                        UpdateDatasources_5_8_9(); // Allow v5.8.7 to upgrade to v5.8.9
                         UpdateProjectVersionFile(strProjVersionFile);
                         bPerformCheck = false;
                     }
@@ -6117,7 +6117,23 @@ namespace FIA_Biosum_Manager
             }
         }
 
-        
+        // Major upgrade to support 64-bit and remove Oracle dependency for USFS users
+        // No schema changes between 5.8.8 and 5.8.9 but we want to provide backwards compatibilty to v5.8.6
+        // without having to install earlier 32-bit application versions
+        private void UpdateDatasources_5_8_9()
+        {
+            if (this.m_strProjectVersion.Equals("5.8.6"))
+            {
+                UpdateDatasources_5_8_7();
+                UpdateDatasources_5_8_8();
+            }
+            else if(this.m_strProjectVersion.Equals("5.8.7"))
+            {
+                UpdateDatasources_5_8_8();
+            }
+        }
+
+
         public string ReferenceProjectDirectory
 		{
 			get {return _strProjDir;}
