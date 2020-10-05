@@ -203,6 +203,9 @@
     <Compile Include="uc_optimizer_sqlite_export.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="uc_processor_scenario_escalators.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="uc_textboxWithButtons.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -445,9 +448,6 @@
     <Compile Include="uc_processor_scenario_copy.Designer.cs">
       <DependentUpon>uc_processor_scenario_copy.cs</DependentUpon>
     </Compile>
-    <Compile Include="uc_processor_scenario_escalators.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="uc_processor_scenario_escalators_value.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -643,6 +643,9 @@
     <EmbeddedResource Include="uc_optimizer_sqlite_export.resx">
       <DependentUpon>uc_optimizer_sqlite_export.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="uc_processor_scenario_escalators.resx">
+      <DependentUpon>uc_processor_scenario_escalators.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="uc_textboxWithButtons.resx">
       <DependentUpon>uc_textboxWithButtons.cs</DependentUpon>
     </EmbeddedResource>
@@ -800,9 +803,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="uc_processor_scenario_copy.resx">
       <DependentUpon>uc_processor_scenario_copy.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="uc_processor_scenario_escalators.resx">
-      <DependentUpon>uc_processor_scenario_escalators.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="uc_processor_scenario_escalators_value.resx">
       <DependentUpon>uc_processor_scenario_escalators_value.cs</DependentUpon>
@@ -1009,7 +1009,7 @@
       <Name>FIADBOracleServices</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Progress-Bar-Basic\src\ProgressBarBasic.csproj">
-      <Project>{FF455DC4-70F8-4158-A9B3-B5F406091E5B}</Project>
+      <Project>{ff455dc4-70f8-4158-a9b3-b5f406091e5b}</Project>
       <Name>ProgressBarBasic</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Progress-Bar-Ex\src\ProgressBarEx.csproj">

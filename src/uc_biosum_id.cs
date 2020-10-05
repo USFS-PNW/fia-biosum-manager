@@ -166,230 +166,232 @@ namespace FIA_Biosum_Manager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.btnClose = new System.Windows.Forms.Button();
-			this.lblCondId = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.lblPNWOrBLM = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.lblSubcycle = new System.Windows.Forms.Label();
-			this.label8 = new System.Windows.Forms.Label();
-			this.lblCycle = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.lblPlot = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.lblCounty = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.lblState = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.lblYearMeasured = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.lblInvSource = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.lblTitle = new System.Windows.Forms.Label();
-			this.groupBox1.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.btnClose);
-			this.groupBox1.Controls.Add(this.lblCondId);
-			this.groupBox1.Controls.Add(this.label10);
-			this.groupBox1.Controls.Add(this.lblPNWOrBLM);
-			this.groupBox1.Controls.Add(this.label9);
-			this.groupBox1.Controls.Add(this.lblSubcycle);
-			this.groupBox1.Controls.Add(this.label8);
-			this.groupBox1.Controls.Add(this.lblCycle);
-			this.groupBox1.Controls.Add(this.label7);
-			this.groupBox1.Controls.Add(this.lblPlot);
-			this.groupBox1.Controls.Add(this.label6);
-			this.groupBox1.Controls.Add(this.lblCounty);
-			this.groupBox1.Controls.Add(this.label5);
-			this.groupBox1.Controls.Add(this.lblState);
-			this.groupBox1.Controls.Add(this.label3);
-			this.groupBox1.Controls.Add(this.lblYearMeasured);
-			this.groupBox1.Controls.Add(this.label2);
-			this.groupBox1.Controls.Add(this.lblInvSource);
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.lblTitle);
-			this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.groupBox1.Location = new System.Drawing.Point(0, 0);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(592, 336);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			// 
-			// btnClose
-			// 
-			this.btnClose.Location = new System.Drawing.Point(512, 296);
-			this.btnClose.Name = "btnClose";
-			this.btnClose.Size = new System.Drawing.Size(72, 32);
-			this.btnClose.TabIndex = 45;
-			this.btnClose.Text = "Close";
-			this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
-			// 
-			// lblCondId
-			// 
-			this.lblCondId.Location = new System.Drawing.Point(179, 264);
-			this.lblCondId.Name = "lblCondId";
-			this.lblCondId.Size = new System.Drawing.Size(304, 16);
-			this.lblCondId.TabIndex = 44;
-			this.lblCondId.Text = "PNW IDB";
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(20, 264);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(136, 16);
-			this.label10.TabIndex = 43;
-			this.label10.Text = "Condition Id:";
-			// 
-			// lblPNWOrBLM
-			// 
-			this.lblPNWOrBLM.Location = new System.Drawing.Point(179, 240);
-			this.lblPNWOrBLM.Name = "lblPNWOrBLM";
-			this.lblPNWOrBLM.Size = new System.Drawing.Size(304, 16);
-			this.lblPNWOrBLM.TabIndex = 42;
-			this.lblPNWOrBLM.Text = "PNW IDB";
-			// 
-			// label9
-			// 
-			this.label9.Location = new System.Drawing.Point(20, 240);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(156, 16);
-			this.label9.TabIndex = 41;
-			this.label9.Text = "PNW Forest Or BLM District:";
-			// 
-			// lblSubcycle
-			// 
-			this.lblSubcycle.Location = new System.Drawing.Point(179, 216);
-			this.lblSubcycle.Name = "lblSubcycle";
-			this.lblSubcycle.Size = new System.Drawing.Size(304, 16);
-			this.lblSubcycle.TabIndex = 40;
-			this.lblSubcycle.Text = "PNW IDB";
-			// 
-			// label8
-			// 
-			this.label8.Location = new System.Drawing.Point(20, 216);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(136, 16);
-			this.label8.TabIndex = 39;
-			this.label8.Text = "Subcycle:";
-			// 
-			// lblCycle
-			// 
-			this.lblCycle.Location = new System.Drawing.Point(179, 192);
-			this.lblCycle.Name = "lblCycle";
-			this.lblCycle.Size = new System.Drawing.Size(304, 16);
-			this.lblCycle.TabIndex = 38;
-			this.lblCycle.Text = "PNW IDB";
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(20, 192);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(136, 16);
-			this.label7.TabIndex = 37;
-			this.label7.Text = "Cycle:";
-			// 
-			// lblPlot
-			// 
-			this.lblPlot.Location = new System.Drawing.Point(179, 161);
-			this.lblPlot.Name = "lblPlot";
-			this.lblPlot.Size = new System.Drawing.Size(304, 16);
-			this.lblPlot.TabIndex = 36;
-			this.lblPlot.Text = "PNW IDB";
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(20, 161);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(136, 16);
-			this.label6.TabIndex = 35;
-			this.label6.Text = "Plot:";
-			// 
-			// lblCounty
-			// 
-			this.lblCounty.Location = new System.Drawing.Point(179, 136);
-			this.lblCounty.Name = "lblCounty";
-			this.lblCounty.Size = new System.Drawing.Size(304, 16);
-			this.lblCounty.TabIndex = 34;
-			this.lblCounty.Text = "PNW IDB";
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(20, 136);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(136, 16);
-			this.label5.TabIndex = 33;
-			this.label5.Text = "County";
-			// 
-			// lblState
-			// 
-			this.lblState.Location = new System.Drawing.Point(179, 112);
-			this.lblState.Name = "lblState";
-			this.lblState.Size = new System.Drawing.Size(304, 16);
-			this.lblState.TabIndex = 32;
-			this.lblState.Text = "PNW IDB";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(20, 112);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(136, 16);
-			this.label3.TabIndex = 31;
-			this.label3.Text = "State:";
-			// 
-			// lblYearMeasured
-			// 
-			this.lblYearMeasured.Location = new System.Drawing.Point(179, 88);
-			this.lblYearMeasured.Name = "lblYearMeasured";
-			this.lblYearMeasured.Size = new System.Drawing.Size(304, 16);
-			this.lblYearMeasured.TabIndex = 30;
-			this.lblYearMeasured.Text = "PNW IDB";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(20, 88);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(136, 16);
-			this.label2.TabIndex = 29;
-			this.label2.Text = "Inventory/Year Measured:";
-			// 
-			// lblInvSource
-			// 
-			this.lblInvSource.Location = new System.Drawing.Point(179, 64);
-			this.lblInvSource.Name = "lblInvSource";
-			this.lblInvSource.Size = new System.Drawing.Size(304, 16);
-			this.lblInvSource.TabIndex = 28;
-			this.lblInvSource.Text = "PNW IDB";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(20, 64);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(96, 16);
-			this.label1.TabIndex = 27;
-			this.label1.Text = "Inventory Source:";
-			// 
-			// lblTitle
-			// 
-			this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
-			this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-			this.lblTitle.ForeColor = System.Drawing.Color.Green;
-			this.lblTitle.Location = new System.Drawing.Point(3, 16);
-			this.lblTitle.Name = "lblTitle";
-			this.lblTitle.Size = new System.Drawing.Size(586, 32);
-			this.lblTitle.TabIndex = 26;
-			this.lblTitle.Text = "FIA Biosum Id";
-			// 
-			// uc_biosum_id
-			// 
-			this.Controls.Add(this.groupBox1);
-			this.Name = "uc_biosum_id";
-			this.Size = new System.Drawing.Size(592, 336);
-			this.groupBox1.ResumeLayout(false);
-			this.ResumeLayout(false);
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnClose = new System.Windows.Forms.Button();
+            this.lblCondId = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.lblPNWOrBLM = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lblSubcycle = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.lblCycle = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblPlot = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.lblCounty = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblState = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblYearMeasured = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblInvSource = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblTitle = new System.Windows.Forms.Label();
+            this.groupBox1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.btnClose);
+            this.groupBox1.Controls.Add(this.lblCondId);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.lblPNWOrBLM);
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.lblSubcycle);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.lblCycle);
+            this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.lblPlot);
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.lblCounty);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.lblState);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.lblYearMeasured);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.lblInvSource);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.lblTitle);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(592, 336);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            // 
+            // btnClose
+            // 
+            this.btnClose.Location = new System.Drawing.Point(512, 296);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(72, 32);
+            this.btnClose.TabIndex = 45;
+            this.btnClose.Text = "Close";
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
+            // lblCondId
+            // 
+            this.lblCondId.Location = new System.Drawing.Point(179, 264);
+            this.lblCondId.Name = "lblCondId";
+            this.lblCondId.Size = new System.Drawing.Size(304, 16);
+            this.lblCondId.TabIndex = 44;
+            this.lblCondId.Text = "PNW IDB";
+            // 
+            // label10
+            // 
+            this.label10.Location = new System.Drawing.Point(20, 264);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(136, 16);
+            this.label10.TabIndex = 43;
+            this.label10.Text = "Condition Id:";
+            // 
+            // lblPNWOrBLM
+            // 
+            this.lblPNWOrBLM.Location = new System.Drawing.Point(179, 240);
+            this.lblPNWOrBLM.Name = "lblPNWOrBLM";
+            this.lblPNWOrBLM.Size = new System.Drawing.Size(304, 16);
+            this.lblPNWOrBLM.TabIndex = 42;
+            this.lblPNWOrBLM.Text = "PNW IDB";
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(20, 240);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(156, 16);
+            this.label9.TabIndex = 41;
+            this.label9.Text = "PNW Forest Or BLM District:";
+            // 
+            // lblSubcycle
+            // 
+            this.lblSubcycle.Location = new System.Drawing.Point(179, 216);
+            this.lblSubcycle.Name = "lblSubcycle";
+            this.lblSubcycle.Size = new System.Drawing.Size(304, 16);
+            this.lblSubcycle.TabIndex = 40;
+            this.lblSubcycle.Text = "PNW IDB";
+            // 
+            // label8
+            // 
+            this.label8.Location = new System.Drawing.Point(20, 216);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(136, 16);
+            this.label8.TabIndex = 39;
+            this.label8.Text = "Subcycle:";
+            // 
+            // lblCycle
+            // 
+            this.lblCycle.Location = new System.Drawing.Point(179, 192);
+            this.lblCycle.Name = "lblCycle";
+            this.lblCycle.Size = new System.Drawing.Size(304, 16);
+            this.lblCycle.TabIndex = 38;
+            this.lblCycle.Text = "PNW IDB";
+            // 
+            // label7
+            // 
+            this.label7.Location = new System.Drawing.Point(20, 192);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(136, 16);
+            this.label7.TabIndex = 37;
+            this.label7.Text = "Cycle:";
+            // 
+            // lblPlot
+            // 
+            this.lblPlot.Location = new System.Drawing.Point(179, 161);
+            this.lblPlot.Name = "lblPlot";
+            this.lblPlot.Size = new System.Drawing.Size(304, 16);
+            this.lblPlot.TabIndex = 36;
+            this.lblPlot.Text = "PNW IDB";
+            // 
+            // label6
+            // 
+            this.label6.Location = new System.Drawing.Point(20, 161);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(136, 16);
+            this.label6.TabIndex = 35;
+            this.label6.Text = "Plot:";
+            // 
+            // lblCounty
+            // 
+            this.lblCounty.Location = new System.Drawing.Point(179, 136);
+            this.lblCounty.Name = "lblCounty";
+            this.lblCounty.Size = new System.Drawing.Size(304, 16);
+            this.lblCounty.TabIndex = 34;
+            this.lblCounty.Text = "PNW IDB";
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(20, 136);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(136, 16);
+            this.label5.TabIndex = 33;
+            this.label5.Text = "County";
+            // 
+            // lblState
+            // 
+            this.lblState.Location = new System.Drawing.Point(179, 112);
+            this.lblState.Name = "lblState";
+            this.lblState.Size = new System.Drawing.Size(304, 16);
+            this.lblState.TabIndex = 32;
+            this.lblState.Text = "PNW IDB";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(20, 112);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(136, 16);
+            this.label3.TabIndex = 31;
+            this.label3.Text = "State:";
+            // 
+            // lblYearMeasured
+            // 
+            this.lblYearMeasured.Location = new System.Drawing.Point(179, 88);
+            this.lblYearMeasured.Name = "lblYearMeasured";
+            this.lblYearMeasured.Size = new System.Drawing.Size(304, 16);
+            this.lblYearMeasured.TabIndex = 30;
+            this.lblYearMeasured.Text = "PNW IDB";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(20, 88);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(136, 16);
+            this.label2.TabIndex = 29;
+            this.label2.Text = "Inventory/Year Measured:";
+            // 
+            // lblInvSource
+            // 
+            this.lblInvSource.Location = new System.Drawing.Point(179, 64);
+            this.lblInvSource.Name = "lblInvSource";
+            this.lblInvSource.Size = new System.Drawing.Size(304, 16);
+            this.lblInvSource.TabIndex = 28;
+            this.lblInvSource.Text = "PNW IDB";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(20, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(96, 16);
+            this.label1.TabIndex = 27;
+            this.label1.Text = "Inventory Source:";
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.ForeColor = System.Drawing.Color.Green;
+            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(586, 32);
+            this.lblTitle.TabIndex = 26;
+            this.lblTitle.Text = "FIA Biosum Id";
+            // 
+            // uc_biosum_id
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.groupBox1);
+            this.Name = "uc_biosum_id";
+            this.Size = new System.Drawing.Size(592, 336);
+            this.groupBox1.ResumeLayout(false);
+            this.ResumeLayout(false);
 
 		}
 		#endregion

@@ -49,6 +49,7 @@ namespace FIA_Biosum_Manager
         private Button btnHelp;
         private GroupBox grpAppData;
         private TextBox txtAppData;
+        private Button btnRdir;
 
 
 
@@ -178,6 +179,7 @@ namespace FIA_Biosum_Manager
             this.btnHelp = new System.Windows.Forms.Button();
             this.grpAppData = new System.Windows.Forms.GroupBox();
             this.txtAppData = new System.Windows.Forms.TextBox();
+            this.btnRdir = new System.Windows.Forms.Button();
             this.grpGrids.SuspendLayout();
             this.grpDebug.SuspendLayout();
             this.grpTableRecordCounts.SuspendLayout();
@@ -201,9 +203,9 @@ namespace FIA_Biosum_Manager
             this.grpGrids.Controls.Add(this.btnGridFont);
             this.grpGrids.Controls.Add(this.btnGridAlternateRowBackground);
             this.grpGrids.Controls.Add(this.btnGridRowBackgroundColor);
-            this.grpGrids.Location = new System.Drawing.Point(14, 60);
+            this.grpGrids.Location = new System.Drawing.Point(19, 108);
             this.grpGrids.Name = "grpGrids";
-            this.grpGrids.Size = new System.Drawing.Size(884, 213);
+            this.grpGrids.Size = new System.Drawing.Size(1178, 269);
             this.grpGrids.TabIndex = 0;
             this.grpGrids.TabStop = false;
             this.grpGrids.Text = "Grids";
@@ -211,17 +213,17 @@ namespace FIA_Biosum_Manager
             // lblGridSelectedRowBackgroundColor
             // 
             this.lblGridSelectedRowBackgroundColor.BackColor = System.Drawing.Color.Blue;
-            this.lblGridSelectedRowBackgroundColor.Location = new System.Drawing.Point(784, 175);
+            this.lblGridSelectedRowBackgroundColor.Location = new System.Drawing.Point(1045, 222);
             this.lblGridSelectedRowBackgroundColor.Name = "lblGridSelectedRowBackgroundColor";
-            this.lblGridSelectedRowBackgroundColor.Size = new System.Drawing.Size(67, 28);
+            this.lblGridSelectedRowBackgroundColor.Size = new System.Drawing.Size(89, 35);
             this.lblGridSelectedRowBackgroundColor.TabIndex = 13;
             // 
             // btnGridSelectedRowBackgroundColor
             // 
             this.btnGridSelectedRowBackgroundColor.Image = ((System.Drawing.Image)(resources.GetObject("btnGridSelectedRowBackgroundColor.Image")));
-            this.btnGridSelectedRowBackgroundColor.Location = new System.Drawing.Point(772, 18);
+            this.btnGridSelectedRowBackgroundColor.Location = new System.Drawing.Point(1029, 23);
             this.btnGridSelectedRowBackgroundColor.Name = "btnGridSelectedRowBackgroundColor";
-            this.btnGridSelectedRowBackgroundColor.Size = new System.Drawing.Size(96, 139);
+            this.btnGridSelectedRowBackgroundColor.Size = new System.Drawing.Size(128, 176);
             this.btnGridSelectedRowBackgroundColor.TabIndex = 12;
             this.btnGridSelectedRowBackgroundColor.Text = "Selected Row Background";
             this.btnGridSelectedRowBackgroundColor.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -230,25 +232,25 @@ namespace FIA_Biosum_Manager
             // lblGridRowForegroundColor
             // 
             this.lblGridRowForegroundColor.BackColor = System.Drawing.Color.Black;
-            this.lblGridRowForegroundColor.Location = new System.Drawing.Point(29, 175);
+            this.lblGridRowForegroundColor.Location = new System.Drawing.Point(38, 222);
             this.lblGridRowForegroundColor.Name = "lblGridRowForegroundColor";
-            this.lblGridRowForegroundColor.Size = new System.Drawing.Size(67, 28);
+            this.lblGridRowForegroundColor.Size = new System.Drawing.Size(90, 35);
             this.lblGridRowForegroundColor.TabIndex = 11;
             // 
             // lblGridBackgroundColor
             // 
             this.lblGridBackgroundColor.BackColor = System.Drawing.Color.White;
-            this.lblGridBackgroundColor.Location = new System.Drawing.Point(451, 175);
+            this.lblGridBackgroundColor.Location = new System.Drawing.Point(602, 222);
             this.lblGridBackgroundColor.Name = "lblGridBackgroundColor";
-            this.lblGridBackgroundColor.Size = new System.Drawing.Size(67, 28);
+            this.lblGridBackgroundColor.Size = new System.Drawing.Size(89, 35);
             this.lblGridBackgroundColor.TabIndex = 10;
             // 
             // btnGridBackground
             // 
             this.btnGridBackground.Image = ((System.Drawing.Image)(resources.GetObject("btnGridBackground.Image")));
-            this.btnGridBackground.Location = new System.Drawing.Point(432, 18);
+            this.btnGridBackground.Location = new System.Drawing.Point(576, 23);
             this.btnGridBackground.Name = "btnGridBackground";
-            this.btnGridBackground.Size = new System.Drawing.Size(96, 139);
+            this.btnGridBackground.Size = new System.Drawing.Size(128, 176);
             this.btnGridBackground.TabIndex = 9;
             this.btnGridBackground.Text = "Grid Background";
             this.btnGridBackground.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -256,58 +258,58 @@ namespace FIA_Biosum_Manager
             // 
             // lblGridFont
             // 
-            this.lblGridFont.Location = new System.Drawing.Point(133, 138);
+            this.lblGridFont.Location = new System.Drawing.Point(178, 175);
             this.lblGridFont.Name = "lblGridFont";
-            this.lblGridFont.Size = new System.Drawing.Size(279, 47);
+            this.lblGridFont.Size = new System.Drawing.Size(371, 59);
             this.lblGridFont.TabIndex = 8;
             this.lblGridFont.Text = "Font Example";
             // 
             // lblGridFontStyle
             // 
-            this.lblGridFontStyle.Location = new System.Drawing.Point(133, 102);
+            this.lblGridFontStyle.Location = new System.Drawing.Point(178, 129);
             this.lblGridFontStyle.Name = "lblGridFontStyle";
-            this.lblGridFontStyle.Size = new System.Drawing.Size(192, 18);
+            this.lblGridFontStyle.Size = new System.Drawing.Size(256, 23);
             this.lblGridFontStyle.TabIndex = 7;
             this.lblGridFontStyle.Text = "Regular";
             // 
             // lblGridFontSize
             // 
-            this.lblGridFontSize.Location = new System.Drawing.Point(133, 74);
+            this.lblGridFontSize.Location = new System.Drawing.Point(178, 94);
             this.lblGridFontSize.Name = "lblGridFontSize";
-            this.lblGridFontSize.Size = new System.Drawing.Size(192, 18);
+            this.lblGridFontSize.Size = new System.Drawing.Size(256, 23);
             this.lblGridFontSize.TabIndex = 6;
             this.lblGridFontSize.Text = "8.25";
             // 
             // lblGridFontName
             // 
-            this.lblGridFontName.Location = new System.Drawing.Point(133, 46);
+            this.lblGridFontName.Location = new System.Drawing.Point(178, 58);
             this.lblGridFontName.Name = "lblGridFontName";
-            this.lblGridFontName.Size = new System.Drawing.Size(202, 19);
+            this.lblGridFontName.Size = new System.Drawing.Size(268, 24);
             this.lblGridFontName.TabIndex = 5;
             this.lblGridFontName.Text = "Microsoft Sans Serif";
             // 
             // lblGridAlternateRowBackgroundColor
             // 
             this.lblGridAlternateRowBackgroundColor.BackColor = System.Drawing.Color.LightGreen;
-            this.lblGridAlternateRowBackgroundColor.Location = new System.Drawing.Point(672, 175);
+            this.lblGridAlternateRowBackgroundColor.Location = new System.Drawing.Point(896, 222);
             this.lblGridAlternateRowBackgroundColor.Name = "lblGridAlternateRowBackgroundColor";
-            this.lblGridAlternateRowBackgroundColor.Size = new System.Drawing.Size(67, 28);
+            this.lblGridAlternateRowBackgroundColor.Size = new System.Drawing.Size(90, 35);
             this.lblGridAlternateRowBackgroundColor.TabIndex = 4;
             // 
             // lblGridRowBackgroundColor
             // 
             this.lblGridRowBackgroundColor.BackColor = System.Drawing.Color.White;
-            this.lblGridRowBackgroundColor.Location = new System.Drawing.Point(557, 175);
+            this.lblGridRowBackgroundColor.Location = new System.Drawing.Point(742, 222);
             this.lblGridRowBackgroundColor.Name = "lblGridRowBackgroundColor";
-            this.lblGridRowBackgroundColor.Size = new System.Drawing.Size(67, 28);
+            this.lblGridRowBackgroundColor.Size = new System.Drawing.Size(90, 35);
             this.lblGridRowBackgroundColor.TabIndex = 3;
             // 
             // btnGridFont
             // 
             this.btnGridFont.Image = ((System.Drawing.Image)(resources.GetObject("btnGridFont.Image")));
-            this.btnGridFont.Location = new System.Drawing.Point(19, 18);
+            this.btnGridFont.Location = new System.Drawing.Point(26, 23);
             this.btnGridFont.Name = "btnGridFont";
-            this.btnGridFont.Size = new System.Drawing.Size(96, 139);
+            this.btnGridFont.Size = new System.Drawing.Size(128, 176);
             this.btnGridFont.TabIndex = 2;
             this.btnGridFont.Text = "Font";
             this.btnGridFont.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -316,9 +318,9 @@ namespace FIA_Biosum_Manager
             // btnGridAlternateRowBackground
             // 
             this.btnGridAlternateRowBackground.Image = ((System.Drawing.Image)(resources.GetObject("btnGridAlternateRowBackground.Image")));
-            this.btnGridAlternateRowBackground.Location = new System.Drawing.Point(662, 18);
+            this.btnGridAlternateRowBackground.Location = new System.Drawing.Point(883, 23);
             this.btnGridAlternateRowBackground.Name = "btnGridAlternateRowBackground";
-            this.btnGridAlternateRowBackground.Size = new System.Drawing.Size(96, 139);
+            this.btnGridAlternateRowBackground.Size = new System.Drawing.Size(128, 176);
             this.btnGridAlternateRowBackground.TabIndex = 1;
             this.btnGridAlternateRowBackground.Text = "Alternate Row Background";
             this.btnGridAlternateRowBackground.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -327,9 +329,9 @@ namespace FIA_Biosum_Manager
             // btnGridRowBackgroundColor
             // 
             this.btnGridRowBackgroundColor.Image = ((System.Drawing.Image)(resources.GetObject("btnGridRowBackgroundColor.Image")));
-            this.btnGridRowBackgroundColor.Location = new System.Drawing.Point(547, 18);
+            this.btnGridRowBackgroundColor.Location = new System.Drawing.Point(730, 23);
             this.btnGridRowBackgroundColor.Name = "btnGridRowBackgroundColor";
-            this.btnGridRowBackgroundColor.Size = new System.Drawing.Size(96, 139);
+            this.btnGridRowBackgroundColor.Size = new System.Drawing.Size(128, 176);
             this.btnGridRowBackgroundColor.TabIndex = 0;
             this.btnGridRowBackgroundColor.Text = "Row Background";
             this.btnGridRowBackgroundColor.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
@@ -338,9 +340,9 @@ namespace FIA_Biosum_Manager
             // btnOK
             // 
             this.btnOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOK.Location = new System.Drawing.Point(14, 14);
+            this.btnOK.Location = new System.Drawing.Point(19, 18);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(120, 40);
+            this.btnOK.Size = new System.Drawing.Size(160, 81);
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -348,9 +350,9 @@ namespace FIA_Biosum_Manager
             // btnCancel
             // 
             this.btnCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancel.Location = new System.Drawing.Point(148, 14);
+            this.btnCancel.Location = new System.Drawing.Point(197, 18);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(120, 40);
+            this.btnCancel.Size = new System.Drawing.Size(160, 81);
             this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -360,9 +362,9 @@ namespace FIA_Biosum_Manager
             this.grpDebug.Controls.Add(this.label1);
             this.grpDebug.Controls.Add(this.cmbDebug);
             this.grpDebug.Controls.Add(this.chkDebug);
-            this.grpDebug.Location = new System.Drawing.Point(14, 277);
+            this.grpDebug.Location = new System.Drawing.Point(19, 393);
             this.grpDebug.Name = "grpDebug";
-            this.grpDebug.Size = new System.Drawing.Size(381, 53);
+            this.grpDebug.Size = new System.Drawing.Size(507, 67);
             this.grpDebug.TabIndex = 3;
             this.grpDebug.TabStop = false;
             this.grpDebug.Text = "Debug";
@@ -370,7 +372,7 @@ namespace FIA_Biosum_Manager
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(103, 25);
+            this.label1.Location = new System.Drawing.Point(138, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(42, 17);
             this.label1.TabIndex = 4;
@@ -383,16 +385,16 @@ namespace FIA_Biosum_Manager
             "1 - Minimal",
             "2 - Some",
             "3 - Maximum"});
-            this.cmbDebug.Location = new System.Drawing.Point(150, 22);
+            this.cmbDebug.Location = new System.Drawing.Point(200, 28);
             this.cmbDebug.Name = "cmbDebug";
-            this.cmbDebug.Size = new System.Drawing.Size(152, 24);
+            this.cmbDebug.Size = new System.Drawing.Size(203, 24);
             this.cmbDebug.TabIndex = 4;
             this.cmbDebug.Text = "3 - Maximum";
             // 
             // chkDebug
             // 
             this.chkDebug.AutoSize = true;
-            this.chkDebug.Location = new System.Drawing.Point(19, 24);
+            this.chkDebug.Location = new System.Drawing.Point(26, 31);
             this.chkDebug.Name = "chkDebug";
             this.chkDebug.Size = new System.Drawing.Size(83, 21);
             this.chkDebug.TabIndex = 4;
@@ -404,9 +406,9 @@ namespace FIA_Biosum_Manager
             this.grpTableRecordCounts.Controls.Add(this.chkScenarioProcessorForm);
             this.grpTableRecordCounts.Controls.Add(this.chkFVSOutputForm);
             this.grpTableRecordCounts.Controls.Add(this.chkFVSInputForm);
-            this.grpTableRecordCounts.Location = new System.Drawing.Point(402, 277);
+            this.grpTableRecordCounts.Location = new System.Drawing.Point(536, 393);
             this.grpTableRecordCounts.Name = "grpTableRecordCounts";
-            this.grpTableRecordCounts.Size = new System.Drawing.Size(496, 53);
+            this.grpTableRecordCounts.Size = new System.Drawing.Size(661, 67);
             this.grpTableRecordCounts.TabIndex = 4;
             this.grpTableRecordCounts.TabStop = false;
             this.grpTableRecordCounts.Text = "Suppress Table Record Counts";
@@ -414,7 +416,7 @@ namespace FIA_Biosum_Manager
             // chkScenarioProcessorForm
             // 
             this.chkScenarioProcessorForm.AutoSize = true;
-            this.chkScenarioProcessorForm.Location = new System.Drawing.Point(285, 22);
+            this.chkScenarioProcessorForm.Location = new System.Drawing.Point(363, 28);
             this.chkScenarioProcessorForm.Name = "chkScenarioProcessorForm";
             this.chkScenarioProcessorForm.Size = new System.Drawing.Size(190, 21);
             this.chkScenarioProcessorForm.TabIndex = 6;
@@ -424,7 +426,7 @@ namespace FIA_Biosum_Manager
             // chkFVSOutputForm
             // 
             this.chkFVSOutputForm.AutoSize = true;
-            this.chkFVSOutputForm.Location = new System.Drawing.Point(142, 22);
+            this.chkFVSOutputForm.Location = new System.Drawing.Point(182, 28);
             this.chkFVSOutputForm.Name = "chkFVSOutputForm";
             this.chkFVSOutputForm.Size = new System.Drawing.Size(139, 21);
             this.chkFVSOutputForm.TabIndex = 5;
@@ -434,7 +436,7 @@ namespace FIA_Biosum_Manager
             // chkFVSInputForm
             // 
             this.chkFVSInputForm.AutoSize = true;
-            this.chkFVSInputForm.Location = new System.Drawing.Point(11, 22);
+            this.chkFVSInputForm.Location = new System.Drawing.Point(14, 28);
             this.chkFVSInputForm.Name = "chkFVSInputForm";
             this.chkFVSInputForm.Size = new System.Drawing.Size(127, 21);
             this.chkFVSInputForm.TabIndex = 4;
@@ -443,14 +445,15 @@ namespace FIA_Biosum_Manager
             // 
             // grpOpcost
             // 
+            this.grpOpcost.Controls.Add(this.btnRdir);
             this.grpOpcost.Controls.Add(this.btnOpcost);
             this.grpOpcost.Controls.Add(this.txtOpcost);
             this.grpOpcost.Controls.Add(this.lblOpcostDir);
             this.grpOpcost.Controls.Add(this.txtRdir);
             this.grpOpcost.Controls.Add(this.lblRScriptDir);
-            this.grpOpcost.Location = new System.Drawing.Point(14, 396);
+            this.grpOpcost.Location = new System.Drawing.Point(19, 479);
             this.grpOpcost.Name = "grpOpcost";
-            this.grpOpcost.Size = new System.Drawing.Size(884, 147);
+            this.grpOpcost.Size = new System.Drawing.Size(1178, 186);
             this.grpOpcost.TabIndex = 5;
             this.grpOpcost.TabStop = false;
             this.grpOpcost.Text = "OPCOST";
@@ -458,18 +461,18 @@ namespace FIA_Biosum_Manager
             // btnOpcost
             // 
             this.btnOpcost.Image = ((System.Drawing.Image)(resources.GetObject("btnOpcost.Image")));
-            this.btnOpcost.Location = new System.Drawing.Point(682, 99);
+            this.btnOpcost.Location = new System.Drawing.Point(909, 126);
             this.btnOpcost.Name = "btnOpcost";
-            this.btnOpcost.Size = new System.Drawing.Size(38, 37);
+            this.btnOpcost.Size = new System.Drawing.Size(51, 46);
             this.btnOpcost.TabIndex = 36;
             this.btnOpcost.Click += new System.EventHandler(this.btnOpcost_Click);
             // 
             // txtOpcost
             // 
             this.txtOpcost.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtOpcost.Location = new System.Drawing.Point(16, 102);
+            this.txtOpcost.Location = new System.Drawing.Point(21, 129);
             this.txtOpcost.Name = "txtOpcost";
-            this.txtOpcost.Size = new System.Drawing.Size(658, 26);
+            this.txtOpcost.Size = new System.Drawing.Size(878, 26);
             this.txtOpcost.TabIndex = 35;
             this.txtOpcost.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOpcost_KeyDown);
             this.txtOpcost.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtOpcost_KeyPress);
@@ -477,7 +480,7 @@ namespace FIA_Biosum_Manager
             // lblOpcostDir
             // 
             this.lblOpcostDir.AutoSize = true;
-            this.lblOpcostDir.Location = new System.Drawing.Point(13, 82);
+            this.lblOpcostDir.Location = new System.Drawing.Point(18, 104);
             this.lblOpcostDir.Name = "lblOpcostDir";
             this.lblOpcostDir.Size = new System.Drawing.Size(274, 17);
             this.lblOpcostDir.TabIndex = 34;
@@ -486,9 +489,9 @@ namespace FIA_Biosum_Manager
             // txtRdir
             // 
             this.txtRdir.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRdir.Location = new System.Drawing.Point(16, 39);
+            this.txtRdir.Location = new System.Drawing.Point(21, 50);
             this.txtRdir.Name = "txtRdir";
-            this.txtRdir.Size = new System.Drawing.Size(658, 26);
+            this.txtRdir.Size = new System.Drawing.Size(878, 26);
             this.txtRdir.TabIndex = 32;
             this.txtRdir.Enter += new System.EventHandler(this.txtRdir_Enter);
             this.txtRdir.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRdir_KeyDown);
@@ -497,7 +500,7 @@ namespace FIA_Biosum_Manager
             // lblRScriptDir
             // 
             this.lblRScriptDir.AutoSize = true;
-            this.lblRScriptDir.Location = new System.Drawing.Point(13, 18);
+            this.lblRScriptDir.Location = new System.Drawing.Point(18, 23);
             this.lblRScriptDir.Name = "lblRScriptDir";
             this.lblRScriptDir.Size = new System.Drawing.Size(307, 17);
             this.lblRScriptDir.TabIndex = 31;
@@ -506,9 +509,9 @@ namespace FIA_Biosum_Manager
             // btnSave
             // 
             this.btnSave.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave.Location = new System.Drawing.Point(281, 14);
+            this.btnSave.Location = new System.Drawing.Point(374, 18);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(120, 40);
+            this.btnSave.Size = new System.Drawing.Size(160, 81);
             this.btnSave.TabIndex = 6;
             this.btnSave.Text = "Save";
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -517,9 +520,9 @@ namespace FIA_Biosum_Manager
             // 
             this.btnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnHelp.Location = new System.Drawing.Point(778, 14);
+            this.btnHelp.Location = new System.Drawing.Point(1037, 18);
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(120, 40);
+            this.btnHelp.Size = new System.Drawing.Size(160, 81);
             this.btnHelp.TabIndex = 7;
             this.btnHelp.Text = "Help";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
@@ -543,13 +546,20 @@ namespace FIA_Biosum_Manager
             this.txtAppData.Size = new System.Drawing.Size(656, 26);
             this.txtAppData.TabIndex = 33;
             // 
+            // btnRdir
+            // 
+            this.btnRdir.Image = ((System.Drawing.Image)(resources.GetObject("btnRdir.Image")));
+            this.btnRdir.Location = new System.Drawing.Point(909, 42);
+            this.btnRdir.Name = "btnRdir";
+            this.btnRdir.Size = new System.Drawing.Size(51, 46);
+            this.btnRdir.TabIndex = 37;
+            this.btnRdir.Click += new System.EventHandler(this.btnRdir_Click);
+            // 
             // frmSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1008, 542);
-            this.Controls.Add(this.grpAppData);
+            this.ClientSize = new System.Drawing.Size(810, 511);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.grpOpcost);

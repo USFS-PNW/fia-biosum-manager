@@ -3522,7 +3522,7 @@ namespace FIA_Biosum_Manager
                                     }
                                     //ORACLE FCS Tree Volume Table
                                     //create a temporary link to the ORACLE FCS BIOSUM_VOLUME table
-                                    if (m_dao.m_intError == 0)
+                                    if (m_dao.m_intError == 0 && FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
                                     {
                                         System.Threading.Thread.Sleep(1000);
                                         if (m_dao.TableExists(oDbFileItem.FullPath,"fcs_biosum_volume"))
@@ -3538,19 +3538,12 @@ namespace FIA_Biosum_Manager
                                         {
                                             System.Threading.Thread.Sleep(2000*z);
                                             m_dao.m_intError = 0;
-                                            if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
-                                                m_dao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", oDbFileItem.FullPath.Trim(), "fcs_biosum_volume");
-                                            //else
-                                            //    m_dao.CreateOracleTableLink(oDbFileItem.FullPath.Trim(), "BIOSUM_VOLUME", "fcs_biosum_volume", "FIADB01P", "ANL_PNW_FIA_FCS");
-
+                                            m_dao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", oDbFileItem.FullPath.Trim(), "fcs_biosum_volume");
                                             if (m_dao.m_intError==0) break;
                                         }
                                         if (m_dao.m_intError!=0)
                                         {
-                                            if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
-                                               MessageBox.Show("!!Failed to create Oracle XE ODBC table link!! Contact technical support","FIA Biosum");
-                                            else
-                                                MessageBox.Show("!!Failed to create FIADB01P Oracle ODBC table link!! Contact technical support", "FIA Biosum");
+                                            MessageBox.Show("!!Failed to create Oracle XE ODBC table link!! Contact technical support","FIA Biosum");
                                         }
                                     }
                                 }
