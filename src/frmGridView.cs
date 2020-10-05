@@ -83,100 +83,116 @@ namespace FIA_Biosum_Manager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmGridView));
-			this.toolBar1 = new System.Windows.Forms.ToolBar();
-			this.btnMaxSize = new System.Windows.Forms.ToolBarButton();
-			this.btnMultPane = new System.Windows.Forms.ToolBarButton();
-			this.Separator = new System.Windows.Forms.ToolBarButton();
-			this.btnFont = new System.Windows.Forms.ToolBarButton();
-			this.btnBackground = new System.Windows.Forms.ToolBarButton();
-			this.btnRowColor = new System.Windows.Forms.ToolBarButton();
-			this.btnAlternateRowColor = new System.Windows.Forms.ToolBarButton();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-			this.btnSelectedRowBackgroundColor = new System.Windows.Forms.ToolBarButton();
-			this.SuspendLayout();
-			// 
-			// toolBar1
-			// 
-			this.toolBar1.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-																						this.btnMaxSize,
-																						this.btnMultPane,
-																						this.Separator,
-																						this.btnFont,
-																						this.btnBackground,
-																						this.btnRowColor,
-																						this.btnAlternateRowColor,
-																						this.btnSelectedRowBackgroundColor});
-			this.toolBar1.DropDownArrows = true;
-			this.toolBar1.ImageList = this.imageList1;
-			this.toolBar1.Location = new System.Drawing.Point(0, 0);
-			this.toolBar1.Name = "toolBar1";
-			this.toolBar1.ShowToolTips = true;
-			this.toolBar1.Size = new System.Drawing.Size(544, 36);
-			this.toolBar1.TabIndex = 0;
-			this.toolBar1.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.toolBar1_ButtonClick);
-			// 
-			// btnMaxSize
-			// 
-			this.btnMaxSize.ImageIndex = 0;
-			this.btnMaxSize.Pushed = true;
-			this.btnMaxSize.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
-			this.btnMaxSize.ToolTipText = "Single Pane";
-			// 
-			// btnMultPane
-			// 
-			this.btnMultPane.ImageIndex = 1;
-			this.btnMultPane.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
-			this.btnMultPane.ToolTipText = "Multiple Panes";
-			// 
-			// Separator
-			// 
-			this.Separator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-			// 
-			// btnFont
-			// 
-			this.btnFont.ImageIndex = 2;
-			this.btnFont.ToolTipText = "Grid Font";
-			// 
-			// btnBackground
-			// 
-			this.btnBackground.ImageIndex = 3;
-			this.btnBackground.ToolTipText = "Grid Background Color";
-			// 
-			// btnRowColor
-			// 
-			this.btnRowColor.ImageIndex = 4;
-			this.btnRowColor.ToolTipText = "Grid Row Background Color";
-			// 
-			// btnAlternateRowColor
-			// 
-			this.btnAlternateRowColor.ImageIndex = 5;
-			this.btnAlternateRowColor.ToolTipText = "Grid Alternate Row Background Color";
-			// 
-			// imageList1
-			// 
-			this.imageList1.ImageSize = new System.Drawing.Size(24, 24);
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			// 
-			// btnSelectedRowBackgroundColor
-			// 
-			this.btnSelectedRowBackgroundColor.ImageIndex = 6;
-			this.btnSelectedRowBackgroundColor.ToolTipText = "Selected Row Background Color";
-			// 
-			// frmGridView
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(544, 364);
-			this.Controls.Add(this.toolBar1);
-			this.Name = "frmGridView";
-			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "frmGridView";
-			this.Resize += new System.EventHandler(this.frmGridView_Resize);
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmGridView_Closing);
-			this.Load += new System.EventHandler(this.frmGridView_Load);
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGridView));
+            this.toolBar1 = new System.Windows.Forms.ToolBar();
+            this.btnMaxSize = new System.Windows.Forms.ToolBarButton();
+            this.btnMultPane = new System.Windows.Forms.ToolBarButton();
+            this.Separator = new System.Windows.Forms.ToolBarButton();
+            this.btnFont = new System.Windows.Forms.ToolBarButton();
+            this.btnBackground = new System.Windows.Forms.ToolBarButton();
+            this.btnRowColor = new System.Windows.Forms.ToolBarButton();
+            this.btnAlternateRowColor = new System.Windows.Forms.ToolBarButton();
+            this.btnSelectedRowBackgroundColor = new System.Windows.Forms.ToolBarButton();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.SuspendLayout();
+            // 
+            // toolBar1
+            // 
+            this.toolBar1.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
+            this.btnMaxSize,
+            this.btnMultPane,
+            this.Separator,
+            this.btnFont,
+            this.btnBackground,
+            this.btnRowColor,
+            this.btnAlternateRowColor,
+            this.btnSelectedRowBackgroundColor});
+            this.toolBar1.DropDownArrows = true;
+            this.toolBar1.ImageList = this.imageList1;
+            this.toolBar1.Location = new System.Drawing.Point(0, 0);
+            this.toolBar1.Name = "toolBar1";
+            this.toolBar1.ShowToolTips = true;
+            this.toolBar1.Size = new System.Drawing.Size(544, 36);
+            this.toolBar1.TabIndex = 0;
+            this.toolBar1.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.toolBar1_ButtonClick);
+            // 
+            // btnMaxSize
+            // 
+            this.btnMaxSize.ImageIndex = 0;
+            this.btnMaxSize.Name = "btnMaxSize";
+            this.btnMaxSize.Pushed = true;
+            this.btnMaxSize.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
+            this.btnMaxSize.ToolTipText = "Single Pane";
+            // 
+            // btnMultPane
+            // 
+            this.btnMultPane.ImageIndex = 1;
+            this.btnMultPane.Name = "btnMultPane";
+            this.btnMultPane.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
+            this.btnMultPane.ToolTipText = "Multiple Panes";
+            // 
+            // Separator
+            // 
+            this.Separator.Name = "Separator";
+            this.Separator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // btnFont
+            // 
+            this.btnFont.ImageIndex = 2;
+            this.btnFont.Name = "btnFont";
+            this.btnFont.ToolTipText = "Grid Font";
+            // 
+            // btnBackground
+            // 
+            this.btnBackground.ImageIndex = 3;
+            this.btnBackground.Name = "btnBackground";
+            this.btnBackground.ToolTipText = "Grid Background Color";
+            // 
+            // btnRowColor
+            // 
+            this.btnRowColor.ImageIndex = 4;
+            this.btnRowColor.Name = "btnRowColor";
+            this.btnRowColor.ToolTipText = "Grid Row Background Color";
+            // 
+            // btnAlternateRowColor
+            // 
+            this.btnAlternateRowColor.ImageIndex = 5;
+            this.btnAlternateRowColor.Name = "btnAlternateRowColor";
+            this.btnAlternateRowColor.ToolTipText = "Grid Alternate Row Background Color";
+            // 
+            // btnSelectedRowBackgroundColor
+            // 
+            this.btnSelectedRowBackgroundColor.ImageIndex = 6;
+            this.btnSelectedRowBackgroundColor.Name = "btnSelectedRowBackgroundColor";
+            this.btnSelectedRowBackgroundColor.ToolTipText = "Selected Row Background Color";
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "");
+            this.imageList1.Images.SetKeyName(1, "");
+            this.imageList1.Images.SetKeyName(2, "");
+            this.imageList1.Images.SetKeyName(3, "");
+            this.imageList1.Images.SetKeyName(4, "");
+            this.imageList1.Images.SetKeyName(5, "");
+            this.imageList1.Images.SetKeyName(6, "");
+            // 
+            // frmGridView
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(544, 364);
+            this.Controls.Add(this.toolBar1);
+            this.Name = "frmGridView";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.Text = "frmGridView";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.frmGridView_Closing);
+            this.Load += new System.EventHandler(this.frmGridView_Load);
+            this.Resize += new System.EventHandler(this.frmGridView_Resize);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion

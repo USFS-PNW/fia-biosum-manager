@@ -723,6 +723,7 @@ namespace FIA_Biosum_Manager
             // 
             // tlbMain
             // 
+            this.tlbMain.AutoSize = false;
             this.tlbMain.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
             this.btnOpen,
             this.btnSave,
@@ -735,9 +736,10 @@ namespace FIA_Biosum_Manager
             this.tlbMain.DropDownArrows = true;
             this.tlbMain.ImageList = this.imgList1;
             this.tlbMain.Location = new System.Drawing.Point(0, 0);
+            this.tlbMain.Margin = new System.Windows.Forms.Padding(4);
             this.tlbMain.Name = "tlbMain";
             this.tlbMain.ShowToolTips = true;
-            this.tlbMain.Size = new System.Drawing.Size(654, 49);
+            this.tlbMain.Size = new System.Drawing.Size(981, 49);
             this.tlbMain.TabIndex = 1;
             this.tlbMain.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbMain_ButtonClick);
             this.tlbMain.Click += new System.EventHandler(this.tlbMain_Click);
@@ -802,8 +804,10 @@ namespace FIA_Biosum_Manager
             this.grpboxLeft.Controls.Add(this.panel1);
             this.grpboxLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.grpboxLeft.Location = new System.Drawing.Point(0, 49);
+            this.grpboxLeft.Margin = new System.Windows.Forms.Padding(4);
             this.grpboxLeft.Name = "grpboxLeft";
-            this.grpboxLeft.Size = new System.Drawing.Size(192, 368);
+            this.grpboxLeft.Padding = new System.Windows.Forms.Padding(4);
+            this.grpboxLeft.Size = new System.Drawing.Size(180, 577);
             this.grpboxLeft.TabIndex = 7;
             this.grpboxLeft.TabStop = false;
             this.grpboxLeft.Resize += new System.EventHandler(this.grpboxLeft_Resize);
@@ -812,9 +816,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnOptimizer.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnOptimizer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOptimizer.Location = new System.Drawing.Point(3, 260);
+            this.btnOptimizer.Location = new System.Drawing.Point(4, 465);
+            this.btnOptimizer.Margin = new System.Windows.Forms.Padding(4);
             this.btnOptimizer.Name = "btnOptimizer";
-            this.btnOptimizer.Size = new System.Drawing.Size(186, 34);
+            this.btnOptimizer.Size = new System.Drawing.Size(172, 34);
             this.btnOptimizer.TabIndex = 5;
             this.btnOptimizer.Text = "Optimizer";
             this.btnOptimizer.Click += new System.EventHandler(this.btnCoreAnalysis_Click);
@@ -823,9 +828,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnFVS.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnFVS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFVS.Location = new System.Drawing.Point(3, 294);
+            this.btnFVS.Location = new System.Drawing.Point(4, 499);
+            this.btnFVS.Margin = new System.Windows.Forms.Padding(4);
             this.btnFVS.Name = "btnFVS";
-            this.btnFVS.Size = new System.Drawing.Size(186, 36);
+            this.btnFVS.Size = new System.Drawing.Size(172, 38);
             this.btnFVS.TabIndex = 3;
             this.btnFVS.Text = "FVS";
             this.btnFVS.Click += new System.EventHandler(this.btnFVS_Click);
@@ -834,9 +840,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnProcessor.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnProcessor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnProcessor.Location = new System.Drawing.Point(3, 330);
+            this.btnProcessor.Location = new System.Drawing.Point(4, 537);
+            this.btnProcessor.Margin = new System.Windows.Forms.Padding(4);
             this.btnProcessor.Name = "btnProcessor";
-            this.btnProcessor.Size = new System.Drawing.Size(186, 35);
+            this.btnProcessor.Size = new System.Drawing.Size(172, 36);
             this.btnProcessor.TabIndex = 2;
             this.btnProcessor.Text = "Processor";
             this.btnProcessor.Click += new System.EventHandler(this.btnProcessor_Click);
@@ -845,9 +852,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnDB.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDB.Location = new System.Drawing.Point(3, 22);
+            this.btnDB.Location = new System.Drawing.Point(4, 23);
+            this.btnDB.Margin = new System.Windows.Forms.Padding(4);
             this.btnDB.Name = "btnDB";
-            this.btnDB.Size = new System.Drawing.Size(186, 34);
+            this.btnDB.Size = new System.Drawing.Size(172, 34);
             this.btnDB.TabIndex = 0;
             this.btnDB.Text = "Database";
             this.btnDB.Click += new System.EventHandler(this.btnDB_Click);
@@ -856,17 +864,19 @@ namespace FIA_Biosum_Manager
             // 
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.btnMain1);
-            this.panel1.Location = new System.Drawing.Point(13, 70);
+            this.panel1.Location = new System.Drawing.Point(12, 72);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(160, 339);
+            this.panel1.Size = new System.Drawing.Size(150, 348);
             this.panel1.TabIndex = 13;
             // 
             // btnMain1
             // 
             this.btnMain1.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMain1.Location = new System.Drawing.Point(19, 11);
+            this.btnMain1.Location = new System.Drawing.Point(18, 12);
+            this.btnMain1.Margin = new System.Windows.Forms.Padding(4);
             this.btnMain1.Name = "btnMain1";
-            this.btnMain1.Size = new System.Drawing.Size(120, 83);
+            this.btnMain1.Size = new System.Drawing.Size(112, 84);
             this.btnMain1.TabIndex = 13;
             this.btnMain1.MouseEnter += new System.EventHandler(this.btnMain1_MouseEnter);
             this.btnMain1.MouseLeave += new System.EventHandler(this.btnMain1_MouseLeave);
@@ -889,23 +899,25 @@ namespace FIA_Biosum_Manager
             this.txtDropDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDropDown.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtDropDown.HideSelection = false;
-            this.txtDropDown.Location = new System.Drawing.Point(307, 129);
+            this.txtDropDown.Location = new System.Drawing.Point(288, 132);
+            this.txtDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.txtDropDown.Multiline = true;
             this.txtDropDown.Name = "txtDropDown";
             this.txtDropDown.ReadOnly = true;
-            this.txtDropDown.Size = new System.Drawing.Size(244, 34);
+            this.txtDropDown.Size = new System.Drawing.Size(226, 34);
             this.txtDropDown.TabIndex = 11;
             this.txtDropDown.Visible = false;
             // 
             // frmMain
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(8, 19);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(654, 417);
+            this.ClientSize = new System.Drawing.Size(981, 626);
             this.Controls.Add(this.grpboxLeft);
             this.Controls.Add(this.tlbMain);
             this.Controls.Add(this.txtDropDown);
             this.IsMdiContainer = true;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Menu = this.mnuMain;
             this.Name = "frmMain";
             this.Text = "FIA Biosum Manager";
@@ -960,7 +972,7 @@ namespace FIA_Biosum_Manager
 		
 		private void frmMain_Resize(object sender, System.EventArgs e)
 		{
-			
+			if  (sbpInfo != null)
 			this.sbpInfo.Width=(this.Width / 2);
 			
         

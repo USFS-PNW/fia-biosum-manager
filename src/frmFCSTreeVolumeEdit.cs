@@ -314,12 +314,12 @@ namespace FIA_Biosum_Manager
             this.txtCountyCd = new System.Windows.Forms.TextBox();
             this.btnTreeVolSingle = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblFSNetwork = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.cmbDatasource = new System.Windows.Forms.ComboBox();
             this.btnLinkTableTest = new System.Windows.Forms.Button();
-            this.label16 = new System.Windows.Forms.Label();
-            this.lblFSNetwork = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -869,6 +869,24 @@ namespace FIA_Biosum_Manager
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tree Volumes And Biomass Batch Test";
             // 
+            // lblFSNetwork
+            // 
+            this.lblFSNetwork.AutoSize = true;
+            this.lblFSNetwork.Location = new System.Drawing.Point(270, 24);
+            this.lblFSNetwork.Name = "lblFSNetwork";
+            this.lblFSNetwork.Size = new System.Drawing.Size(31, 20);
+            this.lblFSNetwork.TabIndex = 9;
+            this.lblFSNetwork.Text = "NA";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(7, 24);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(257, 20);
+            this.label16.TabIndex = 8;
+            this.label16.Text = "FCS Volume and Biomass Method:";
+            // 
             // btnEdit
             // 
             this.btnEdit.Location = new System.Drawing.Point(400, 440);
@@ -914,28 +932,10 @@ namespace FIA_Biosum_Manager
             this.btnLinkTableTest.UseVisualStyleBackColor = true;
             this.btnLinkTableTest.Click += new System.EventHandler(this.btnLinkTableTest_Click);
             // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(7, 24);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(257, 20);
-            this.label16.TabIndex = 8;
-            this.label16.Text = "FCS Volume and Biomass Method:";
-            // 
-            // lblFSNetwork
-            // 
-            this.lblFSNetwork.AutoSize = true;
-            this.lblFSNetwork.Location = new System.Drawing.Point(270, 24);
-            this.lblFSNetwork.Name = "lblFSNetwork";
-            this.lblFSNetwork.Size = new System.Drawing.Size(31, 20);
-            this.lblFSNetwork.TabIndex = 9;
-            this.lblFSNetwork.Text = "NA";
-            // 
             // frmFCSTreeVolumeEdit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1352, 886);
             this.Controls.Add(this.panel1);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);

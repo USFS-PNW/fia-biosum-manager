@@ -142,6 +142,7 @@ namespace FIA_Biosum_Manager
             // 
             // uc_processor_scenario_escalators_value
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
             this.Controls.Add(this.txtCycle3);
             this.Controls.Add(this.txtCycle2);
             this.Controls.Add(this.txtCycle1);
