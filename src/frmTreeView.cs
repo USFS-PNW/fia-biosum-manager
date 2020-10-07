@@ -51,28 +51,26 @@ namespace FIA_Biosum_Manager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.treeView1 = new System.Windows.Forms.TreeView();
-			this.SuspendLayout();
-			// 
-			// treeView1
-			// 
-			this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.treeView1.ImageIndex = -1;
-			this.treeView1.Location = new System.Drawing.Point(0, 0);
-			this.treeView1.Name = "treeView1";
-			this.treeView1.SelectedImageIndex = -1;
-			this.treeView1.Size = new System.Drawing.Size(116, 236);
-			this.treeView1.TabIndex = 0;
-			// 
-			// frmTreeView
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(116, 236);
-			this.Controls.Add(this.treeView1);
-			this.MaximizeBox = false;
-			this.Name = "frmTreeView";
-			this.Text = "Tree View";
-			this.ResumeLayout(false);
+            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.SuspendLayout();
+            // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(0, 0);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(120, 236);
+            this.treeView1.TabIndex = 0;
+            // 
+            // frmTreeView
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(120, 236);
+            this.Controls.Add(this.treeView1);
+            this.MaximizeBox = false;
+            this.Name = "frmTreeView";
+            this.Text = "Tree View";
+            this.ResumeLayout(false);
 
 		}
 		#endregion

@@ -81,12 +81,15 @@ namespace FIA_Biosum_Manager
 
 	    public frmDialog()
 		{
+            
 			InitializeComponent();
+            
             LastWindowState = this.WindowState;
+            
+            InitializeUserControls();
+            
 
-			InitializeUserControls();
-
-		}
+        }
 		public frmDialog(FIA_Biosum_Manager.frmDialog p_frmDialogCallingForm)
 		{
 			
@@ -170,8 +173,7 @@ namespace FIA_Biosum_Manager
             // 
             // frmDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(664, 326);
@@ -185,35 +187,47 @@ namespace FIA_Biosum_Manager
 		#endregion
 		public void Initialize_User_Control(string strType)
 		{
-			if (strType.Equals("scenario")) 
-			{
-				this.uc_scenario1.Visible=true;
-				this.uc_scenario1.Width = 648;
-				this.uc_scenario1.Height = 464;
+            
+            if (strType.Equals("scenario"))
+            {
 
-               
-				this.uc_scenario1.Top = (int)(this.ClientSize.Height * .50) - (int)(this.uc_scenario1.Height * .50);
-				this.uc_scenario1.Left = (int)(this.ClientSize.Width * .50) - (int)(this.uc_scenario1.Width * .50);
-				this.uc_scenario1.txtScenarioId.Visible=false;
-				this.uc_scenario1.lblNewScenario.Visible=false;
-				this.uc_scenario1.lblTitle.Text = "Open Scenario Or Create New Scenario";
-				 this.uc_project1.Visible = false;
-			}
-			else if (strType.Equals("PROJECT"))
-			{
-			    
-				this.uc_project1.lblTitle.Text = "Project Property Values";
-				
-				this.uc_project1.Dock = System.Windows.Forms.DockStyle.Fill;
-				this.Text = "Project";
+                this.uc_scenario1.Visible = true;
 
-				this.uc_project1.Visible=true;
-			}
-			else 
-			{
-			}
-			//MessageBox.Show(this.strDialogType);
-		}
+                this.uc_scenario1.Width = 648;
+
+                this.uc_scenario1.Height = 464;
+
+
+                this.uc_scenario1.Top = (int)(this.ClientSize.Height * .50) - (int)(this.uc_scenario1.Height * .50);
+
+                this.uc_scenario1.Left = (int)(this.ClientSize.Width * .50) - (int)(this.uc_scenario1.Width * .50);
+
+                this.uc_scenario1.txtScenarioId.Visible = false;
+
+                this.uc_scenario1.lblNewScenario.Visible = false;
+
+                this.uc_scenario1.lblTitle.Text = "Open Scenario Or Create New Scenario";
+
+                this.uc_project1.Visible = false;
+            }
+            else if (strType.Equals("PROJECT"))
+            {
+
+                this.uc_project1.lblTitle.Text = "Project Property Values";
+
+                this.uc_project1.Dock = System.Windows.Forms.DockStyle.Fill;
+
+                this.Text = "Project";
+
+                this.uc_project1.Visible = true;
+
+            }
+            else
+            {
+            }
+            
+            //MessageBox.Show(this.strDialogType);
+        }
 
 		private void frmDialog_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
@@ -288,29 +302,49 @@ namespace FIA_Biosum_Manager
 		}
 		private void InitializeUserControls()
 		{
-			this.uc_select_list_item1 = new uc_select_list_item();
-			this.uc_project1 = new uc_project();
-			this.uc_scenario1 = new uc_scenario();
-			this.uc_project_document_links1 = new uc_project_document_links();
-			this.uc_project_document_links_edit1 = new uc_project_document_links_edit();
-			this.uc_sql_builder1 = new uc_sql_builder();
-			this.uc_sql_builder2 = new uc_sql_builder_new();
-			this.uc_previous_expressions1 = new uc_previous_expressions();
-			this.uc_project_notes1 = new uc_project_notes();
-			this.uc_contact_list1 = new uc_contact_list();
+            
+            this.uc_select_list_item1 = new uc_select_list_item();
+            
+            this.uc_project1 = new uc_project();
+            
+            this.uc_scenario1 = new uc_scenario();
+            
+            this.uc_project_document_links1 = new uc_project_document_links();
+            
+            this.uc_project_document_links_edit1 = new uc_project_document_links_edit();
+            
+            this.uc_sql_builder1 = new uc_sql_builder();
+            
+            this.uc_sql_builder2 = new uc_sql_builder_new();
+            
+            this.uc_previous_expressions1 = new uc_previous_expressions();
+            
+            this.uc_project_notes1 = new uc_project_notes();
+            
+            this.uc_contact_list1 = new uc_contact_list();
+            
+            this.Controls.Add(this.uc_select_list_item1);
+            
+            this.Controls.Add(this.uc_project1);
+            
+            this.Controls.Add(this.uc_scenario1);
+            
+            this.Controls.Add(this.uc_project_document_links1);
+            
+            this.Controls.Add(this.uc_project_document_links_edit1);
+            
+            this.Controls.Add(this.uc_sql_builder1);
+            
+            this.Controls.Add(this.uc_sql_builder2);
+            
+            this.Controls.Add(this.uc_previous_expressions1);
+            
+            this.Controls.Add(this.uc_project_notes1);
+            
+            this.Controls.Add(this.uc_contact_list1);
+            
 
-			this.Controls.Add(this.uc_select_list_item1);
-			this.Controls.Add(this.uc_project1);
-			this.Controls.Add(this.uc_scenario1);
-			this.Controls.Add(this.uc_project_document_links1);
-			this.Controls.Add(this.uc_project_document_links_edit1);
-			this.Controls.Add(this.uc_sql_builder1);
-			this.Controls.Add(this.uc_sql_builder2);
-			this.Controls.Add(this.uc_previous_expressions1);
-			this.Controls.Add(this.uc_project_notes1);
-			this.Controls.Add(this.uc_contact_list1);
-
-			this.uc_select_list_item1.Visible=false;
+            this.uc_select_list_item1.Visible=false;
 			this.uc_scenario1.Visible=false;
 			this.uc_project_document_links1.Visible=false;
 			this.uc_project_document_links_edit1.Visible=false;

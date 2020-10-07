@@ -91,80 +91,87 @@ namespace FIA_Biosum_Manager
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmRxItemFvsCmdItem));
-			this.tlbFvsCmdItem = new System.Windows.Forms.ToolBar();
-			this.btnOk = new System.Windows.Forms.ToolBarButton();
-			this.btnCancel = new System.Windows.Forms.ToolBarButton();
-			this.btnSeparator = new System.Windows.Forms.ToolBarButton();
-			this.btnOpen = new System.Windows.Forms.ToolBarButton();
-			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-			this.uc_rx_fvscmd_edit1 = new FIA_Biosum_Manager.uc_rx_fvscmd_edit();
-			this.SuspendLayout();
-			// 
-			// tlbFvsCmdItem
-			// 
-			this.tlbFvsCmdItem.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-																							 this.btnOk,
-																							 this.btnCancel,
-																							 this.btnSeparator,
-																							 this.btnOpen});
-			this.tlbFvsCmdItem.ButtonSize = new System.Drawing.Size(60, 45);
-			this.tlbFvsCmdItem.DropDownArrows = true;
-			this.tlbFvsCmdItem.ImageList = this.imageList1;
-			this.tlbFvsCmdItem.Location = new System.Drawing.Point(0, 0);
-			this.tlbFvsCmdItem.Name = "tlbFvsCmdItem";
-			this.tlbFvsCmdItem.ShowToolTips = true;
-			this.tlbFvsCmdItem.Size = new System.Drawing.Size(720, 51);
-			this.tlbFvsCmdItem.TabIndex = 0;
-			this.tlbFvsCmdItem.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbFvsCmdItem_ButtonClick);
-			// 
-			// btnOk
-			// 
-			this.btnOk.ImageIndex = 0;
-			this.btnOk.Text = "OK";
-			// 
-			// btnCancel
-			// 
-			this.btnCancel.ImageIndex = 1;
-			this.btnCancel.Text = "Cancel";
-			// 
-			// btnSeparator
-			// 
-			this.btnSeparator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-			// 
-			// btnOpen
-			// 
-			this.btnOpen.ImageIndex = 2;
-			this.btnOpen.Text = "Open";
-			this.btnOpen.ToolTipText = "Open FVS kcp/key file";
-			// 
-			// imageList1
-			// 
-			this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
-			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-			// 
-			// uc_rx_fvscmd_edit1
-			// 
-			this.uc_rx_fvscmd_edit1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.uc_rx_fvscmd_edit1.Location = new System.Drawing.Point(0, 51);
-			this.uc_rx_fvscmd_edit1.Name = "uc_rx_fvscmd_edit1";
-			this.uc_rx_fvscmd_edit1.ReferenceFormFvsCmdItem = null;
-			this.uc_rx_fvscmd_edit1.RxPackageEdit = false;
-			this.uc_rx_fvscmd_edit1.Size = new System.Drawing.Size(720, 363);
-			this.uc_rx_fvscmd_edit1.TabIndex = 1;
-			// 
-			// frmRxItemFvsCmdItem
-			// 
-			this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-			this.ClientSize = new System.Drawing.Size(720, 414);
-			this.Controls.Add(this.uc_rx_fvscmd_edit1);
-			this.Controls.Add(this.tlbFvsCmdItem);
-			this.Name = "frmRxItemFvsCmdItem";
-			this.Text = "frmRxItemFvsCmdItem";
-			this.Closing += new System.ComponentModel.CancelEventHandler(this.frmRxItemFvsCmdItem_Closing);
-			this.ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRxItemFvsCmdItem));
+            this.tlbFvsCmdItem = new System.Windows.Forms.ToolBar();
+            this.btnOk = new System.Windows.Forms.ToolBarButton();
+            this.btnCancel = new System.Windows.Forms.ToolBarButton();
+            this.btnSeparator = new System.Windows.Forms.ToolBarButton();
+            this.btnOpen = new System.Windows.Forms.ToolBarButton();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.uc_rx_fvscmd_edit1 = new FIA_Biosum_Manager.uc_rx_fvscmd_edit();
+            this.SuspendLayout();
+            // 
+            // tlbFvsCmdItem
+            // 
+            this.tlbFvsCmdItem.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
+            this.btnOk,
+            this.btnCancel,
+            this.btnSeparator,
+            this.btnOpen});
+            this.tlbFvsCmdItem.ButtonSize = new System.Drawing.Size(60, 45);
+            this.tlbFvsCmdItem.DropDownArrows = true;
+            this.tlbFvsCmdItem.ImageList = this.imageList1;
+            this.tlbFvsCmdItem.Location = new System.Drawing.Point(0, 0);
+            this.tlbFvsCmdItem.Name = "tlbFvsCmdItem";
+            this.tlbFvsCmdItem.ShowToolTips = true;
+            this.tlbFvsCmdItem.Size = new System.Drawing.Size(720, 42);
+            this.tlbFvsCmdItem.TabIndex = 0;
+            this.tlbFvsCmdItem.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbFvsCmdItem_ButtonClick);
+            // 
+            // btnOk
+            // 
+            this.btnOk.ImageIndex = 0;
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Text = "OK";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.ImageIndex = 1;
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Text = "Cancel";
+            // 
+            // btnSeparator
+            // 
+            this.btnSeparator.Name = "btnSeparator";
+            this.btnSeparator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // btnOpen
+            // 
+            this.btnOpen.ImageIndex = 2;
+            this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Text = "Open";
+            this.btnOpen.ToolTipText = "Open FVS kcp/key file";
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "");
+            this.imageList1.Images.SetKeyName(1, "");
+            this.imageList1.Images.SetKeyName(2, "");
+            // 
+            // uc_rx_fvscmd_edit1
+            // 
+            this.uc_rx_fvscmd_edit1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.uc_rx_fvscmd_edit1.Location = new System.Drawing.Point(0, 42);
+            this.uc_rx_fvscmd_edit1.Name = "uc_rx_fvscmd_edit1";
+            this.uc_rx_fvscmd_edit1.ReferenceFormFvsCmdItem = null;
+            this.uc_rx_fvscmd_edit1.RxPackageEdit = false;
+            this.uc_rx_fvscmd_edit1.Size = new System.Drawing.Size(720, 372);
+            this.uc_rx_fvscmd_edit1.TabIndex = 1;
+            // 
+            // frmRxItemFvsCmdItem
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(720, 414);
+            this.Controls.Add(this.uc_rx_fvscmd_edit1);
+            this.Controls.Add(this.tlbFvsCmdItem);
+            this.Name = "frmRxItemFvsCmdItem";
+            this.Text = "frmRxItemFvsCmdItem";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.frmRxItemFvsCmdItem_Closing);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 		#endregion

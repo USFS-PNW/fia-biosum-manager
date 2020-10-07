@@ -328,10 +328,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnTreeVolBatch
             // 
-            this.btnTreeVolBatch.Location = new System.Drawing.Point(580, 440);
-            this.btnTreeVolBatch.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnTreeVolBatch.Location = new System.Drawing.Point(387, 293);
             this.btnTreeVolBatch.Name = "btnTreeVolBatch";
-            this.btnTreeVolBatch.Size = new System.Drawing.Size(312, 31);
+            this.btnTreeVolBatch.Size = new System.Drawing.Size(208, 21);
             this.btnTreeVolBatch.TabIndex = 2;
             this.btnTreeVolBatch.Text = "Batch Calculate Volume And Biomass";
             this.btnTreeVolBatch.UseVisualStyleBackColor = true;
@@ -346,9 +345,8 @@ namespace FIA_Biosum_Manager
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1352, 886);
+            this.panel1.Size = new System.Drawing.Size(856, 467);
             this.panel1.TabIndex = 3;
             // 
             // progressBarBasic1
@@ -356,11 +354,10 @@ namespace FIA_Biosum_Manager
             this.progressBarBasic1.BackColor = System.Drawing.Color.White;
             this.progressBarBasic1.Font = new System.Drawing.Font("Arial", 10.25F);
             this.progressBarBasic1.ForeColor = System.Drawing.Color.ForestGreen;
-            this.progressBarBasic1.Location = new System.Drawing.Point(18, 832);
-            this.progressBarBasic1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.progressBarBasic1.Location = new System.Drawing.Point(12, 555);
             this.progressBarBasic1.Name = "progressBarBasic1";
             this.progressBarBasic1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.progressBarBasic1.Size = new System.Drawing.Size(1204, 35);
+            this.progressBarBasic1.Size = new System.Drawing.Size(803, 23);
             this.progressBarBasic1.TabIndex = 33;
             this.progressBarBasic1.Text = "progressBarBasic1";
             this.progressBarBasic1.TextStyle = ProgressBarBasic.ProgressBarBasic.TextStyleType.Percentage;
@@ -368,10 +365,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(1230, 834);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnCancel.Location = new System.Drawing.Point(820, 556);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(104, 34);
+            this.btnCancel.Size = new System.Drawing.Size(69, 23);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel\r\n";
             this.btnCancel.UseVisualStyleBackColor = false;
@@ -411,21 +407,18 @@ namespace FIA_Biosum_Manager
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.txtCountyCd);
             this.groupBox2.Controls.Add(this.btnTreeVolSingle);
-            this.groupBox2.Location = new System.Drawing.Point(18, 495);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox2.Location = new System.Drawing.Point(12, 330);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox2.Size = new System.Drawing.Size(1316, 328);
+            this.groupBox2.Size = new System.Drawing.Size(877, 219);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tree Volumes And Biomass One Record Test";
             // 
             // btnDefaultSingle
             // 
-            this.btnDefaultSingle.Location = new System.Drawing.Point(27, 217);
-            this.btnDefaultSingle.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnDefaultSingle.Location = new System.Drawing.Point(18, 145);
             this.btnDefaultSingle.Name = "btnDefaultSingle";
-            this.btnDefaultSingle.Size = new System.Drawing.Size(189, 60);
+            this.btnDefaultSingle.Size = new System.Drawing.Size(126, 40);
             this.btnDefaultSingle.TabIndex = 32;
             this.btnDefaultSingle.Text = "Default Values";
             this.btnDefaultSingle.UseVisualStyleBackColor = true;
@@ -445,11 +438,9 @@ namespace FIA_Biosum_Manager
             this.groupBox3.Controls.Add(this.label17);
             this.groupBox3.Controls.Add(this.lblVOLCFGRS);
             this.groupBox3.Controls.Add(this.label15);
-            this.groupBox3.Location = new System.Drawing.Point(750, 23);
-            this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox3.Location = new System.Drawing.Point(500, 15);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox3.Size = new System.Drawing.Size(454, 295);
+            this.groupBox3.Size = new System.Drawing.Size(303, 197);
             this.groupBox3.TabIndex = 31;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Results";
@@ -458,10 +449,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLTSGRS.BackColor = System.Drawing.Color.Beige;
             this.lblVOLTSGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLTSGRS.Location = new System.Drawing.Point(228, 234);
-            this.lblVOLTSGRS.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVOLTSGRS.Location = new System.Drawing.Point(152, 156);
             this.lblVOLTSGRS.Name = "lblVOLTSGRS";
-            this.lblVOLTSGRS.Size = new System.Drawing.Size(213, 45);
+            this.lblVOLTSGRS.Size = new System.Drawing.Size(142, 30);
             this.lblVOLTSGRS.TabIndex = 22;
             this.lblVOLTSGRS.Text = "0";
             this.lblVOLTSGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -469,10 +459,9 @@ namespace FIA_Biosum_Manager
             // label21
             // 
             this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(288, 202);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label21.Location = new System.Drawing.Point(192, 135);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(97, 20);
+            this.label21.Size = new System.Drawing.Size(65, 13);
             this.label21.TabIndex = 21;
             this.label21.Text = "VOLTSGRS";
             // 
@@ -480,10 +469,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblDRYBIOM.BackColor = System.Drawing.Color.Beige;
             this.lblDRYBIOM.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDRYBIOM.Location = new System.Drawing.Point(231, 140);
-            this.lblDRYBIOM.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDRYBIOM.Location = new System.Drawing.Point(154, 93);
             this.lblDRYBIOM.Name = "lblDRYBIOM";
-            this.lblDRYBIOM.Size = new System.Drawing.Size(213, 45);
+            this.lblDRYBIOM.Size = new System.Drawing.Size(142, 30);
             this.lblDRYBIOM.TabIndex = 20;
             this.lblDRYBIOM.Text = "0";
             this.lblDRYBIOM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -491,10 +479,9 @@ namespace FIA_Biosum_Manager
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(278, 112);
-            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label20.Location = new System.Drawing.Point(185, 75);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(85, 20);
+            this.label20.Size = new System.Drawing.Size(57, 13);
             this.label20.TabIndex = 19;
             this.label20.Text = "DRYBIOM";
             // 
@@ -502,10 +489,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblDRYBIOT.BackColor = System.Drawing.Color.Beige;
             this.lblDRYBIOT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDRYBIOT.Location = new System.Drawing.Point(6, 234);
-            this.lblDRYBIOT.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblDRYBIOT.Location = new System.Drawing.Point(4, 156);
             this.lblDRYBIOT.Name = "lblDRYBIOT";
-            this.lblDRYBIOT.Size = new System.Drawing.Size(213, 45);
+            this.lblDRYBIOT.Size = new System.Drawing.Size(142, 30);
             this.lblDRYBIOT.TabIndex = 18;
             this.lblDRYBIOT.Text = "0";
             this.lblDRYBIOT.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -514,10 +500,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCFNET.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCFNET.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCFNET.Location = new System.Drawing.Point(6, 140);
-            this.lblVOLCFNET.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVOLCFNET.Location = new System.Drawing.Point(4, 93);
             this.lblVOLCFNET.Name = "lblVOLCFNET";
-            this.lblVOLCFNET.Size = new System.Drawing.Size(213, 45);
+            this.lblVOLCFNET.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCFNET.TabIndex = 16;
             this.lblVOLCFNET.Text = "0";
             this.lblVOLCFNET.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -525,20 +510,18 @@ namespace FIA_Biosum_Manager
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(62, 112);
-            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label18.Location = new System.Drawing.Point(41, 75);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(93, 20);
+            this.label18.Size = new System.Drawing.Size(63, 13);
             this.label18.TabIndex = 15;
             this.label18.Text = "VOLCFNET";
             // 
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(74, 200);
-            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label19.Location = new System.Drawing.Point(49, 133);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(81, 20);
+            this.label19.Size = new System.Drawing.Size(55, 13);
             this.label19.TabIndex = 17;
             this.label19.Text = "DRYBIOT";
             // 
@@ -546,10 +529,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCSGRS.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCSGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCSGRS.Location = new System.Drawing.Point(231, 58);
-            this.lblVOLCSGRS.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVOLCSGRS.Location = new System.Drawing.Point(154, 39);
             this.lblVOLCSGRS.Name = "lblVOLCSGRS";
-            this.lblVOLCSGRS.Size = new System.Drawing.Size(213, 45);
+            this.lblVOLCSGRS.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCSGRS.TabIndex = 12;
             this.lblVOLCSGRS.Text = "0";
             this.lblVOLCSGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -557,10 +539,9 @@ namespace FIA_Biosum_Manager
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(278, 26);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label17.Location = new System.Drawing.Point(185, 17);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(99, 20);
+            this.label17.Size = new System.Drawing.Size(65, 13);
             this.label17.TabIndex = 11;
             this.label17.Text = "VOLCSGRS";
             this.label17.Click += new System.EventHandler(this.label17_Click);
@@ -569,10 +550,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCFGRS.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCFGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCFGRS.Location = new System.Drawing.Point(6, 58);
-            this.lblVOLCFGRS.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblVOLCFGRS.Location = new System.Drawing.Point(4, 39);
             this.lblVOLCFGRS.Name = "lblVOLCFGRS";
-            this.lblVOLCFGRS.Size = new System.Drawing.Size(213, 45);
+            this.lblVOLCFGRS.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCFGRS.TabIndex = 10;
             this.lblVOLCFGRS.Text = "0";
             this.lblVOLCFGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -580,272 +560,242 @@ namespace FIA_Biosum_Manager
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(62, 26);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Location = new System.Drawing.Point(41, 17);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(98, 20);
+            this.label15.Size = new System.Drawing.Size(64, 13);
             this.label15.TabIndex = 9;
             this.label15.Text = "VOLCFGRS";
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(544, 118);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label14.Location = new System.Drawing.Point(363, 79);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(83, 20);
+            this.label14.Size = new System.Drawing.Size(56, 13);
             this.label14.TabIndex = 30;
             this.label14.Text = "RoughCull";
             // 
             // txtRoughCull
             // 
-            this.txtRoughCull.Location = new System.Drawing.Point(638, 114);
-            this.txtRoughCull.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtRoughCull.Location = new System.Drawing.Point(425, 76);
             this.txtRoughCull.Name = "txtRoughCull";
-            this.txtRoughCull.Size = new System.Drawing.Size(91, 26);
+            this.txtRoughCull.Size = new System.Drawing.Size(62, 20);
             this.txtRoughCull.TabIndex = 29;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(382, 118);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(255, 79);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(35, 20);
+            this.label13.Size = new System.Drawing.Size(24, 13);
             this.label13.TabIndex = 28;
             this.label13.Text = "Cull";
             // 
             // txtCull
             // 
-            this.txtCull.Location = new System.Drawing.Point(429, 118);
-            this.txtCull.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCull.Location = new System.Drawing.Point(286, 79);
             this.txtCull.Name = "txtCull";
-            this.txtCull.Size = new System.Drawing.Size(104, 26);
+            this.txtCull.Size = new System.Drawing.Size(71, 20);
             this.txtCull.TabIndex = 27;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(196, 123);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label12.Location = new System.Drawing.Point(131, 82);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(75, 20);
+            this.label12.Size = new System.Drawing.Size(51, 13);
             this.label12.TabIndex = 26;
             this.label12.Text = "TreeClCd";
             // 
             // txtTreeClCd
             // 
-            this.txtTreeClCd.Location = new System.Drawing.Point(285, 118);
-            this.txtTreeClCd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtTreeClCd.Location = new System.Drawing.Point(190, 79);
             this.txtTreeClCd.Name = "txtTreeClCd";
-            this.txtTreeClCd.Size = new System.Drawing.Size(86, 26);
+            this.txtTreeClCd.Size = new System.Drawing.Size(59, 20);
             this.txtTreeClCd.TabIndex = 25;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(22, 123);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Location = new System.Drawing.Point(15, 82);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(76, 20);
+            this.label11.Size = new System.Drawing.Size(50, 13);
             this.label11.TabIndex = 24;
             this.label11.Text = "StatusCd";
             // 
             // txtStatusCd
             // 
-            this.txtStatusCd.Location = new System.Drawing.Point(99, 118);
-            this.txtStatusCd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtStatusCd.Location = new System.Drawing.Point(66, 79);
             this.txtStatusCd.Name = "txtStatusCd";
-            this.txtStatusCd.Size = new System.Drawing.Size(86, 26);
+            this.txtStatusCd.Size = new System.Drawing.Size(59, 20);
             this.txtStatusCd.TabIndex = 23;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(22, 162);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label10.Location = new System.Drawing.Point(15, 108);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(133, 20);
+            this.label10.Size = new System.Drawing.Size(89, 13);
             this.label10.TabIndex = 22;
             this.label10.Text = "Crown Ratio (CR)";
             // 
             // txtCR
             // 
-            this.txtCR.Location = new System.Drawing.Point(156, 157);
-            this.txtCR.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCR.Location = new System.Drawing.Point(104, 105);
             this.txtCR.Name = "txtCR";
-            this.txtCR.Size = new System.Drawing.Size(118, 26);
+            this.txtCR.Size = new System.Drawing.Size(80, 20);
             this.txtCR.TabIndex = 21;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(544, 88);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Location = new System.Drawing.Point(363, 59);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(71, 20);
+            this.label9.Size = new System.Drawing.Size(48, 13);
             this.label9.TabIndex = 20;
             this.label9.Text = "ActualHt";
             // 
             // txtActualHt
             // 
-            this.txtActualHt.Location = new System.Drawing.Point(638, 80);
-            this.txtActualHt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtActualHt.Location = new System.Drawing.Point(425, 53);
             this.txtActualHt.Name = "txtActualHt";
-            this.txtActualHt.Size = new System.Drawing.Size(91, 26);
+            this.txtActualHt.Size = new System.Drawing.Size(62, 20);
             this.txtActualHt.TabIndex = 19;
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(382, 88);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(255, 59);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(26, 20);
+            this.label8.Size = new System.Drawing.Size(18, 13);
             this.label8.TabIndex = 18;
             this.label8.Text = "Ht";
             // 
             // txtHt
             // 
-            this.txtHt.Location = new System.Drawing.Point(429, 83);
-            this.txtHt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtHt.Location = new System.Drawing.Point(286, 55);
             this.txtHt.Name = "txtHt";
-            this.txtHt.Size = new System.Drawing.Size(104, 26);
+            this.txtHt.Size = new System.Drawing.Size(71, 20);
             this.txtHt.TabIndex = 17;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(196, 88);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Location = new System.Drawing.Point(131, 59);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(44, 20);
+            this.label7.Size = new System.Drawing.Size(30, 13);
             this.label7.TabIndex = 16;
             this.label7.Text = "DBH";
             // 
             // txtDbh
             // 
-            this.txtDbh.Location = new System.Drawing.Point(285, 83);
-            this.txtDbh.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtDbh.Location = new System.Drawing.Point(190, 55);
             this.txtDbh.Name = "txtDbh";
-            this.txtDbh.Size = new System.Drawing.Size(86, 26);
+            this.txtDbh.Size = new System.Drawing.Size(59, 20);
             this.txtDbh.TabIndex = 15;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(22, 88);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(15, 59);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(49, 20);
+            this.label6.Size = new System.Drawing.Size(33, 13);
             this.label6.TabIndex = 14;
             this.label6.Text = "SpCd";
             // 
             // txtSpCd
             // 
-            this.txtSpCd.Location = new System.Drawing.Point(99, 83);
-            this.txtSpCd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSpCd.Location = new System.Drawing.Point(66, 55);
             this.txtSpCd.Name = "txtSpCd";
-            this.txtSpCd.Size = new System.Drawing.Size(86, 26);
+            this.txtSpCd.Size = new System.Drawing.Size(59, 20);
             this.txtSpCd.TabIndex = 13;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(544, 55);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(363, 37);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(46, 20);
+            this.label5.Size = new System.Drawing.Size(32, 13);
             this.label5.TabIndex = 12;
             this.label5.Text = "InvYr";
             // 
             // txtInvYr
             // 
-            this.txtInvYr.Location = new System.Drawing.Point(638, 51);
-            this.txtInvYr.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtInvYr.Location = new System.Drawing.Point(425, 34);
             this.txtInvYr.Name = "txtInvYr";
-            this.txtInvYr.Size = new System.Drawing.Size(91, 26);
+            this.txtInvYr.Size = new System.Drawing.Size(62, 20);
             this.txtInvYr.TabIndex = 11;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(285, 162);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(190, 108);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 20);
+            this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 10;
             this.label4.Text = "Vol_Loc_Grp";
             // 
             // txtVolLocGrp
             // 
-            this.txtVolLocGrp.Location = new System.Drawing.Point(398, 157);
-            this.txtVolLocGrp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtVolLocGrp.Location = new System.Drawing.Point(265, 105);
             this.txtVolLocGrp.Name = "txtVolLocGrp";
-            this.txtVolLocGrp.Size = new System.Drawing.Size(118, 26);
+            this.txtVolLocGrp.Size = new System.Drawing.Size(80, 20);
             this.txtVolLocGrp.TabIndex = 9;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(22, 55);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(15, 37);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 20);
+            this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 8;
             this.label3.Text = "StateCd";
             // 
             // txtStateCd
             // 
-            this.txtStateCd.Location = new System.Drawing.Point(99, 51);
-            this.txtStateCd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtStateCd.Location = new System.Drawing.Point(66, 34);
             this.txtStateCd.Name = "txtStateCd";
-            this.txtStateCd.Size = new System.Drawing.Size(86, 26);
+            this.txtStateCd.Size = new System.Drawing.Size(59, 20);
             this.txtStateCd.TabIndex = 7;
             this.txtStateCd.TextChanged += new System.EventHandler(this.txtStateCd_TextChanged);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(382, 55);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(255, 37);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 20);
+            this.label2.Size = new System.Drawing.Size(25, 13);
             this.label2.TabIndex = 6;
             this.label2.Text = "Plot";
             // 
             // txtPlot
             // 
-            this.txtPlot.Location = new System.Drawing.Point(429, 51);
-            this.txtPlot.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtPlot.Location = new System.Drawing.Point(286, 34);
             this.txtPlot.Name = "txtPlot";
-            this.txtPlot.Size = new System.Drawing.Size(104, 26);
+            this.txtPlot.Size = new System.Drawing.Size(71, 20);
             this.txtPlot.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(196, 55);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(131, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 20);
+            this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 4;
             this.label1.Text = "CountyCd";
             // 
             // txtCountyCd
             // 
-            this.txtCountyCd.Location = new System.Drawing.Point(285, 51);
-            this.txtCountyCd.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtCountyCd.Location = new System.Drawing.Point(190, 34);
             this.txtCountyCd.Name = "txtCountyCd";
-            this.txtCountyCd.Size = new System.Drawing.Size(86, 26);
+            this.txtCountyCd.Size = new System.Drawing.Size(59, 20);
             this.txtCountyCd.TabIndex = 3;
             // 
             // btnTreeVolSingle
             // 
-            this.btnTreeVolSingle.Location = new System.Drawing.Point(290, 212);
-            this.btnTreeVolSingle.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnTreeVolSingle.Location = new System.Drawing.Point(193, 141);
             this.btnTreeVolSingle.Name = "btnTreeVolSingle";
-            this.btnTreeVolSingle.Size = new System.Drawing.Size(147, 68);
+            this.btnTreeVolSingle.Size = new System.Drawing.Size(98, 45);
             this.btnTreeVolSingle.TabIndex = 2;
             this.btnTreeVolSingle.Text = "Calculate Volume And Biomass";
             this.btnTreeVolSingle.UseVisualStyleBackColor = true;
@@ -860,11 +810,9 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Controls.Add(this.cmbDatasource);
             this.groupBox1.Controls.Add(this.btnLinkTableTest);
             this.groupBox1.Controls.Add(this.btnTreeVolBatch);
-            this.groupBox1.Location = new System.Drawing.Point(4, 5);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox1.Size = new System.Drawing.Size(1329, 482);
+            this.groupBox1.Size = new System.Drawing.Size(886, 321);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tree Volumes And Biomass Batch Test";
@@ -872,27 +820,28 @@ namespace FIA_Biosum_Manager
             // lblFSNetwork
             // 
             this.lblFSNetwork.AutoSize = true;
-            this.lblFSNetwork.Location = new System.Drawing.Point(270, 24);
+            this.lblFSNetwork.Location = new System.Drawing.Point(180, 16);
+            this.lblFSNetwork.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblFSNetwork.Name = "lblFSNetwork";
-            this.lblFSNetwork.Size = new System.Drawing.Size(31, 20);
+            this.lblFSNetwork.Size = new System.Drawing.Size(22, 13);
             this.lblFSNetwork.TabIndex = 9;
             this.lblFSNetwork.Text = "NA";
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(7, 24);
+            this.label16.Location = new System.Drawing.Point(5, 16);
+            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(257, 20);
+            this.label16.Size = new System.Drawing.Size(170, 13);
             this.label16.TabIndex = 8;
             this.label16.Text = "FCS Volume and Biomass Method:";
             // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(400, 440);
-            this.btnEdit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnEdit.Location = new System.Drawing.Point(267, 293);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(171, 31);
+            this.btnEdit.Size = new System.Drawing.Size(114, 21);
             this.btnEdit.TabIndex = 7;
             this.btnEdit.Text = "Edit Selected Row";
             this.btnEdit.UseVisualStyleBackColor = true;
@@ -900,10 +849,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(276, 438);
-            this.btnLoad.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnLoad.Location = new System.Drawing.Point(184, 292);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(116, 32);
+            this.btnLoad.Size = new System.Drawing.Size(77, 21);
             this.btnLoad.TabIndex = 6;
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
@@ -914,19 +862,17 @@ namespace FIA_Biosum_Manager
             this.cmbDatasource.FormattingEnabled = true;
             this.cmbDatasource.Items.AddRange(new object[] {
             "Tree Sample"});
-            this.cmbDatasource.Location = new System.Drawing.Point(18, 440);
-            this.cmbDatasource.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.cmbDatasource.Location = new System.Drawing.Point(12, 293);
             this.cmbDatasource.Name = "cmbDatasource";
-            this.cmbDatasource.Size = new System.Drawing.Size(247, 28);
+            this.cmbDatasource.Size = new System.Drawing.Size(166, 21);
             this.cmbDatasource.TabIndex = 5;
             this.cmbDatasource.Text = "Tree Sample";
             // 
             // btnLinkTableTest
             // 
-            this.btnLinkTableTest.Location = new System.Drawing.Point(902, 440);
-            this.btnLinkTableTest.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnLinkTableTest.Location = new System.Drawing.Point(601, 293);
             this.btnLinkTableTest.Name = "btnLinkTableTest";
-            this.btnLinkTableTest.Size = new System.Drawing.Size(374, 31);
+            this.btnLinkTableTest.Size = new System.Drawing.Size(249, 21);
             this.btnLinkTableTest.TabIndex = 3;
             this.btnLinkTableTest.Text = "Test Link To Oracle BIOSUM_VOLUME table";
             this.btnLinkTableTest.UseVisualStyleBackColor = true;
@@ -934,11 +880,9 @@ namespace FIA_Biosum_Manager
             // 
             // frmFCSTreeVolumeEdit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1352, 886);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(856, 467);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmFCSTreeVolumeEdit";
             this.Text = "Tree Volume and Biomass Calculator Troubleshooter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmFCSTreeVolumeEdit_FormClosing);

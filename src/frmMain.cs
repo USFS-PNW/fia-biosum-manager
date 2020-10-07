@@ -192,13 +192,14 @@ namespace FIA_Biosum_Manager
         //OPCOST settings
         public static string g_strRDirectory = "";
         public static string g_strOPCOSTDirectory = "";
-        //substitution macro variable
-        public static FIA_Biosum_Manager.SQLMacroSubstitutionVariable_Collection g_oSQLMacroSubstitutionVariable_Collection= new SQLMacroSubstitutionVariable_Collection();
+
+		//substitution macro variable
+		public static FIA_Biosum_Manager.SQLMacroSubstitutionVariable_Collection g_oSQLMacroSubstitutionVariable_Collection= new SQLMacroSubstitutionVariable_Collection();
         public static FIA_Biosum_Manager.GeneralMacroSubstitutionVariable_Collection g_oGeneralMacroSubstitutionVariable_Collection = new GeneralMacroSubstitutionVariable_Collection();
         public const int PROJDIR = 0;
         public const int OLDPROJDIR = 1;
 
-		public static string g_strAppVer = "5.8.9";
+		public static string g_strAppVer = "5.8.8";
         public static string g_strBiosumDataDir = "\\FIABiosum";
         public static int g_intRefDbVer = 2;
         public static bool g_bUseOracleXE = false;
@@ -234,25 +235,30 @@ namespace FIA_Biosum_Manager
            
 			InitializeComponent();
 
+
             
 
-
             this.m_oEnv = new env();
-			
-			//create and initialize project form
-			this.frmProject = new FIA_Biosum_Manager.frmDialog();
-			this.frmProject.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+
+            
+
+            //create and initialize project form
+            this.frmProject = new FIA_Biosum_Manager.frmDialog();
+            
+            this.frmProject.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.frmProject.BackColor = System.Drawing.SystemColors.Control;
 			this.frmProject.ClientSize = new System.Drawing.Size(712, 488);
 			this.frmProject.Location = new System.Drawing.Point(23, 23);
 			this.frmProject.Name = "frmProject";
 
-		
-			this.frmProject.MdiParent = this;
+           
+
+            this.frmProject.MdiParent = this;
 			this.frmProject.Initialize_User_Control("PROJECT");
 			this.frmProject.Visible=false;
 
-			intGrpBoxLeftTopPosition = 0; //Math.Abs(this.btnDB.Top + this.btnDB.Height + 2) ;
+            
+            intGrpBoxLeftTopPosition = 0; //Math.Abs(this.btnDB.Top + this.btnDB.Height + 2) ;
 			for (int x=1;;x++)
 			{
                 intGrpBoxLeftTopPosition=x;
@@ -262,9 +268,9 @@ namespace FIA_Biosum_Manager
 				}
 
 			}
+            
 
-
-			intListHtPosition = this.Height - (this.btnDB.Height * 2);
+            intListHtPosition = this.Height - (this.btnDB.Height * 2);
 			
 			this.panel1.Top = intGrpBoxLeftTopPosition;
 			this.panel1.BackColor = System.Drawing.Color.Gray;
@@ -272,23 +278,23 @@ namespace FIA_Biosum_Manager
 			this.panel1.Enabled=false;
 			this.panel1.Visible=false;
 
-			
+            
+
             this.InitializeMainFormPanelsAndButtons();
 			this.panel1.Height=0;
 			
 			panel1.Height = this.grpboxLeft.Height - panel1.Top;
-            
 
-			this.m_pnlCurrent = this.m_pnlDb;
+            
+            this.m_pnlCurrent = this.m_pnlDb;
 			this.m_pnlCurrent.Enabled=false;
 			this.m_pnlCurrent.Size = this.panel1.Size;
 			this.m_pnlCurrent.Height = this.panel1.Height ;
 			this.m_pnlCurrent.Top = intGrpBoxLeftTopPosition;
 			this.m_pnlCurrent.Visible=true;
-			
 
+            
 
-			
             this.btnSave.Enabled=false;
 			this.btnContacts.Enabled=false;
 			this.btnOptimizer.Enabled = false;
@@ -370,9 +376,8 @@ namespace FIA_Biosum_Manager
 				{
 				}
 			}
-
             //get local hard drives on the pc
-			this.m_LocalHardDrive = new string[24];
+            this.m_LocalHardDrive = new string[24];
 			FIA_Biosum_Manager.utils p_oUtils = new FIA_Biosum_Manager.utils();
 			this.m_LocalHardDrive = p_oUtils.getLocalHardDriveList();
 			p_oUtils = null;
@@ -383,11 +388,10 @@ namespace FIA_Biosum_Manager
 
 			}
 
-			frmMain.g_oDelegate = new DelegateTools();			
+			frmMain.g_oDelegate = new DelegateTools();
 
             
-
-			this.btnDB.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
+            this.btnDB.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
 			this.btnDB.Paint += new System.Windows.Forms.PaintEventHandler(this.ProcessButton_Paint);
 			this.btnFVS.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
 			this.btnFVS.Paint += new System.Windows.Forms.PaintEventHandler(this.ProcessButton_Paint);
@@ -427,9 +431,9 @@ namespace FIA_Biosum_Manager
             CheckForBiosumRefData();
 
             Validate_OracleConnectivity();
-            
 
-		}
+            
+        }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -802,7 +806,7 @@ namespace FIA_Biosum_Manager
             this.grpboxLeft.Controls.Add(this.btnDB);
             this.grpboxLeft.Controls.Add(this.panel1);
             this.grpboxLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.grpboxLeft.Location = new System.Drawing.Point(0, 45);
+            this.grpboxLeft.Location = new System.Drawing.Point(0, 49);
             this.grpboxLeft.Margin = new System.Windows.Forms.Padding(4);
             this.grpboxLeft.Name = "grpboxLeft";
             this.grpboxLeft.Padding = new System.Windows.Forms.Padding(4);
@@ -851,7 +855,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnDB.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDB.Location = new System.Drawing.Point(4, 23);
+            this.btnDB.Location = new System.Drawing.Point(4, 17);
             this.btnDB.Margin = new System.Windows.Forms.Padding(4);
             this.btnDB.Name = "btnDB";
             this.btnDB.Size = new System.Drawing.Size(172, 34);
