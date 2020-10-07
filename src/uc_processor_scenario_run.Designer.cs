@@ -53,8 +53,10 @@
             this.groupBox1.Controls.Add(this.lblTitle);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(755, 557);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(1007, 686);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -70,18 +72,20 @@
             this.panel1.Controls.Add(this.btnUncheckAll);
             this.panel1.Controls.Add(this.btnChkAll);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 48);
+            this.panel1.Location = new System.Drawing.Point(4, 58);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(749, 506);
+            this.panel1.Size = new System.Drawing.Size(999, 624);
             this.panel1.TabIndex = 32;
             this.panel1.Resize += new System.EventHandler(this.panel1_Resize);
             // 
             // btnRun
             // 
             this.btnRun.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRun.Location = new System.Drawing.Point(317, 354);
+            this.btnRun.Location = new System.Drawing.Point(423, 436);
+            this.btnRun.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(126, 32);
+            this.btnRun.Size = new System.Drawing.Size(168, 39);
             this.btnRun.TabIndex = 73;
             this.btnRun.Text = "Run";
             this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
@@ -89,9 +93,10 @@
             // cmbFilter
             // 
             this.cmbFilter.FormattingEnabled = true;
-            this.cmbFilter.Location = new System.Drawing.Point(19, 361);
+            this.cmbFilter.Location = new System.Drawing.Point(25, 444);
+            this.cmbFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFilter.Name = "cmbFilter";
-            this.cmbFilter.Size = new System.Drawing.Size(61, 21);
+            this.cmbFilter.Size = new System.Drawing.Size(80, 24);
             this.cmbFilter.TabIndex = 69;
             // 
             // pnlFileSizeMonitor
@@ -100,18 +105,20 @@
             this.pnlFileSizeMonitor.Controls.Add(this.uc_filesize_monitor3);
             this.pnlFileSizeMonitor.Controls.Add(this.uc_filesize_monitor2);
             this.pnlFileSizeMonitor.Controls.Add(this.uc_filesize_monitor1);
-            this.pnlFileSizeMonitor.Location = new System.Drawing.Point(19, 392);
+            this.pnlFileSizeMonitor.Location = new System.Drawing.Point(25, 482);
+            this.pnlFileSizeMonitor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlFileSizeMonitor.Name = "pnlFileSizeMonitor";
-            this.pnlFileSizeMonitor.Size = new System.Drawing.Size(627, 99);
+            this.pnlFileSizeMonitor.Size = new System.Drawing.Size(836, 122);
             this.pnlFileSizeMonitor.TabIndex = 68;
             // 
             // uc_filesize_monitor3
             // 
             this.uc_filesize_monitor3.ForeColor = System.Drawing.Color.Black;
             this.uc_filesize_monitor3.Information = "";
-            this.uc_filesize_monitor3.Location = new System.Drawing.Point(429, 10);
+            this.uc_filesize_monitor3.Location = new System.Drawing.Point(572, 12);
+            this.uc_filesize_monitor3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.uc_filesize_monitor3.Name = "uc_filesize_monitor3";
-            this.uc_filesize_monitor3.Size = new System.Drawing.Size(181, 76);
+            this.uc_filesize_monitor3.Size = new System.Drawing.Size(241, 94);
             this.uc_filesize_monitor3.TabIndex = 2;
             this.uc_filesize_monitor3.Visible = false;
             // 
@@ -119,9 +126,10 @@
             // 
             this.uc_filesize_monitor2.ForeColor = System.Drawing.Color.Black;
             this.uc_filesize_monitor2.Information = "";
-            this.uc_filesize_monitor2.Location = new System.Drawing.Point(206, 10);
+            this.uc_filesize_monitor2.Location = new System.Drawing.Point(275, 12);
+            this.uc_filesize_monitor2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.uc_filesize_monitor2.Name = "uc_filesize_monitor2";
-            this.uc_filesize_monitor2.Size = new System.Drawing.Size(181, 76);
+            this.uc_filesize_monitor2.Size = new System.Drawing.Size(241, 94);
             this.uc_filesize_monitor2.TabIndex = 1;
             this.uc_filesize_monitor2.Visible = false;
             // 
@@ -129,18 +137,20 @@
             // 
             this.uc_filesize_monitor1.ForeColor = System.Drawing.Color.Black;
             this.uc_filesize_monitor1.Information = "";
-            this.uc_filesize_monitor1.Location = new System.Drawing.Point(5, 10);
+            this.uc_filesize_monitor1.Location = new System.Drawing.Point(7, 12);
+            this.uc_filesize_monitor1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.uc_filesize_monitor1.Name = "uc_filesize_monitor1";
-            this.uc_filesize_monitor1.Size = new System.Drawing.Size(181, 76);
+            this.uc_filesize_monitor1.Size = new System.Drawing.Size(241, 94);
             this.uc_filesize_monitor1.TabIndex = 0;
             this.uc_filesize_monitor1.Visible = false;
             // 
             // btnRunOC7
             // 
             this.btnRunOC7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRunOC7.Location = new System.Drawing.Point(449, 354);
+            this.btnRunOC7.Location = new System.Drawing.Point(599, 436);
+            this.btnRunOC7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnRunOC7.Name = "btnRunOC7";
-            this.btnRunOC7.Size = new System.Drawing.Size(126, 32);
+            this.btnRunOC7.Size = new System.Drawing.Size(168, 39);
             this.btnRunOC7.TabIndex = 59;
             this.btnRunOC7.Text = "Run OC7";
             this.btnRunOC7.Visible = false;
@@ -150,9 +160,10 @@
             // 
             this.lblMsg.AutoSize = true;
             this.lblMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMsg.Location = new System.Drawing.Point(16, 327);
+            this.lblMsg.Location = new System.Drawing.Point(21, 402);
+            this.lblMsg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(158, 16);
+            this.lblMsg.Size = new System.Drawing.Size(193, 20);
             this.lblMsg.TabIndex = 58;
             this.lblMsg.Text = "Run Status Messages";
             this.lblMsg.Visible = false;
@@ -163,28 +174,31 @@
             this.lstFvsOutput.GridLines = true;
             this.lstFvsOutput.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstFvsOutput.HideSelection = false;
-            this.lstFvsOutput.Location = new System.Drawing.Point(19, 13);
+            this.lstFvsOutput.Location = new System.Drawing.Point(25, 16);
+            this.lstFvsOutput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstFvsOutput.MultiSelect = false;
             this.lstFvsOutput.Name = "lstFvsOutput";
-            this.lstFvsOutput.Size = new System.Drawing.Size(714, 310);
+            this.lstFvsOutput.Size = new System.Drawing.Size(951, 381);
             this.lstFvsOutput.TabIndex = 57;
             this.lstFvsOutput.UseCompatibleStateImageBehavior = false;
             this.lstFvsOutput.View = System.Windows.Forms.View.Details;
             // 
             // btnUncheckAll
             // 
-            this.btnUncheckAll.Location = new System.Drawing.Point(156, 354);
+            this.btnUncheckAll.Location = new System.Drawing.Point(208, 436);
+            this.btnUncheckAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnUncheckAll.Name = "btnUncheckAll";
-            this.btnUncheckAll.Size = new System.Drawing.Size(81, 32);
+            this.btnUncheckAll.Size = new System.Drawing.Size(108, 39);
             this.btnUncheckAll.TabIndex = 55;
             this.btnUncheckAll.Text = "Uncheck All";
             this.btnUncheckAll.Click += new System.EventHandler(this.btnUncheckAll_Click);
             // 
             // btnChkAll
             // 
-            this.btnChkAll.Location = new System.Drawing.Point(86, 354);
+            this.btnChkAll.Location = new System.Drawing.Point(115, 436);
+            this.btnChkAll.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnChkAll.Name = "btnChkAll";
-            this.btnChkAll.Size = new System.Drawing.Size(64, 32);
+            this.btnChkAll.Size = new System.Drawing.Size(85, 39);
             this.btnChkAll.TabIndex = 54;
             this.btnChkAll.Text = "Check All";
             this.btnChkAll.Click += new System.EventHandler(this.btnChkAll_Click);
@@ -194,19 +208,20 @@
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(4, 19);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(749, 32);
+            this.lblTitle.Size = new System.Drawing.Size(999, 39);
             this.lblTitle.TabIndex = 31;
             this.lblTitle.Text = "Run Processor Scenario";
             // 
             // uc_processor_scenario_run
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "uc_processor_scenario_run";
-            this.Size = new System.Drawing.Size(755, 557);
+            this.Size = new System.Drawing.Size(1007, 686);
             this.groupBox1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

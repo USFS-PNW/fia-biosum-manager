@@ -9,7 +9,6 @@ namespace FIA_Biosum_Manager
     {
         private string m_strScenarioId = "";
         private ado_data_access  m_oAdo;
-        private Queries m_oQueries;
         private string m_strOpcostTableName = "OpCost_Input";
         private string m_strTvvTableName = "TreeVolValLowSlope";
         private string m_strDebugFile ="";
@@ -23,12 +22,12 @@ namespace FIA_Biosum_Manager
         private escalators m_escalators;
         public System.Collections.Generic.List<string> m_standsWithNoYardingDistance;
 
-        public processor(string strDebugFile, string strScenarioId, ado_data_access oAdo, Queries oQueries)
+        public processor(string strDebugFile, string strScenarioId, string strConnectionString)
         {
             m_strDebugFile = strDebugFile;
             m_strScenarioId = strScenarioId;
-            m_oAdo = oAdo;
-            m_oQueries = oQueries;
+            m_oAdo = new ado_data_access();
+            m_oAdo.OpenConnection(strConnectionString);
         }
         
         public Queries init()
@@ -134,11 +133,12 @@ namespace FIA_Biosum_Manager
             return p_oQueries;
         }
         
-        public int loadTrees(string p_strVariant, string p_strRxPackage)
+        public int LoadTrees(string p_strVariant, string p_strRxPackage, string p_strCondTableName, string p_strPlotTableName,
+                             string p_strRefHarvestMethodTableName, string p_strRxTableName)
         {
 
             //Load harvest methods; Prescription load depends on harvest methods
-            m_harvestMethodList = loadHarvestMethods();
+            m_harvestMethodList = LoadHarvestMethods(p_strRefHarvestMethodTableName);
             //If harvest methods didn't load, stop processing
             if (m_harvestMethodList == null)
             {
@@ -153,21 +153,19 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
             }
             //Load prescriptions into reference dictionary
-            m_prescriptions = loadPrescriptions();
+            m_prescriptions = LoadPrescriptions(p_strRxTableName);
             //Load diameter variables into reference object
-            m_scenarioHarvestMethod = loadScenarioHarvestMethod(m_strScenarioId);
+            m_scenarioHarvestMethod = LoadScenarioHarvestMethod(m_strScenarioId);
             //Load escalators into reference object
-            m_escalators = loadEscalators();
+            m_escalators = LoadEscalators();
             //Load move-in costs into reference object
-            m_scenarioMoveInCost = loadScenarioMoveInCost(m_strScenarioId);
+            m_scenarioMoveInCost = LoadScenarioMoveInCost(m_strScenarioId);
             m_standsWithNoYardingDistance = new System.Collections.Generic.List<string>();
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "loadTrees: Diameter Variables in Use: " + m_scenarioHarvestMethod.ToString() + "\r\n");
             
             string strTableName = "fvs_tree_IN_" + p_strVariant + "_P" + p_strRxPackage + "_TREE_CUTLIST";
-            string strPlotTableName = m_oQueries.m_oFIAPlot.m_strPlotTable;
-            string strCondTableName = m_oQueries.m_oFIAPlot.m_strCondTable;
 
             if (m_oAdo.m_intError == 0)
             {
@@ -191,7 +189,7 @@ namespace FIA_Biosum_Manager
                                 "z.fvs_species, z.volTsGrs, z.volCfGrs, c.slope, c.elev, c.gis_yard_dist_ft " +
                                 "FROM " + strTableName + " z, " +
                                 "(SELECT p.biosum_plot_id,p.gis_yard_dist_ft,p.elev,d.biosum_cond_id,d.slope FROM " +
-                                strPlotTableName + " p INNER JOIN " + strCondTableName + " d ON p.biosum_plot_id = d.biosum_plot_id) c " +
+                                p_strPlotTableName + " p INNER JOIN " + p_strCondTableName + " d ON p.biosum_plot_id = d.biosum_plot_id) c " +
                                 "WHERE z.rxpackage='" + p_strRxPackage + "' AND " +
                                 "z.biosum_cond_id = c.biosum_cond_id";
                 m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, strSQL);
@@ -357,7 +355,8 @@ namespace FIA_Biosum_Manager
             return 0;
         }
 
-        public int updateTrees(string p_strVariant, string p_strRxPackage, bool blnCreateReconcilationTable)
+        public int UpdateTrees(string p_strVariant, string p_strRxPackage, string p_strTreeTableName, 
+            string p_strTravelTimesTableName, string p_strTreeSpeciesTableName, bool blnCreateReconcilationTable)
         {
             if (m_trees == null)
             {
@@ -374,16 +373,16 @@ namespace FIA_Biosum_Manager
             }
 
             //Load species groups into reference dictionary
-            System.Collections.Generic.IDictionary<string, treeSpecies> dictTreeSpecies = loadTreeSpecies(p_strVariant);
+            System.Collections.Generic.IDictionary<string, treeSpecies> dictTreeSpecies = LoadTreeSpecies(p_strVariant, p_strTreeSpeciesTableName);
             //Load species diam values into reference dictionary
-            System.Collections.Generic.IDictionary<string, speciesDiamValue> dictSpeciesDiamValues = loadSpeciesDiamValues(m_strScenarioId);
+            System.Collections.Generic.IDictionary<string, speciesDiamValue> dictSpeciesDiamValues = LoadSpeciesDiamValues(m_strScenarioId);
             //Load diameter groups into reference list
-            System.Collections.Generic.List<treeDiamGroup> listDiamGroups = loadTreeDiamGroups();
+            System.Collections.Generic.List<treeDiamGroup> listDiamGroups = LoadTreeDiamGroups();
             System.Collections.Generic.IDictionary<string, double> dictTravelTimes = null;
             if (m_scenarioMoveInCost.MoveInTimeMultiplier > 0)
             {
                 //Load travel times
-                dictTravelTimes = loadTravelTimes();
+                dictTravelTimes = LoadTravelTimes(p_strTravelTimesTableName);
 
                 //Abort if travel times have not been loaded
                 if (dictTravelTimes.Count == 0)
@@ -406,9 +405,8 @@ namespace FIA_Biosum_Manager
             if (m_oAdo.m_intError == 0)
             {
             string strTableName = "fvs_tree_IN_" + p_strVariant + "_P" + p_strRxPackage + "_TREE_CUTLIST";
-            string strTreeTableName = m_oQueries.m_oFIAPlot.m_strTreeTable;
             string strSQL = "SELECT DISTINCT t.fvs_tree_id, t.biosum_cond_id, t.spcd " +
-                    "FROM " + strTreeTableName + " t, " + strTableName + " z " +
+                    "FROM " + p_strTreeTableName + " t, " + strTableName + " z " +
                     "WHERE t.fvs_tree_id = z.fvs_tree_id " +
                     "AND t.biosum_cond_id = z.biosum_cond_id " +
                     "AND z.rxpackage='" + p_strRxPackage + "' " +
@@ -522,8 +520,8 @@ namespace FIA_Biosum_Manager
                         lstRemovetrees.Add(nextTree);
                     
                     //Assign OpCostTreeType
-                    nextTree.TreeType = chooseOpCostTreeType(nextTree);
-                    calculateVolumeAndWeight(nextTree);
+                    nextTree.TreeType = ChooseOpCostTreeType(nextTree);
+                    CalculateVolumeAndWeight(nextTree);
 
                     //Dump OpCostTreeType in .csv format for validation
                     //string strLogEntry = nextTree.Dbh + ", " + nextTree.Slope + ", " + nextTree.IsNonCommercial +
@@ -542,7 +540,7 @@ namespace FIA_Biosum_Manager
             // Create the reconcilation table, if desired
             if (blnCreateReconcilationTable == true)
             {
-                createTreeReconcilationTable(p_strVariant, p_strRxPackage, m_oAdo);
+                CreateTreeReconcilationTable(p_strVariant, p_strRxPackage, p_strTreeTableName, m_oAdo);
             }
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
@@ -555,12 +553,12 @@ namespace FIA_Biosum_Manager
             return 0;
         }
 
-        private void createTreeReconcilationTable(string p_strVariant, string p_strRxPackage, ado_data_access p_oAdo)
+        private void CreateTreeReconcilationTable(string p_strVariant, string p_strRxPackage, string p_strTreeTableName, 
+            ado_data_access p_oAdo)
         {
             if (p_oAdo.m_intError == 0)
             {
-                string strTreeTableName = m_oQueries.m_oFIAPlot.m_strTreeTable;
-                string strSQL = "SELECT fvs_tree_id, biosum_cond_id, tree, cn from " + strTreeTableName + " where fvs_tree_id is not null and biosum_cond_id is not null";
+                string strSQL = "SELECT fvs_tree_id, biosum_cond_id, tree, cn from " + p_strTreeTableName + " where fvs_tree_id is not null and biosum_cond_id is not null";
   
                 p_oAdo.SqlQueryReader(p_oAdo.m_OleDbConnection, strSQL);
                 if (p_oAdo.m_OleDbDataReader.HasRows)
@@ -621,7 +619,7 @@ namespace FIA_Biosum_Manager
             }
         }
 
-        public int createOpcostInput(string p_strVariant)
+        public int CreateOpcostInput(string p_strVariant)
         {
             int intReturnVal = -1;
             int intHwdSpeciesCodeThreshold = 299; // Species codes greater than this are hardwoods
@@ -736,7 +734,7 @@ namespace FIA_Biosum_Manager
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(m_strDebugFile, "createOpcostInput: Load Basal Area for all conditions from PRE_FVS_SUMMARY - " + System.DateTime.Now.ToString() + "\r\n");
 
-                System.Collections.Generic.IDictionary<string, double> dictFvsPreBasalArea = this.loadFvsPreBasalArea(p_strVariant);
+                System.Collections.Generic.IDictionary<string, double> dictFvsPreBasalArea = this.LoadFvsPreBasalArea(p_strVariant);
 
                 if (dictFvsPreBasalArea.Keys.Count == 0)
                 {
@@ -920,7 +918,7 @@ namespace FIA_Biosum_Manager
             return -1;
         }
 
-        public int createTreeVolValWorkTable(string strDateTimeCreated, bool blnInclHarvMethodCat)
+        public int CreateTreeVolValWorkTable(string strDateTimeCreated, bool blnInclHarvMethodCat)
         {
             int intReturnVal = -1;
             if (m_trees.Count < 1)
@@ -1195,13 +1193,25 @@ namespace FIA_Biosum_Manager
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
             {
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n//\r\n");
-                frmMain.g_oUtils.WriteText(m_strDebugFile, "//Processor.createTreeVolValWorkTable END \r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "//Processor.createTreeVolValWorkTable \r\n");
                  frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
+            }
+
+            if (m_oAdo != null)
+            {
+                m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
+                m_oAdo = null;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n//\r\n");
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "//Dispose of ado_data_access object END \r\n");
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
+                }
             }
             return intReturnVal;
         }
 
-        private System.Collections.Generic.List<treeDiamGroup> loadTreeDiamGroups()
+        private System.Collections.Generic.List<treeDiamGroup> LoadTreeDiamGroups()
         {
             System.Collections.Generic.List<treeDiamGroup> listDiamGroups = new System.Collections.Generic.List<treeDiamGroup>();
             if (m_oAdo.m_intError == 0)
@@ -1223,15 +1233,15 @@ namespace FIA_Biosum_Manager
             return listDiamGroups;
         }
 
-        private System.Collections.Generic.IDictionary<String, treeSpecies> loadTreeSpecies(string p_strVariant)
+        private System.Collections.Generic.IDictionary<String, treeSpecies> LoadTreeSpecies(string p_strVariant, 
+            string p_strTreeSpeciesTableName)
         {
             System.Collections.Generic.IDictionary<String, treeSpecies> dictTreeSpecies = 
                 new System.Collections.Generic.Dictionary<String, treeSpecies>();
             if (m_oAdo.m_intError == 0)
             {
-                string strTreeSpeciesTableName = this.m_oQueries.m_oFvs.m_strTreeSpcTable;
                 string strSQL = "SELECT DISTINCT s.SPCD, s.SPECIES_GROUP, f.od_wgt, f.Dry_to_Green, f.WOODLAND_YN FROM " +
-                         strTreeSpeciesTableName + " t, " +
+                         p_strTreeSpeciesTableName + " t, " +
                          Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName + " s, " +
                          Tables.ProcessorScenarioRun.DefaultFiaTreeSpeciesRefTableName + " f " +
                          "WHERE t.spcd = s.spcd AND t.spcd = f.spcd and f.spcd = s.spcd " +
@@ -1275,7 +1285,7 @@ namespace FIA_Biosum_Manager
         /// The composite key is intDiamGroup + "|" + intSpcGroup
         /// The value is a speciesDiamValue object
         ///</summary> 
-        private System.Collections.Generic.IDictionary<String, speciesDiamValue> loadSpeciesDiamValues(string p_scenario)
+        private System.Collections.Generic.IDictionary<String, speciesDiamValue> LoadSpeciesDiamValues(string p_scenario)
         {
             System.Collections.Generic.IDictionary<String, speciesDiamValue> dictSpeciesDiamValues = 
                 new System.Collections.Generic.Dictionary<String, speciesDiamValue>();
@@ -1304,7 +1314,7 @@ namespace FIA_Biosum_Manager
             return dictSpeciesDiamValues;
         }
 
-        private System.Collections.Generic.IDictionary<String, prescription> loadPrescriptions()
+        private System.Collections.Generic.IDictionary<String, prescription> LoadPrescriptions(string p_strRxTable)
         {
             if (m_harvestMethodList == null || m_harvestMethodList.Count == 0)
             {
@@ -1316,7 +1326,7 @@ namespace FIA_Biosum_Manager
                 new System.Collections.Generic.Dictionary<String, prescription>();
             if (m_oAdo.m_intError == 0)
             {
-                string strSQL = "SELECT * FROM " + m_oQueries.m_oFvs.m_strRxTable;
+                string strSQL = "SELECT * FROM " + p_strRxTable;
                 m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, strSQL);
                 if (m_oAdo.m_OleDbDataReader.HasRows)
                 {
@@ -1346,7 +1356,7 @@ namespace FIA_Biosum_Manager
             return dictPrescriptions;
         }
 
-        private scenarioHarvestMethod loadScenarioHarvestMethod(string p_scenario)
+        private scenarioHarvestMethod LoadScenarioHarvestMethod(string p_scenario)
         {
             if (m_harvestMethodList == null || m_harvestMethodList.Count == 0)
             {
@@ -1407,7 +1417,7 @@ namespace FIA_Biosum_Manager
             return returnVariables;
         }
 
-        private scenarioMoveInCost loadScenarioMoveInCost(string p_scenario)
+        private scenarioMoveInCost LoadScenarioMoveInCost(string p_scenario)
         {
             scenarioMoveInCost returnVariables = null;
             if (m_oAdo.m_intError == 0)
@@ -1431,7 +1441,7 @@ namespace FIA_Biosum_Manager
             return returnVariables;
         }
 
-        private escalators loadEscalators()
+        private escalators LoadEscalators()
         {
             escalators returnEscalators = null;
             if (m_oAdo.m_intError == 0)
@@ -1459,16 +1469,16 @@ namespace FIA_Biosum_Manager
             return returnEscalators;
         }
 
-        private System.Collections.Generic.IList<harvestMethod> loadHarvestMethods()
+        private System.Collections.Generic.IList<harvestMethod> LoadHarvestMethods(string p_strRefHarvestMethodTableName)
         {
             System.Collections.Generic.IList<harvestMethod> harvestMethodList = null;
             if (m_oAdo.m_intError == 0)
             {
                 // Check to see if the biosum_category column exists in the harvest method table; If not
                 // throw an error and exit the function; Processor won't work without this value
-                if (!m_oAdo.ColumnExist(m_oAdo.m_OleDbConnection, m_oQueries.m_oReference.m_strRefHarvestMethodTable, "min_tpa"))
+                if (!m_oAdo.ColumnExist(m_oAdo.m_OleDbConnection, p_strRefHarvestMethodTableName, "min_tpa"))
                 {
-                    string strErrMsg = "Your project contains an obsolete version of the " + m_oQueries.m_oReference.m_strRefHarvestMethodTable +
+                    string strErrMsg = "Your project contains an obsolete version of the " + p_strRefHarvestMethodTableName +
                                        " table that does not contain the 'min_tpa' field. Copy a new version of this table into your project from the" +
                                        " BioSum installation directory before trying to run Processor.";
                     System.Windows.Forms.MessageBox.Show(strErrMsg, "FIA Biosum",
@@ -1476,7 +1486,7 @@ namespace FIA_Biosum_Manager
                     return harvestMethodList;
                 }
 
-                string strSQL = "SELECT * FROM " + m_oQueries.m_oReference.m_strRefHarvestMethodTable;
+                string strSQL = "SELECT * FROM " + p_strRefHarvestMethodTableName;
                 m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, strSQL);
                 if (m_oAdo.m_OleDbDataReader.HasRows)
                 {
@@ -1502,7 +1512,7 @@ namespace FIA_Biosum_Manager
             return harvestMethodList;
         }
         
-        private OpCostTreeType chooseOpCostTreeType(tree p_tree)
+        private OpCostTreeType ChooseOpCostTreeType(tree p_tree)
         {
             OpCostTreeType returnType = OpCostTreeType.None;
 
@@ -1533,7 +1543,7 @@ namespace FIA_Biosum_Manager
             return returnType;
         }
 
-        private void calculateVolumeAndWeight(tree p_tree)
+        private void CalculateVolumeAndWeight(tree p_tree)
         {
             
             //merchVolCfPa
@@ -2802,7 +2812,7 @@ namespace FIA_Biosum_Manager
             }
         }
 
-        private System.Collections.Generic.IDictionary<String, opcostIdeal> loadOpcostIdeal()
+        private System.Collections.Generic.IDictionary<String, opcostIdeal> LoadOpcostIdeal()
         {
             System.Collections.Generic.IDictionary<String, opcostIdeal> dictOpcostIdeal =
                 new System.Collections.Generic.Dictionary<String, opcostIdeal>();
@@ -2830,15 +2840,14 @@ namespace FIA_Biosum_Manager
             return dictOpcostIdeal;
         }
 
-        private System.Collections.Generic.IDictionary<String, double> loadTravelTimes()
+        private System.Collections.Generic.IDictionary<String, double> LoadTravelTimes(string p_strTravelTimesTableName)
         {
             System.Collections.Generic.IDictionary<String, double> dictTravelTimes =
                 new System.Collections.Generic.Dictionary<String, double>();
             if (m_oAdo.m_intError == 0)
             {
-                string strTravelTimesTableName = m_oQueries.m_oTravelTime.m_strTravelTimeTable;
                 string strSQL = "SELECT MIN(ONE_WAY_HOURS) AS min_one_way_hours, BIOSUM_PLOT_ID " +
-                                "FROM " + strTravelTimesTableName +
+                                "FROM " + p_strTravelTimesTableName +
                                 " WHERE ONE_WAY_HOURS > 0 " +
                                 "GROUP BY BIOSUM_PLOT_ID";
                 m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, strSQL);
@@ -2855,7 +2864,7 @@ namespace FIA_Biosum_Manager
             return dictTravelTimes;
         }
 
-        private System.Collections.Generic.IDictionary<String, double> loadFvsPreBasalArea(string p_strVariant)
+        private System.Collections.Generic.IDictionary<String, double> LoadFvsPreBasalArea(string p_strVariant)
         {
             System.Collections.Generic.IDictionary<String, double> dictPreBasalArea =
                 new System.Collections.Generic.Dictionary<String, double>();

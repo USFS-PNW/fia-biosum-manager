@@ -4737,10 +4737,12 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Load trees from cut list...Stand By");
                     y++;
                     frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
-                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim().ToUpper(), m_oAdo, m_oQueries);
+                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim().ToUpper(), m_oAdo.m_OleDbConnection.ConnectionString);
                     if (!_bInactiveVarRxPackage)
                     {
-                        m_intError = mainProcessor.loadTrees(strVariant, strRxPackage);
+                        m_intError = mainProcessor.LoadTrees(strVariant, strRxPackage, m_oQueries.m_oFIAPlot.m_strCondTable,
+                            m_oQueries.m_oFIAPlot.m_strPlotTable, m_oQueries.m_oReference.m_strRefHarvestMethodTable,
+                            m_oQueries.m_oFvs.m_strRxTable);
 
                         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         {
@@ -4758,7 +4760,8 @@ namespace FIA_Biosum_Manager
                             // print reconcile trees table if debug at highest level; This will be in temporary .accdb
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                                 blnCreateReconcileTreesTable = true;
-                            m_intError = mainProcessor.updateTrees(strVariant, strRxPackage, blnCreateReconcileTreesTable);
+                            m_intError = mainProcessor.UpdateTrees(strVariant, strRxPackage, m_oQueries.m_oFIAPlot.m_strTreeTable, 
+                                m_oQueries.m_oTravelTime.m_strTravelTimeTable, this.m_oQueries.m_oFvs.m_strTreeSpcTable, blnCreateReconcileTreesTable);
 
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             {
@@ -4773,7 +4776,7 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Creating OpCost Input...Stand By");
                             y++;
                             frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
-                            m_intError = mainProcessor.createOpcostInput(strVariant);
+                            m_intError = mainProcessor.CreateOpcostInput(strVariant);
 
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             {
@@ -4817,7 +4820,8 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Update Tree Vol Val Table With Merch and Chip Market Values...Stand By");
                             y++;
                             frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
-                            m_intError = mainProcessor.createTreeVolValWorkTable(m_strDateTimeCreated, false);
+                            // Note: This function disposes of local ado_data_access object
+                            m_intError = mainProcessor.CreateTreeVolValWorkTable(m_strDateTimeCreated, false);
 
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             {

@@ -74,8 +74,8 @@ namespace FIA_Biosum_Manager
 			FIA_Biosum_Manager.frmMain.g_oFrmMain=p_frmMain;
 
 			InitializeComponent();
-			
-			if (this.Width > p_frmMain.Width - p_frmMain.grpboxLeft.Width ) 
+
+            if (this.Width > p_frmMain.Width - p_frmMain.grpboxLeft.Width ) 
 			{
 				this.Width = p_frmMain.Width - p_frmMain.grpboxLeft.Width  - 10;
 			}
@@ -233,9 +233,10 @@ namespace FIA_Biosum_Manager
             this.tlbScenario.DropDownArrows = true;
             this.tlbScenario.ImageList = this.imageList1;
             this.tlbScenario.Location = new System.Drawing.Point(0, 0);
+            this.tlbScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tlbScenario.Name = "tlbScenario";
             this.tlbScenario.ShowToolTips = true;
-            this.tlbScenario.Size = new System.Drawing.Size(907, 51);
+            this.tlbScenario.Size = new System.Drawing.Size(982, 47);
             this.tlbScenario.TabIndex = 43;
             this.tlbScenario.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbScenario_ButtonClick);
             // 
@@ -298,9 +299,10 @@ namespace FIA_Biosum_Manager
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(1101, 795);
+            this.btnClose.Location = new System.Drawing.Point(917, 662);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(2);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(153, 47);
+            this.btnClose.Size = new System.Drawing.Size(127, 39);
             this.btnClose.TabIndex = 44;
             this.btnClose.Text = "Close";
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
@@ -315,10 +317,11 @@ namespace FIA_Biosum_Manager
             this.tabControlScenario.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControlScenario.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControlScenario.ItemSize = new System.Drawing.Size(100, 18);
-            this.tabControlScenario.Location = new System.Drawing.Point(0, 82);
+            this.tabControlScenario.Location = new System.Drawing.Point(0, 68);
+            this.tabControlScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlScenario.Name = "tabControlScenario";
             this.tabControlScenario.SelectedIndex = 0;
-            this.tabControlScenario.Size = new System.Drawing.Size(1451, 694);
+            this.tabControlScenario.Size = new System.Drawing.Size(1209, 578);
             this.tabControlScenario.TabIndex = 45;
             this.tabControlScenario.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlScenario_DrawItem);
             this.tabControlScenario.SelectedIndexChanged += new System.EventHandler(this.tabControlScenario_SelectedIndexChanged);
@@ -327,8 +330,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbDesc.AutoScroll = true;
             this.tbDesc.Location = new System.Drawing.Point(4, 22);
+            this.tbDesc.Margin = new System.Windows.Forms.Padding(2);
             this.tbDesc.Name = "tbDesc";
-            this.tbDesc.Size = new System.Drawing.Size(1443, 668);
+            this.tbDesc.Size = new System.Drawing.Size(1201, 552);
             this.tbDesc.TabIndex = 0;
             this.tbDesc.Text = "Description";
             // 
@@ -336,8 +340,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbNotes.AutoScroll = true;
             this.tbNotes.Location = new System.Drawing.Point(4, 22);
+            this.tbNotes.Margin = new System.Windows.Forms.Padding(2);
             this.tbNotes.Name = "tbNotes";
-            this.tbNotes.Size = new System.Drawing.Size(1443, 668);
+            this.tbNotes.Size = new System.Drawing.Size(1201, 552);
             this.tbNotes.TabIndex = 1;
             this.tbNotes.Text = "Notes";
             this.tbNotes.Visible = false;
@@ -346,8 +351,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbDataSources.AutoScroll = true;
             this.tbDataSources.Location = new System.Drawing.Point(4, 22);
+            this.tbDataSources.Margin = new System.Windows.Forms.Padding(2);
             this.tbDataSources.Name = "tbDataSources";
-            this.tbDataSources.Size = new System.Drawing.Size(1443, 668);
+            this.tbDataSources.Size = new System.Drawing.Size(1201, 552);
             this.tbDataSources.TabIndex = 2;
             this.tbDataSources.Text = "Data Sources";
             this.tbDataSources.Visible = false;
@@ -356,8 +362,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbTreeGroupings.Controls.Add(this.uc_scenario_tree_groupings1);
             this.tbTreeGroupings.Location = new System.Drawing.Point(4, 22);
+            this.tbTreeGroupings.Margin = new System.Windows.Forms.Padding(2);
             this.tbTreeGroupings.Name = "tbTreeGroupings";
-            this.tbTreeGroupings.Size = new System.Drawing.Size(1443, 668);
+            this.tbTreeGroupings.Size = new System.Drawing.Size(1201, 552);
             this.tbTreeGroupings.TabIndex = 4;
             this.tbTreeGroupings.Text = "Tree Groupings";
             this.tbTreeGroupings.UseVisualStyleBackColor = true;
@@ -369,7 +376,7 @@ namespace FIA_Biosum_Manager
             this.uc_scenario_tree_groupings1.Name = "uc_scenario_tree_groupings1";
             this.uc_scenario_tree_groupings1.ReferenceProcessorScenarioForm = null;
             this.uc_scenario_tree_groupings1.ScenarioType = "processor";
-            this.uc_scenario_tree_groupings1.Size = new System.Drawing.Size(1062, 620);
+            this.uc_scenario_tree_groupings1.Size = new System.Drawing.Size(885, 517);
             this.uc_scenario_tree_groupings1.TabIndex = 0;
             // 
             // tbRules
@@ -377,8 +384,9 @@ namespace FIA_Biosum_Manager
             this.tbRules.Controls.Add(this.tabControlRules);
             this.tbRules.ForeColor = System.Drawing.Color.Red;
             this.tbRules.Location = new System.Drawing.Point(4, 22);
+            this.tbRules.Margin = new System.Windows.Forms.Padding(2);
             this.tbRules.Name = "tbRules";
-            this.tbRules.Size = new System.Drawing.Size(1443, 668);
+            this.tbRules.Size = new System.Drawing.Size(1201, 552);
             this.tbRules.TabIndex = 3;
             this.tbRules.Text = "Rule Definitions";
             this.tbRules.Visible = false;
@@ -395,9 +403,10 @@ namespace FIA_Biosum_Manager
             this.tabControlRules.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControlRules.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControlRules.Location = new System.Drawing.Point(0, 0);
+            this.tabControlRules.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlRules.Name = "tabControlRules";
             this.tabControlRules.SelectedIndex = 0;
-            this.tabControlRules.Size = new System.Drawing.Size(1443, 668);
+            this.tabControlRules.Size = new System.Drawing.Size(1201, 552);
             this.tabControlRules.TabIndex = 0;
             this.tabControlRules.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlRules_DrawItem);
             this.tabControlRules.SelectedIndexChanged += new System.EventHandler(this.tabControlRules_SelectedIndexChanged);
@@ -405,9 +414,10 @@ namespace FIA_Biosum_Manager
             // tbHarvestMethod
             // 
             this.tbHarvestMethod.Controls.Add(this.uc_processor_scenario_harvest_method1);
-            this.tbHarvestMethod.Location = new System.Drawing.Point(4, 29);
+            this.tbHarvestMethod.Location = new System.Drawing.Point(4, 26);
+            this.tbHarvestMethod.Margin = new System.Windows.Forms.Padding(2);
             this.tbHarvestMethod.Name = "tbHarvestMethod";
-            this.tbHarvestMethod.Size = new System.Drawing.Size(1435, 635);
+            this.tbHarvestMethod.Size = new System.Drawing.Size(1193, 522);
             this.tbHarvestMethod.TabIndex = 1;
             this.tbHarvestMethod.Text = "Harvest Method";
             this.tbHarvestMethod.UseVisualStyleBackColor = true;
@@ -417,18 +427,20 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_harvest_method1.BackColor = System.Drawing.SystemColors.Control;
             this.uc_processor_scenario_harvest_method1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uc_processor_scenario_harvest_method1.Location = new System.Drawing.Point(0, 0);
+            this.uc_processor_scenario_harvest_method1.Margin = new System.Windows.Forms.Padding(2);
             this.uc_processor_scenario_harvest_method1.Name = "uc_processor_scenario_harvest_method1";
             this.uc_processor_scenario_harvest_method1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_harvest_method1.ScenarioId = "";
-            this.uc_processor_scenario_harvest_method1.Size = new System.Drawing.Size(1435, 635);
+            this.uc_processor_scenario_harvest_method1.Size = new System.Drawing.Size(1193, 522);
             this.uc_processor_scenario_harvest_method1.TabIndex = 0;
             // 
             // tbMoveInCosts
             // 
             this.tbMoveInCosts.Controls.Add(this.uc_processor_scenario_movein_costs1);
-            this.tbMoveInCosts.Location = new System.Drawing.Point(4, 29);
+            this.tbMoveInCosts.Location = new System.Drawing.Point(4, 26);
+            this.tbMoveInCosts.Margin = new System.Windows.Forms.Padding(2);
             this.tbMoveInCosts.Name = "tbMoveInCosts";
-            this.tbMoveInCosts.Size = new System.Drawing.Size(1435, 635);
+            this.tbMoveInCosts.Size = new System.Drawing.Size(192, 70);
             this.tbMoveInCosts.TabIndex = 2;
             this.tbMoveInCosts.Text = "Move-in Costs";
             this.tbMoveInCosts.UseVisualStyleBackColor = true;
@@ -436,18 +448,20 @@ namespace FIA_Biosum_Manager
             // uc_processor_scenario_movein_costs1
             // 
             this.uc_processor_scenario_movein_costs1.Location = new System.Drawing.Point(0, 0);
+            this.uc_processor_scenario_movein_costs1.Margin = new System.Windows.Forms.Padding(2);
             this.uc_processor_scenario_movein_costs1.Name = "uc_processor_scenario_movein_costs1";
             this.uc_processor_scenario_movein_costs1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_movein_costs1.ScenarioId = "";
-            this.uc_processor_scenario_movein_costs1.Size = new System.Drawing.Size(1114, 655);
+            this.uc_processor_scenario_movein_costs1.Size = new System.Drawing.Size(928, 546);
             this.uc_processor_scenario_movein_costs1.TabIndex = 0;
             // 
             // tbWoodValue
             // 
             this.tbWoodValue.Controls.Add(this.uc_processor_scenario_merch_chip_value1);
-            this.tbWoodValue.Location = new System.Drawing.Point(4, 29);
+            this.tbWoodValue.Location = new System.Drawing.Point(4, 26);
+            this.tbWoodValue.Margin = new System.Windows.Forms.Padding(2);
             this.tbWoodValue.Name = "tbWoodValue";
-            this.tbWoodValue.Size = new System.Drawing.Size(1435, 635);
+            this.tbWoodValue.Size = new System.Drawing.Size(192, 70);
             this.tbWoodValue.TabIndex = 7;
             this.tbWoodValue.Text = "Wood Value";
             this.tbWoodValue.UseVisualStyleBackColor = true;
@@ -458,18 +472,20 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_merch_chip_value1.BackColor = System.Drawing.SystemColors.Control;
             this.uc_processor_scenario_merch_chip_value1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uc_processor_scenario_merch_chip_value1.Location = new System.Drawing.Point(0, 0);
+            this.uc_processor_scenario_merch_chip_value1.Margin = new System.Windows.Forms.Padding(2);
             this.uc_processor_scenario_merch_chip_value1.Name = "uc_processor_scenario_merch_chip_value1";
             this.uc_processor_scenario_merch_chip_value1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_merch_chip_value1.ScenarioId = "";
-            this.uc_processor_scenario_merch_chip_value1.Size = new System.Drawing.Size(1430, 623);
+            this.uc_processor_scenario_merch_chip_value1.Size = new System.Drawing.Size(192, 70);
             this.uc_processor_scenario_merch_chip_value1.TabIndex = 0;
             // 
             // tbEscalators
             // 
             this.tbEscalators.Controls.Add(this.uc_processor_scenario_escalators1);
-            this.tbEscalators.Location = new System.Drawing.Point(4, 29);
+            this.tbEscalators.Location = new System.Drawing.Point(4, 26);
+            this.tbEscalators.Margin = new System.Windows.Forms.Padding(2);
             this.tbEscalators.Name = "tbEscalators";
-            this.tbEscalators.Size = new System.Drawing.Size(1435, 635);
+            this.tbEscalators.Size = new System.Drawing.Size(192, 70);
             this.tbEscalators.TabIndex = 5;
             this.tbEscalators.Text = "Escalators";
             this.tbEscalators.UseVisualStyleBackColor = true;
@@ -480,18 +496,20 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_escalators1.BackColor = System.Drawing.SystemColors.Control;
             this.uc_processor_scenario_escalators1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uc_processor_scenario_escalators1.Location = new System.Drawing.Point(0, 0);
+            this.uc_processor_scenario_escalators1.Margin = new System.Windows.Forms.Padding(2);
             this.uc_processor_scenario_escalators1.Name = "uc_processor_scenario_escalators1";
             this.uc_processor_scenario_escalators1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_escalators1.ScenarioId = "";
-            this.uc_processor_scenario_escalators1.Size = new System.Drawing.Size(1430, 623);
+            this.uc_processor_scenario_escalators1.Size = new System.Drawing.Size(192, 70);
             this.uc_processor_scenario_escalators1.TabIndex = 0;
             // 
             // tbAddHarvestCosts
             // 
             this.tbAddHarvestCosts.Controls.Add(this.uc_processor_scenario_additional_harvest_cost_columns1);
-            this.tbAddHarvestCosts.Location = new System.Drawing.Point(4, 29);
+            this.tbAddHarvestCosts.Location = new System.Drawing.Point(4, 26);
+            this.tbAddHarvestCosts.Margin = new System.Windows.Forms.Padding(2);
             this.tbAddHarvestCosts.Name = "tbAddHarvestCosts";
-            this.tbAddHarvestCosts.Size = new System.Drawing.Size(1435, 635);
+            this.tbAddHarvestCosts.Size = new System.Drawing.Size(192, 70);
             this.tbAddHarvestCosts.TabIndex = 8;
             this.tbAddHarvestCosts.Text = "Supplemental Harvest Costs";
             this.tbAddHarvestCosts.UseVisualStyleBackColor = true;
@@ -502,11 +520,11 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_additional_harvest_cost_columns1.BackColor = System.Drawing.SystemColors.Control;
             this.uc_processor_scenario_additional_harvest_cost_columns1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uc_processor_scenario_additional_harvest_cost_columns1.Location = new System.Drawing.Point(0, 0);
-            this.uc_processor_scenario_additional_harvest_cost_columns1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uc_processor_scenario_additional_harvest_cost_columns1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.uc_processor_scenario_additional_harvest_cost_columns1.Name = "uc_processor_scenario_additional_harvest_cost_columns1";
             this.uc_processor_scenario_additional_harvest_cost_columns1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_additional_harvest_cost_columns1.ScenarioId = "";
-            this.uc_processor_scenario_additional_harvest_cost_columns1.Size = new System.Drawing.Size(1430, 623);
+            this.uc_processor_scenario_additional_harvest_cost_columns1.Size = new System.Drawing.Size(192, 70);
             this.uc_processor_scenario_additional_harvest_cost_columns1.TabIndex = 0;
             // 
             // tbRun
@@ -514,9 +532,10 @@ namespace FIA_Biosum_Manager
             this.tbRun.BackColor = System.Drawing.SystemColors.Control;
             this.tbRun.Controls.Add(this.uc_processor_scenario_run1);
             this.tbRun.ForeColor = System.Drawing.Color.Black;
-            this.tbRun.Location = new System.Drawing.Point(4, 29);
+            this.tbRun.Location = new System.Drawing.Point(4, 26);
+            this.tbRun.Margin = new System.Windows.Forms.Padding(2);
             this.tbRun.Name = "tbRun";
-            this.tbRun.Size = new System.Drawing.Size(1435, 635);
+            this.tbRun.Size = new System.Drawing.Size(192, 70);
             this.tbRun.TabIndex = 6;
             this.tbRun.Text = "Run";
             this.tbRun.Visible = false;
@@ -525,32 +544,33 @@ namespace FIA_Biosum_Manager
             // 
             this.uc_processor_scenario_run1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.uc_processor_scenario_run1.Location = new System.Drawing.Point(0, 0);
-            this.uc_processor_scenario_run1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.uc_processor_scenario_run1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.uc_processor_scenario_run1.Name = "uc_processor_scenario_run1";
             this.uc_processor_scenario_run1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_run1.ScenarioId = "";
-            this.uc_processor_scenario_run1.Size = new System.Drawing.Size(1430, 623);
+            this.uc_processor_scenario_run1.Size = new System.Drawing.Size(192, 70);
             this.uc_processor_scenario_run1.TabIndex = 0;
             // 
             // btnHelp
             // 
             this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnHelp.Location = new System.Drawing.Point(6, 795);
+            this.btnHelp.Location = new System.Drawing.Point(5, 662);
+            this.btnHelp.Margin = new System.Windows.Forms.Padding(2);
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(154, 47);
+            this.btnHelp.Size = new System.Drawing.Size(128, 39);
             this.btnHelp.TabIndex = 47;
             this.btnHelp.Text = "Help";
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // frmProcessorScenario
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(907, 582);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(982, 703);
             this.Controls.Add(this.tabControlScenario);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.tlbScenario);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmProcessorScenario";
             this.Text = "Processor Scenario";
             this.Activated += new System.EventHandler(this.frmProcessorScenario_Activated);

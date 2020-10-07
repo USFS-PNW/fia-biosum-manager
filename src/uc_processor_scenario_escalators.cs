@@ -97,6 +97,7 @@ namespace FIA_Biosum_Manager
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(uc_processor_scenario_escalators));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblNote = new System.Windows.Forms.Label();
             this.lblCycleLength = new System.Windows.Forms.Label();
             this.lblCycleLengthDesc = new System.Windows.Forms.Label();
             this.uc_processor_scenario_escalators_value3 = new FIA_Biosum_Manager.uc_processor_scenario_escalators_value();
@@ -110,7 +111,6 @@ namespace FIA_Biosum_Manager
             this.lblCycle1 = new System.Windows.Forms.Label();
             this.lblDesc = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.lblNote = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -143,10 +143,20 @@ namespace FIA_Biosum_Manager
             this.panel1.Controls.Add(this.lblCycle1);
             this.panel1.Controls.Add(this.lblDesc);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 48);
+            this.panel1.Location = new System.Drawing.Point(3, 50);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(690, 397);
+            this.panel1.Size = new System.Drawing.Size(690, 395);
             this.panel1.TabIndex = 31;
+            // 
+            // lblNote
+            // 
+            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNote.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.lblNote.Location = new System.Drawing.Point(16, 288);
+            this.lblNote.Name = "lblNote";
+            this.lblNote.Size = new System.Drawing.Size(652, 83);
+            this.lblNote.TabIndex = 54;
+            this.lblNote.Text = resources.GetString("lblNote.Text");
             // 
             // lblCycleLength
             // 
@@ -177,6 +187,7 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_escalators_value3.Cycle3 = "1.00";
             this.uc_processor_scenario_escalators_value3.Location = new System.Drawing.Point(240, 225);
             this.uc_processor_scenario_escalators_value3.Name = "uc_processor_scenario_escalators_value3";
+            this.uc_processor_scenario_escalators_value3.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_escalators_value3.Size = new System.Drawing.Size(408, 32);
             this.uc_processor_scenario_escalators_value3.TabIndex = 51;
             // 
@@ -187,6 +198,7 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_escalators_value2.Cycle3 = "1.00";
             this.uc_processor_scenario_escalators_value2.Location = new System.Drawing.Point(240, 182);
             this.uc_processor_scenario_escalators_value2.Name = "uc_processor_scenario_escalators_value2";
+            this.uc_processor_scenario_escalators_value2.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_escalators_value2.Size = new System.Drawing.Size(408, 32);
             this.uc_processor_scenario_escalators_value2.TabIndex = 50;
             // 
@@ -197,6 +209,7 @@ namespace FIA_Biosum_Manager
             this.uc_processor_scenario_escalators_value1.Cycle3 = "1.00";
             this.uc_processor_scenario_escalators_value1.Location = new System.Drawing.Point(240, 142);
             this.uc_processor_scenario_escalators_value1.Name = "uc_processor_scenario_escalators_value1";
+            this.uc_processor_scenario_escalators_value1.ReferenceProcessorScenarioForm = null;
             this.uc_processor_scenario_escalators_value1.Size = new System.Drawing.Size(408, 32);
             this.uc_processor_scenario_escalators_value1.TabIndex = 49;
             // 
@@ -276,24 +289,15 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(3, 18);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(690, 32);
             this.lblTitle.TabIndex = 30;
             this.lblTitle.Text = "Cost and Revenue Escalators";
             // 
-            // lblNote
-            // 
-            this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNote.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.lblNote.Location = new System.Drawing.Point(16, 288);
-            this.lblNote.Name = "lblNote";
-            this.lblNote.Size = new System.Drawing.Size(652, 83);
-            this.lblNote.TabIndex = 54;
-            this.lblNote.Text = resources.GetString("lblNote.Text");
-            // 
             // uc_processor_scenario_escalators
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_processor_scenario_escalators";
             this.Size = new System.Drawing.Size(696, 448);

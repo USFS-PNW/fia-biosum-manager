@@ -111,9 +111,10 @@ namespace FIA_Biosum_Manager
             this.toolBar1.DropDownArrows = true;
             this.toolBar1.ImageList = this.imageList1;
             this.toolBar1.Location = new System.Drawing.Point(0, 0);
+            this.toolBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.toolBar1.Name = "toolBar1";
             this.toolBar1.ShowToolTips = true;
-            this.toolBar1.Size = new System.Drawing.Size(544, 36);
+            this.toolBar1.Size = new System.Drawing.Size(453, 36);
             this.toolBar1.TabIndex = 0;
             this.toolBar1.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.toolBar1_ButtonClick);
             // 
@@ -181,10 +182,10 @@ namespace FIA_Biosum_Manager
             // 
             // frmGridView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(144F, 144F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(544, 364);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(453, 303);
             this.Controls.Add(this.toolBar1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "frmGridView";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "frmGridView";

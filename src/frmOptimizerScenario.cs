@@ -357,10 +357,10 @@ namespace FIA_Biosum_Manager
             this.tlbScenario.DropDownArrows = true;
             this.tlbScenario.ImageList = this.imageList1;
             this.tlbScenario.Location = new System.Drawing.Point(0, 0);
-            this.tlbScenario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tlbScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tlbScenario.Name = "tlbScenario";
             this.tlbScenario.ShowToolTips = true;
-            this.tlbScenario.Size = new System.Drawing.Size(606, 44);
+            this.tlbScenario.Size = new System.Drawing.Size(782, 47);
             this.tlbScenario.TabIndex = 42;
             this.tlbScenario.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbScenario_ButtonClick);
             // 
@@ -435,7 +435,7 @@ namespace FIA_Biosum_Manager
             this.txtDropDown.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtDropDown.HideSelection = false;
             this.txtDropDown.Location = new System.Drawing.Point(239, 405);
-            this.txtDropDown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtDropDown.Margin = new System.Windows.Forms.Padding(2);
             this.txtDropDown.Multiline = true;
             this.txtDropDown.Name = "txtDropDown";
             this.txtDropDown.ReadOnly = true;
@@ -460,7 +460,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnClose.Enabled = false;
             this.btnClose.Location = new System.Drawing.Point(597, 405);
-            this.btnClose.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(2);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(102, 31);
             this.btnClose.TabIndex = 40;
@@ -477,7 +477,7 @@ namespace FIA_Biosum_Manager
             this.tabControlScenario.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControlScenario.ItemSize = new System.Drawing.Size(100, 18);
             this.tabControlScenario.Location = new System.Drawing.Point(0, 31);
-            this.tabControlScenario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControlScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlScenario.Name = "tabControlScenario";
             this.tabControlScenario.SelectedIndex = 0;
             this.tabControlScenario.Size = new System.Drawing.Size(691, 351);
@@ -492,7 +492,7 @@ namespace FIA_Biosum_Manager
             // 
             this.tbDesc.AutoScroll = true;
             this.tbDesc.Location = new System.Drawing.Point(4, 22);
-            this.tbDesc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbDesc.Margin = new System.Windows.Forms.Padding(2);
             this.tbDesc.Name = "tbDesc";
             this.tbDesc.Size = new System.Drawing.Size(683, 325);
             this.tbDesc.TabIndex = 0;
@@ -502,7 +502,7 @@ namespace FIA_Biosum_Manager
             // 
             this.tbNotes.AutoScroll = true;
             this.tbNotes.Location = new System.Drawing.Point(4, 22);
-            this.tbNotes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbNotes.Margin = new System.Windows.Forms.Padding(2);
             this.tbNotes.Name = "tbNotes";
             this.tbNotes.Size = new System.Drawing.Size(683, 325);
             this.tbNotes.TabIndex = 1;
@@ -512,7 +512,7 @@ namespace FIA_Biosum_Manager
             // 
             this.tbDataSources.AutoScroll = true;
             this.tbDataSources.Location = new System.Drawing.Point(4, 22);
-            this.tbDataSources.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbDataSources.Margin = new System.Windows.Forms.Padding(2);
             this.tbDataSources.Name = "tbDataSources";
             this.tbDataSources.Size = new System.Drawing.Size(683, 325);
             this.tbDataSources.TabIndex = 2;
@@ -523,7 +523,7 @@ namespace FIA_Biosum_Manager
             this.tbRules.Controls.Add(this.tabControlRules);
             this.tbRules.ForeColor = System.Drawing.Color.Red;
             this.tbRules.Location = new System.Drawing.Point(4, 22);
-            this.tbRules.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbRules.Margin = new System.Windows.Forms.Padding(2);
             this.tbRules.Name = "tbRules";
             this.tbRules.Size = new System.Drawing.Size(683, 325);
             this.tbRules.TabIndex = 3;
@@ -545,7 +545,7 @@ namespace FIA_Biosum_Manager
             this.tabControlRules.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabControlRules.ItemSize = new System.Drawing.Size(125, 18);
             this.tabControlRules.Location = new System.Drawing.Point(0, 0);
-            this.tabControlRules.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControlRules.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlRules.Name = "tabControlRules";
             this.tabControlRules.SelectedIndex = 0;
             this.tabControlRules.Size = new System.Drawing.Size(683, 325);
@@ -557,7 +557,7 @@ namespace FIA_Biosum_Manager
             // tbOwners
             // 
             this.tbOwners.Location = new System.Drawing.Point(4, 22);
-            this.tbOwners.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbOwners.Margin = new System.Windows.Forms.Padding(2);
             this.tbOwners.Name = "tbOwners";
             this.tbOwners.Size = new System.Drawing.Size(675, 299);
             this.tbOwners.TabIndex = 1;
@@ -568,9 +568,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbCostsAndRevenue.Controls.Add(this.tabControlCosts);
             this.tbCostsAndRevenue.Location = new System.Drawing.Point(4, 22);
-            this.tbCostsAndRevenue.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbCostsAndRevenue.Margin = new System.Windows.Forms.Padding(2);
             this.tbCostsAndRevenue.Name = "tbCostsAndRevenue";
-            this.tbCostsAndRevenue.Size = new System.Drawing.Size(678, 307);
+            this.tbCostsAndRevenue.Size = new System.Drawing.Size(675, 299);
             this.tbCostsAndRevenue.TabIndex = 10;
             this.tbCostsAndRevenue.Text = "Cost And Revenue";
             this.tbCostsAndRevenue.UseVisualStyleBackColor = true;
@@ -582,32 +582,32 @@ namespace FIA_Biosum_Manager
             this.tabControlCosts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlCosts.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControlCosts.Location = new System.Drawing.Point(0, 0);
-            this.tabControlCosts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControlCosts.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlCosts.Name = "tabControlCosts";
             this.tabControlCosts.SelectedIndex = 0;
-            this.tabControlCosts.Size = new System.Drawing.Size(678, 307);
+            this.tabControlCosts.Size = new System.Drawing.Size(675, 299);
             this.tabControlCosts.TabIndex = 1;
             this.tabControlCosts.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tabControlCosts_DrawItem);
             this.tabControlCosts.SelectedIndexChanged += new System.EventHandler(this.tabControlCosts_SelectedIndexChanged);
             // 
             // tbCosts
             // 
-            this.tbCosts.Location = new System.Drawing.Point(4, 22);
-            this.tbCosts.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbCosts.Location = new System.Drawing.Point(4, 26);
+            this.tbCosts.Margin = new System.Windows.Forms.Padding(2);
             this.tbCosts.Name = "tbCosts";
-            this.tbCosts.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tbCosts.Size = new System.Drawing.Size(670, 281);
+            this.tbCosts.Padding = new System.Windows.Forms.Padding(2);
+            this.tbCosts.Size = new System.Drawing.Size(667, 269);
             this.tbCosts.TabIndex = 0;
             this.tbCosts.Text = "Haul Costs";
             this.tbCosts.UseVisualStyleBackColor = true;
             // 
             // tbProcessorScenario
             // 
-            this.tbProcessorScenario.Location = new System.Drawing.Point(4, 22);
-            this.tbProcessorScenario.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbProcessorScenario.Location = new System.Drawing.Point(4, 25);
+            this.tbProcessorScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tbProcessorScenario.Name = "tbProcessorScenario";
-            this.tbProcessorScenario.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.tbProcessorScenario.Size = new System.Drawing.Size(673, 290);
+            this.tbProcessorScenario.Padding = new System.Windows.Forms.Padding(2);
+            this.tbProcessorScenario.Size = new System.Drawing.Size(667, 270);
             this.tbProcessorScenario.TabIndex = 1;
             this.tbProcessorScenario.Text = "Processor Scenario";
             this.tbProcessorScenario.UseVisualStyleBackColor = true;
@@ -615,9 +615,9 @@ namespace FIA_Biosum_Manager
             // tbPSites
             // 
             this.tbPSites.Location = new System.Drawing.Point(4, 22);
-            this.tbPSites.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbPSites.Margin = new System.Windows.Forms.Padding(2);
             this.tbPSites.Name = "tbPSites";
-            this.tbPSites.Size = new System.Drawing.Size(678, 307);
+            this.tbPSites.Size = new System.Drawing.Size(675, 299);
             this.tbPSites.TabIndex = 4;
             this.tbPSites.Text = "Wood Processing Sites";
             this.tbPSites.Click += new System.EventHandler(this.tbPSites_Click);
@@ -626,18 +626,18 @@ namespace FIA_Biosum_Manager
             // tbFilterPlots
             // 
             this.tbFilterPlots.Location = new System.Drawing.Point(4, 22);
-            this.tbFilterPlots.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbFilterPlots.Margin = new System.Windows.Forms.Padding(2);
             this.tbFilterPlots.Name = "tbFilterPlots";
-            this.tbFilterPlots.Size = new System.Drawing.Size(678, 307);
+            this.tbFilterPlots.Size = new System.Drawing.Size(675, 299);
             this.tbFilterPlots.TabIndex = 5;
             this.tbFilterPlots.Text = "Filter Plot Records";
             // 
             // tbFilterCond
             // 
             this.tbFilterCond.Location = new System.Drawing.Point(4, 22);
-            this.tbFilterCond.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbFilterCond.Margin = new System.Windows.Forms.Padding(2);
             this.tbFilterCond.Name = "tbFilterCond";
-            this.tbFilterCond.Size = new System.Drawing.Size(678, 307);
+            this.tbFilterCond.Size = new System.Drawing.Size(675, 299);
             this.tbFilterCond.TabIndex = 9;
             this.tbFilterCond.Text = "Filter Condition Records";
             // 
@@ -645,9 +645,9 @@ namespace FIA_Biosum_Manager
             // 
             this.tbFVSVariables.Controls.Add(this.tabControlFVSVariables);
             this.tbFVSVariables.Location = new System.Drawing.Point(4, 22);
-            this.tbFVSVariables.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbFVSVariables.Margin = new System.Windows.Forms.Padding(2);
             this.tbFVSVariables.Name = "tbFVSVariables";
-            this.tbFVSVariables.Size = new System.Drawing.Size(678, 307);
+            this.tbFVSVariables.Size = new System.Drawing.Size(675, 299);
             this.tbFVSVariables.TabIndex = 8;
             this.tbFVSVariables.Text = "FVS Variables";
             // 
@@ -660,10 +660,10 @@ namespace FIA_Biosum_Manager
             this.tabControlFVSVariables.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
             this.tabControlFVSVariables.ItemSize = new System.Drawing.Size(75, 18);
             this.tabControlFVSVariables.Location = new System.Drawing.Point(0, 0);
-            this.tabControlFVSVariables.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabControlFVSVariables.Margin = new System.Windows.Forms.Padding(2);
             this.tabControlFVSVariables.Name = "tabControlFVSVariables";
             this.tabControlFVSVariables.SelectedIndex = 0;
-            this.tabControlFVSVariables.Size = new System.Drawing.Size(678, 307);
+            this.tabControlFVSVariables.Size = new System.Drawing.Size(675, 299);
             this.tabControlFVSVariables.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControlFVSVariables.TabIndex = 0;
             this.tabControlFVSVariables.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.tbFVSVariablesSelect_DrawItem);
@@ -672,36 +672,36 @@ namespace FIA_Biosum_Manager
             // tbEffective
             // 
             this.tbEffective.Location = new System.Drawing.Point(4, 22);
-            this.tbEffective.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbEffective.Margin = new System.Windows.Forms.Padding(2);
             this.tbEffective.Name = "tbEffective";
-            this.tbEffective.Size = new System.Drawing.Size(670, 281);
+            this.tbEffective.Size = new System.Drawing.Size(667, 273);
             this.tbEffective.TabIndex = 0;
             this.tbEffective.Text = "Effective";
             // 
             // tbOptimization
             // 
             this.tbOptimization.Location = new System.Drawing.Point(4, 22);
-            this.tbOptimization.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbOptimization.Margin = new System.Windows.Forms.Padding(2);
             this.tbOptimization.Name = "tbOptimization";
-            this.tbOptimization.Size = new System.Drawing.Size(673, 290);
+            this.tbOptimization.Size = new System.Drawing.Size(667, 273);
             this.tbOptimization.TabIndex = 1;
             this.tbOptimization.Text = "Optimization";
             // 
             // tbTieBreaker
             // 
             this.tbTieBreaker.Location = new System.Drawing.Point(4, 22);
-            this.tbTieBreaker.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbTieBreaker.Margin = new System.Windows.Forms.Padding(2);
             this.tbTieBreaker.Name = "tbTieBreaker";
-            this.tbTieBreaker.Size = new System.Drawing.Size(673, 290);
+            this.tbTieBreaker.Size = new System.Drawing.Size(667, 273);
             this.tbTieBreaker.TabIndex = 2;
             this.tbTieBreaker.Text = "Tie Breaker";
             // 
             // tbFilterPkg
             // 
             this.tbFilterPkg.Location = new System.Drawing.Point(4, 22);
-            this.tbFilterPkg.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbFilterPkg.Margin = new System.Windows.Forms.Padding(2);
             this.tbFilterPkg.Name = "tbFilterPkg";
-            this.tbFilterPkg.Size = new System.Drawing.Size(678, 307);
+            this.tbFilterPkg.Size = new System.Drawing.Size(675, 299);
             this.tbFilterPkg.TabIndex = 11;
             this.tbFilterPkg.Text = "Filter RxPackage";
             this.tbFilterPkg.UseVisualStyleBackColor = true;
@@ -709,9 +709,9 @@ namespace FIA_Biosum_Manager
             // tbRun
             // 
             this.tbRun.Location = new System.Drawing.Point(4, 22);
-            this.tbRun.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbRun.Margin = new System.Windows.Forms.Padding(2);
             this.tbRun.Name = "tbRun";
-            this.tbRun.Size = new System.Drawing.Size(678, 307);
+            this.tbRun.Size = new System.Drawing.Size(675, 299);
             this.tbRun.TabIndex = 6;
             this.tbRun.Text = "Run";
             // 
@@ -719,7 +719,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.btnHelp.Location = new System.Drawing.Point(9, 405);
-            this.btnHelp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnHelp.Margin = new System.Windows.Forms.Padding(2);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(103, 31);
             this.btnHelp.TabIndex = 48;
@@ -730,13 +730,13 @@ namespace FIA_Biosum_Manager
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(606, 467);
+            this.ClientSize = new System.Drawing.Size(782, 603);
             this.Controls.Add(this.btnHelp);
             this.Controls.Add(this.tlbScenario);
             this.Controls.Add(this.tabControlScenario);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.txtDropDown);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmOptimizerScenario";
             this.Text = "Optimizer Scenario";
             this.Activated += new System.EventHandler(this.frmOptimizerScenario_Activated);

@@ -228,7 +228,7 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(3, 18);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(802, 32);
             this.lblTitle.TabIndex = 28;
@@ -268,9 +268,9 @@ namespace FIA_Biosum_Manager
             this.panel1.Controls.Add(this.txtWoodlandMerchPct);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 16);
+            this.panel1.Location = new System.Drawing.Point(3, 18);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(802, 550);
+            this.panel1.Size = new System.Drawing.Size(802, 548);
             this.panel1.TabIndex = 0;
             // 
             // rdoProcessorSpecified
@@ -280,7 +280,7 @@ namespace FIA_Biosum_Manager
             this.rdoProcessorSpecified.ForeColor = System.Drawing.Color.Black;
             this.rdoProcessorSpecified.Location = new System.Drawing.Point(355, 35);
             this.rdoProcessorSpecified.Name = "rdoProcessorSpecified";
-            this.rdoProcessorSpecified.Size = new System.Drawing.Size(127, 19);
+            this.rdoProcessorSpecified.Size = new System.Drawing.Size(147, 22);
             this.rdoProcessorSpecified.TabIndex = 43;
             this.rdoProcessorSpecified.TabStop = true;
             this.rdoProcessorSpecified.Text = "Specified below";
@@ -294,7 +294,7 @@ namespace FIA_Biosum_Manager
             this.rdoHideLowestCost.ForeColor = System.Drawing.Color.Black;
             this.rdoHideLowestCost.Location = new System.Drawing.Point(522, 35);
             this.rdoHideLowestCost.Name = "rdoHideLowestCost";
-            this.rdoHideLowestCost.Size = new System.Drawing.Size(161, 19);
+            this.rdoHideLowestCost.Size = new System.Drawing.Size(193, 22);
             this.rdoHideLowestCost.TabIndex = 42;
             this.rdoHideLowestCost.TabStop = true;
             this.rdoHideLowestCost.Text = "Lowest per acre cost ";
@@ -309,7 +309,7 @@ namespace FIA_Biosum_Manager
             this.rdoTreatment.ForeColor = System.Drawing.Color.Black;
             this.rdoTreatment.Location = new System.Drawing.Point(180, 35);
             this.rdoTreatment.Name = "rdoTreatment";
-            this.rdoTreatment.Size = new System.Drawing.Size(158, 19);
+            this.rdoTreatment.Size = new System.Drawing.Size(184, 22);
             this.rdoTreatment.TabIndex = 41;
             this.rdoTreatment.TabStop = true;
             this.rdoTreatment.Text = "Defined by treatment";
@@ -333,7 +333,7 @@ namespace FIA_Biosum_Manager
             this.label16.ForeColor = System.Drawing.Color.Black;
             this.label16.Location = new System.Drawing.Point(571, 412);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(14, 13);
+            this.label16.Size = new System.Drawing.Size(17, 17);
             this.label16.TabIndex = 39;
             this.label16.Text = "=";
             // 
@@ -353,7 +353,7 @@ namespace FIA_Biosum_Manager
             this.txtCullPct.ForeColor = System.Drawing.Color.Black;
             this.txtCullPct.Location = new System.Drawing.Point(594, 410);
             this.txtCullPct.Name = "txtCullPct";
-            this.txtCullPct.Size = new System.Drawing.Size(33, 20);
+            this.txtCullPct.Size = new System.Drawing.Size(33, 22);
             this.txtCullPct.TabIndex = 38;
             this.txtCullPct.Text = "50.0";
             this.txtCullPct.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCullPct_KeyPress);
@@ -366,7 +366,7 @@ namespace FIA_Biosum_Manager
             this.label14.ForeColor = System.Drawing.Color.Black;
             this.label14.Location = new System.Drawing.Point(289, 413);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(14, 13);
+            this.label14.Size = new System.Drawing.Size(17, 17);
             this.label14.TabIndex = 36;
             this.label14.Text = "=";
             // 
@@ -385,7 +385,7 @@ namespace FIA_Biosum_Manager
             this.txtSaplingMerchPct.ForeColor = System.Drawing.Color.Black;
             this.txtSaplingMerchPct.Location = new System.Drawing.Point(311, 410);
             this.txtSaplingMerchPct.Name = "txtSaplingMerchPct";
-            this.txtSaplingMerchPct.Size = new System.Drawing.Size(36, 20);
+            this.txtSaplingMerchPct.Size = new System.Drawing.Size(36, 22);
             this.txtSaplingMerchPct.TabIndex = 35;
             this.txtSaplingMerchPct.Text = "80.0";
             this.txtSaplingMerchPct.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSaplingMerchPct_KeyPress);
@@ -398,7 +398,7 @@ namespace FIA_Biosum_Manager
             this.label12.ForeColor = System.Drawing.Color.Black;
             this.label12.Location = new System.Drawing.Point(13, 408);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(14, 13);
+            this.label12.Size = new System.Drawing.Size(17, 17);
             this.label12.TabIndex = 33;
             this.label12.Text = "=";
             // 
@@ -419,7 +419,7 @@ namespace FIA_Biosum_Manager
             this.label10.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.label10.Location = new System.Drawing.Point(286, 371);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(21, 13);
+            this.label10.Size = new System.Drawing.Size(26, 17);
             this.label10.TabIndex = 18;
             this.label10.Text = ">=";
             // 
@@ -430,7 +430,7 @@ namespace FIA_Biosum_Manager
             this.label11.ForeColor = System.Drawing.Color.Black;
             this.label11.Location = new System.Drawing.Point(571, 312);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(21, 13);
+            this.label11.Size = new System.Drawing.Size(26, 17);
             this.label11.TabIndex = 19;
             this.label11.Text = ">=";
             // 
@@ -452,7 +452,7 @@ namespace FIA_Biosum_Manager
             this.label7.ForeColor = System.Drawing.Color.Black;
             this.label7.Location = new System.Drawing.Point(13, 315);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(21, 13);
+            this.label7.Size = new System.Drawing.Size(26, 17);
             this.label7.TabIndex = 17;
             this.label7.Text = ">=";
             // 
@@ -463,7 +463,7 @@ namespace FIA_Biosum_Manager
             this.label8.ForeColor = System.Drawing.Color.Black;
             this.label8.Location = new System.Drawing.Point(13, 357);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(21, 13);
+            this.label8.Size = new System.Drawing.Size(26, 17);
             this.label8.TabIndex = 18;
             this.label8.Text = ">=";
             // 
@@ -472,7 +472,7 @@ namespace FIA_Biosum_Manager
             this.txtSteepSlopeMinDia.ForeColor = System.Drawing.Color.Black;
             this.txtSteepSlopeMinDia.Location = new System.Drawing.Point(596, 309);
             this.txtSteepSlopeMinDia.Name = "txtSteepSlopeMinDia";
-            this.txtSteepSlopeMinDia.Size = new System.Drawing.Size(33, 20);
+            this.txtSteepSlopeMinDia.Size = new System.Drawing.Size(33, 22);
             this.txtSteepSlopeMinDia.TabIndex = 10;
             this.txtSteepSlopeMinDia.Text = "5.0";
             this.txtSteepSlopeMinDia.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSteepSlopeMinDia_KeyPress);
@@ -483,7 +483,7 @@ namespace FIA_Biosum_Manager
             this.txtMinDiaForChips.ForeColor = System.Drawing.Color.Black;
             this.txtMinDiaForChips.Location = new System.Drawing.Point(32, 312);
             this.txtMinDiaForChips.Name = "txtMinDiaForChips";
-            this.txtMinDiaForChips.Size = new System.Drawing.Size(36, 20);
+            this.txtMinDiaForChips.Size = new System.Drawing.Size(36, 22);
             this.txtMinDiaForChips.TabIndex = 12;
             this.txtMinDiaForChips.Text = "3.0";
             this.txtMinDiaForChips.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMinDiaForChips_KeyPress);
@@ -492,10 +492,10 @@ namespace FIA_Biosum_Manager
             // cmbSteepSlopePercent
             // 
             this.cmbSteepSlopePercent.ForeColor = System.Drawing.Color.Black;
-            this.cmbSteepSlopePercent.ItemHeight = 13;
+            this.cmbSteepSlopePercent.ItemHeight = 16;
             this.cmbSteepSlopePercent.Location = new System.Drawing.Point(311, 368);
             this.cmbSteepSlopePercent.Name = "cmbSteepSlopePercent";
-            this.cmbSteepSlopePercent.Size = new System.Drawing.Size(37, 21);
+            this.cmbSteepSlopePercent.Size = new System.Drawing.Size(37, 24);
             this.cmbSteepSlopePercent.TabIndex = 0;
             this.cmbSteepSlopePercent.Text = "40";
             this.cmbSteepSlopePercent.SelectedValueChanged += new System.EventHandler(this.cmbSteepSlopePercent_SelectedValueChanged);
@@ -519,7 +519,7 @@ namespace FIA_Biosum_Manager
             this.label9.ForeColor = System.Drawing.Color.Black;
             this.label9.Location = new System.Drawing.Point(286, 319);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(21, 13);
+            this.label9.Size = new System.Drawing.Size(26, 17);
             this.label9.TabIndex = 19;
             this.label9.Text = ">=";
             // 
@@ -539,7 +539,7 @@ namespace FIA_Biosum_Manager
             this.txtMinDiaSmallLogs.ForeColor = System.Drawing.Color.Black;
             this.txtMinDiaSmallLogs.Location = new System.Drawing.Point(32, 354);
             this.txtMinDiaSmallLogs.Name = "txtMinDiaSmallLogs";
-            this.txtMinDiaSmallLogs.Size = new System.Drawing.Size(36, 20);
+            this.txtMinDiaSmallLogs.Size = new System.Drawing.Size(36, 22);
             this.txtMinDiaSmallLogs.TabIndex = 15;
             this.txtMinDiaSmallLogs.Text = "7.0";
             this.txtMinDiaSmallLogs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMinDiaSmallLogs_KeyPress);
@@ -596,10 +596,10 @@ namespace FIA_Biosum_Manager
             // 
             this.cmbSteepSlopeMethod.Enabled = false;
             this.cmbSteepSlopeMethod.ForeColor = System.Drawing.Color.Black;
-            this.cmbSteepSlopeMethod.ItemHeight = 13;
+            this.cmbSteepSlopeMethod.ItemHeight = 17;
             this.cmbSteepSlopeMethod.Location = new System.Drawing.Point(18, 32);
             this.cmbSteepSlopeMethod.Name = "cmbSteepSlopeMethod";
-            this.cmbSteepSlopeMethod.Size = new System.Drawing.Size(294, 21);
+            this.cmbSteepSlopeMethod.Size = new System.Drawing.Size(294, 25);
             this.cmbSteepSlopeMethod.TabIndex = 5;
             this.cmbSteepSlopeMethod.SelectedIndexChanged += new System.EventHandler(this.cmbSteepSlopeMethod_SelectedValueChanged);
             this.cmbSteepSlopeMethod.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbSteepSlopeMethod_KeyPress);
@@ -618,7 +618,7 @@ namespace FIA_Biosum_Manager
             this.txtMinDiaLargeLogs.ForeColor = System.Drawing.Color.Black;
             this.txtMinDiaLargeLogs.Location = new System.Drawing.Point(311, 316);
             this.txtMinDiaLargeLogs.Name = "txtMinDiaLargeLogs";
-            this.txtMinDiaLargeLogs.Size = new System.Drawing.Size(37, 20);
+            this.txtMinDiaLargeLogs.Size = new System.Drawing.Size(37, 22);
             this.txtMinDiaLargeLogs.TabIndex = 16;
             this.txtMinDiaLargeLogs.Text = "20.0";
             this.txtMinDiaLargeLogs.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMinDiaLargeLogs_KeyPress);
@@ -664,7 +664,7 @@ namespace FIA_Biosum_Manager
             this.cmbMethod.Enabled = false;
             this.cmbMethod.Location = new System.Drawing.Point(16, 32);
             this.cmbMethod.Name = "cmbMethod";
-            this.cmbMethod.Size = new System.Drawing.Size(288, 21);
+            this.cmbMethod.Size = new System.Drawing.Size(288, 25);
             this.cmbMethod.TabIndex = 1;
             this.cmbMethod.SelectedIndexChanged += new System.EventHandler(this.cmbMethod_SelectedValueChanged);
             this.cmbMethod.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbMethod_KeyPress);
@@ -683,7 +683,7 @@ namespace FIA_Biosum_Manager
             this.txtWoodlandMerchPct.ForeColor = System.Drawing.Color.Black;
             this.txtWoodlandMerchPct.Location = new System.Drawing.Point(32, 405);
             this.txtWoodlandMerchPct.Name = "txtWoodlandMerchPct";
-            this.txtWoodlandMerchPct.Size = new System.Drawing.Size(36, 20);
+            this.txtWoodlandMerchPct.Size = new System.Drawing.Size(36, 22);
             this.txtWoodlandMerchPct.TabIndex = 32;
             this.txtWoodlandMerchPct.Text = "60.0";
             this.txtWoodlandMerchPct.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtWoodlandMerchPct_KeyPress);
@@ -701,6 +701,7 @@ namespace FIA_Biosum_Manager
             // 
             // uc_processor_scenario_harvest_method
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_processor_scenario_harvest_method";
             this.Size = new System.Drawing.Size(808, 569);
