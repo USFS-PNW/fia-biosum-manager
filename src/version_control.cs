@@ -217,8 +217,6 @@ namespace FIA_Biosum_Manager
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
                     frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "version_control.PerformVersionCheck: !!Error opening Application.Version File!! ERROR=" + error.Message + "r\n");
             }
-
-            //UpdateDatasources_5_8_9();
             
             //check for partial update
             if (bPerformCheck)
@@ -6119,7 +6117,7 @@ namespace FIA_Biosum_Manager
             }
         }
 
-        private void UpdateDatasources_5_8_9()
+        private void UpdateDatasources_5_8_10()
         {
             dao_data_access oDao = new dao_data_access();
             ado_data_access oAdo = new ado_data_access();
