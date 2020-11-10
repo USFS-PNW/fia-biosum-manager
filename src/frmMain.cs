@@ -4291,6 +4291,24 @@ namespace FIA_Biosum_Manager
             int ErrCode = 0;
             string ErrMsg = "";
             FIA_Biosum_Manager.utils.FS_NETWORK = FIA_Biosum_Manager.utils.FS_NETWORK_CHECK();
+            if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            {
+                System.Threading.Thread.Sleep(5000);
+                for (; ; )
+                {
+                    DialogResult result =
+                        MessageBox.Show("FS Network not detected by application. Do you wish to continue testing for the FS NETWORK? (Yes/No) \r\n\r\n Yes=PING FS ORACLE SERVER/No=USE Oracle XE", "FIA BIOSUM", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        FIA_Biosum_Manager.utils.FS_NETWORK = FIA_Biosum_Manager.utils.FS_NETWORK_CHECK();
+                        if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.Available)
+                        {
+                            break;
+                        }
+                    }
+                    else break;
+                }
+            }
             Oracle.ADO.FCSOracle.FCSConnectionString = FCSConnectionString;
             Oracle.ADO.FCSOracle.FCSSchema = FCSSchema;
             if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
@@ -4303,8 +4321,8 @@ namespace FIA_Biosum_Manager
                 }
                 FIADBOracle.Services oAdo = new FIADBOracle.Services();
                 oAdo.Start();
-                if (oAdo.m_intError==0)
-                      oAdo.FCSEntities.InitializeADOOracleObject();
+                if (oAdo.m_intError == 0)
+                    oAdo.FCSEntities.InitializeADOOracleObject();
                 ErrCode = oAdo.m_intError;
                 if (ErrCode != 0)
                 {
@@ -4315,11 +4333,10 @@ namespace FIA_Biosum_Manager
             }
             else
             {
-                
                 if (System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db") == false)
                 {
-                   ErrCode = -1;
-                   ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db not found";
+                    ErrCode = -1;
+                    ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db not found";
                 }
                 if (ErrCode == 0 && System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\BioSumComps.JAR") == false)
                 {
@@ -4328,7 +4345,7 @@ namespace FIA_Biosum_Manager
                 }
                 if (ErrCode == 0 && System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\fcs_tree_calc.bat") == false)
                 {
-                    ErrCode= -1;
+                    ErrCode = -1;
                     ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\fcs_tree_calc.bat not found";
                 }
                 if (ErrCode == 0)
@@ -4353,7 +4370,7 @@ namespace FIA_Biosum_Manager
             }
             return ErrCode;
         }
-        
+
         public static string FCSConnectionString
         {
             get
