@@ -359,6 +359,7 @@ namespace FIA_Biosum_Manager
             this.listViewEx1.FullRowSelect = true;
             this.listViewEx1.GridLines = true;
             this.listViewEx1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listViewEx1.HideSelection = false;
             this.listViewEx1.Location = new System.Drawing.Point(13, 50);
             this.listViewEx1.MultiSelect = false;
             this.listViewEx1.Name = "listViewEx1";
@@ -419,7 +420,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnAccess.Enabled = false;
             this.btnAccess.ForeColor = System.Drawing.Color.Black;
-            this.btnAccess.Location = new System.Drawing.Point(314, 8);
+            this.btnAccess.Location = new System.Drawing.Point(349, 8);
             this.btnAccess.Name = "btnAccess";
             this.btnAccess.Size = new System.Drawing.Size(120, 30);
             this.btnAccess.TabIndex = 33;
@@ -431,7 +432,7 @@ namespace FIA_Biosum_Manager
             this.btnViewResultsTables.ForeColor = System.Drawing.Color.Black;
             this.btnViewResultsTables.Location = new System.Drawing.Point(188, 8);
             this.btnViewResultsTables.Name = "btnViewResultsTables";
-            this.btnViewResultsTables.Size = new System.Drawing.Size(120, 30);
+            this.btnViewResultsTables.Size = new System.Drawing.Size(150, 30);
             this.btnViewResultsTables.TabIndex = 32;
             this.btnViewResultsTables.Text = "View Results Tables";
             this.btnViewResultsTables.Click += new System.EventHandler(this.btnViewScenarioTables_Click);
@@ -439,7 +440,7 @@ namespace FIA_Biosum_Manager
             // btnViewAuditTables
             // 
             this.btnViewAuditTables.ForeColor = System.Drawing.Color.Black;
-            this.btnViewAuditTables.Location = new System.Drawing.Point(438, 8);
+            this.btnViewAuditTables.Location = new System.Drawing.Point(480, 8);
             this.btnViewAuditTables.Name = "btnViewAuditTables";
             this.btnViewAuditTables.Size = new System.Drawing.Size(120, 30);
             this.btnViewAuditTables.TabIndex = 31;
@@ -449,9 +450,9 @@ namespace FIA_Biosum_Manager
             // btnViewLog
             // 
             this.btnViewLog.ForeColor = System.Drawing.Color.Black;
-            this.btnViewLog.Location = new System.Drawing.Point(564, 8);
+            this.btnViewLog.Location = new System.Drawing.Point(610, 8);
             this.btnViewLog.Name = "btnViewLog";
-            this.btnViewLog.Size = new System.Drawing.Size(96, 30);
+            this.btnViewLog.Size = new System.Drawing.Size(100, 30);
             this.btnViewLog.TabIndex = 34;
             this.btnViewLog.Text = "View Log File";
             this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);

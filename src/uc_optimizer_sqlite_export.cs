@@ -42,11 +42,17 @@ namespace FIA_Biosum_Manager
         private CheckBox chkContext;
         private CheckBox chkResults;
         private ComboBox cboResultsDb;
+        private Button BtnTestConnection;
+        private Button btnHelp;
+        private env m_oEnv;
+        private Help m_oHelp;
+        private string m_xpsFile = Help.DefaultTreatmentOptimizerFile;
 
-		/// <summary> 
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.Container components = null;
+
+        /// <summary> 
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.Container components = null;
 
         public uc_optimizer_sqlite_export(FIA_Biosum_Manager.frmMain p_frmMain)
         {
@@ -55,6 +61,7 @@ namespace FIA_Biosum_Manager
             this.m_frmMain = p_frmMain;
 
             // TODO: Add any initialization after the InitializeComponent call
+            this.m_oEnv = new env();
             load_values();
         }
 
@@ -81,6 +88,9 @@ namespace FIA_Biosum_Manager
 		private void InitializeComponent()
 		{
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.BtnTestConnection = new System.Windows.Forms.Button();
+            this.btnHelp = new System.Windows.Forms.Button();
+            this.cboResultsDb = new System.Windows.Forms.ComboBox();
             this.chkFvsContext = new System.Windows.Forms.CheckBox();
             this.chkContext = new System.Windows.Forms.CheckBox();
             this.chkResults = new System.Windows.Forms.CheckBox();
@@ -90,12 +100,13 @@ namespace FIA_Biosum_Manager
             this.lstScenario = new System.Windows.Forms.ListBox();
             this.BtnExport = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.cboResultsDb = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.BtnTestConnection);
+            this.groupBox1.Controls.Add(this.btnHelp);
             this.groupBox1.Controls.Add(this.cboResultsDb);
             this.groupBox1.Controls.Add(this.chkFvsContext);
             this.groupBox1.Controls.Add(this.chkContext);
@@ -109,9 +120,42 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(664, 424);
+            this.groupBox1.Size = new System.Drawing.Size(664, 457);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // BtnTestConnection
+            // 
+            this.BtnTestConnection.Enabled = false;
+            this.BtnTestConnection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnTestConnection.Location = new System.Drawing.Point(235, 369);
+            this.BtnTestConnection.Name = "BtnTestConnection";
+            this.BtnTestConnection.Size = new System.Drawing.Size(175, 33);
+            this.BtnTestConnection.TabIndex = 36;
+            this.BtnTestConnection.Text = "Test Connection";
+            this.BtnTestConnection.UseVisualStyleBackColor = true;
+            this.BtnTestConnection.Click += new System.EventHandler(this.BtnTestConnection_Click);
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.btnHelp.Location = new System.Drawing.Point(9, 407);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(115, 37);
+            this.btnHelp.TabIndex = 49;
+            this.btnHelp.Text = "Help";
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // cboResultsDb
+            // 
+            this.cboResultsDb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboResultsDb.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboResultsDb.FormattingEnabled = true;
+            this.cboResultsDb.Location = new System.Drawing.Point(235, 255);
+            this.cboResultsDb.Name = "cboResultsDb";
+            this.cboResultsDb.Size = new System.Drawing.Size(406, 26);
+            this.cboResultsDb.TabIndex = 35;
+            this.cboResultsDb.SelectedIndexChanged += new System.EventHandler(this.cboResultsDb_SelectedIndexChanged);
             // 
             // chkFvsContext
             // 
@@ -193,11 +237,11 @@ namespace FIA_Biosum_Manager
             // BtnExport
             // 
             this.BtnExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnExport.Location = new System.Drawing.Point(315, 357);
+            this.BtnExport.Location = new System.Drawing.Point(466, 369);
             this.BtnExport.Name = "BtnExport";
-            this.BtnExport.Size = new System.Drawing.Size(198, 33);
+            this.BtnExport.Size = new System.Drawing.Size(175, 33);
             this.BtnExport.TabIndex = 27;
-            this.BtnExport.Text = "EXPORT";
+            this.BtnExport.Text = "Export";
             this.BtnExport.UseVisualStyleBackColor = true;
             this.BtnExport.Click += new System.EventHandler(this.BtnExport_Click);
             // 
@@ -212,22 +256,11 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 26;
             this.lblTitle.Text = "Export to SQLITE";
             // 
-            // cboResultsDb
-            // 
-            this.cboResultsDb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboResultsDb.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cboResultsDb.FormattingEnabled = true;
-            this.cboResultsDb.Location = new System.Drawing.Point(235, 255);
-            this.cboResultsDb.Name = "cboResultsDb";
-            this.cboResultsDb.Size = new System.Drawing.Size(406, 26);
-            this.cboResultsDb.TabIndex = 35;
-            this.cboResultsDb.SelectedIndexChanged += new System.EventHandler(this.cboResultsDb_SelectedIndexChanged);
-            // 
             // uc_optimizer_sqlite_export
             // 
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_optimizer_sqlite_export";
-            this.Size = new System.Drawing.Size(664, 424);
+            this.Size = new System.Drawing.Size(664, 457);
             this.Resize += new System.EventHandler(this.uc_optimizer_sqlite_export_Resize);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -1631,7 +1664,7 @@ namespace FIA_Biosum_Manager
             BtnExport.Enabled = !String.IsNullOrEmpty(strKey);
             cboResultsDb.Items.Clear();
             chkResults.Enabled = false;
-            if (! String.IsNullOrEmpty(m_strOptimizerScenario))
+            if (!String.IsNullOrEmpty(m_strOptimizerScenario))
             {
                 string strDirectory = m_frmMain.getProjectDirectory() + @"\optimizer\" + m_strOptimizerScenario + @"\db";
                 string[] arrFilePaths = System.IO.Directory.GetFiles(strDirectory, "*.accdb");
@@ -1648,6 +1681,11 @@ namespace FIA_Biosum_Manager
                 {
                     chkResults.Enabled = true;
                 }
+                BtnTestConnection.Enabled = true;
+            }
+            else
+            {
+                BtnTestConnection.Enabled = false;
             }
             update_checkboxes();
         }
@@ -1661,7 +1699,63 @@ namespace FIA_Biosum_Manager
             }
         }
 
-     }
+        private void BtnTestConnection_Click(object sender, EventArgs e)
+        {
+            SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+            m_strDebugFile = m_frmMain.getProjectDirectory() + @"\optimizer\" + m_strOptimizerScenario + @"\db\sqlite_log.txt";
+            // Delete old log so we start fresh
+            if (System.IO.File.Exists(m_strDebugFile))
+                System.IO.File.Delete(m_strDebugFile);
+
+            frmMain.g_oUtils.WriteText(m_strDebugFile, "START: SQLITE test Log " + System.DateTime.Now.ToString() + "\r\n\r\n");
+
+            string strTestDbPath = m_frmMain.getProjectDirectory() + @"\optimizer\" + m_strOptimizerScenario + @"\TestSQLite.db3";
+            string strConnection = "data source=" + strTestDbPath;
+            if (System.IO.File.Exists(strTestDbPath) == true)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Test database found: " + strTestDbPath + ". Attempt to delete \r\n");
+                System.IO.File.Delete(strTestDbPath);
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Test database deleted! \r\n");
+            }
+            try
+            {
+                oDataMgr.CreateDbFile(strTestDbPath);
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Test SQLite database successfully created \r\n");
+                using (SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConnection))
+                {
+                    con.Open();
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Connection made to test SQLite database \r\n");
+                    string strTable = Tables.OptimizerScenarioResults.DefaultScenarioResultsTieBreakerTableName;
+                    frmMain.g_oTables.m_oOptimizerScenarioResults.CreateSqliteTieBreakerTable(oDataMgr, con, strTable);
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Sample table successfully created in test SQLite database \r\n");
+                }
+                if (System.IO.File.Exists(strTestDbPath) == true)
+                {
+                    System.IO.File.Delete(strTestDbPath);
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Test database deleted after testing! \r\n");
+                }
+                MessageBox.Show("Passed all tests for using SQLite!!", "FIA Biosum");
+            }
+            catch (Exception ex)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "An ERROR occurred while trying to connect with the sqlite database! \r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, ex.Message + "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, ex.StackTrace + " \r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n");
+                MessageBox.Show("Unable to connect with an SQLite database. Check the log file at " + strTestDbPath + "!!", "FIA Biosum");
+            }
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            if (m_oHelp == null)
+            {
+                m_oHelp = new Help(m_xpsFile, m_oEnv);
+            }
+            m_oHelp.ShowHelp(new string[] { "TREATMENT_OPTIMIZER", "EXPORT_SQLITE" });
+        }
+
+    }
 
 
 }
