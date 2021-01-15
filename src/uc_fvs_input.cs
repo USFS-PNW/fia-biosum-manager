@@ -112,6 +112,11 @@ namespace FIA_Biosum_Manager
         private GroupBox otherOptionsGroupBox;
         private Label lblTreeAgeOffset;
         private TextBox treeAgeTxtBox;
+        private TabPage tabPage3;
+        private Panel panel1;
+        private Button btnDatamart;
+        private TextBox txtFIADatamart;
+        private Label lblFiaDatamartFile;
 
         delegate string[] GetListBoxItemsDlg(CheckedListBox checkedListBox);
 
@@ -169,6 +174,7 @@ namespace FIA_Biosum_Manager
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(uc_fvs_input));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -211,6 +217,11 @@ namespace FIA_Biosum_Manager
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnDatamart = new System.Windows.Forms.Button();
+            this.txtFIADatamart = new System.Windows.Forms.TextBox();
+            this.lblFiaDatamartFile = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -219,6 +230,8 @@ namespace FIA_Biosum_Manager
             this.grpGRMOptions.SuspendLayout();
             this.grpDWMOptions.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -242,6 +255,7 @@ namespace FIA_Biosum_Manager
             // 
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(7, 51);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -283,9 +297,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnExecuteAction
             // 
-            this.btnExecuteAction.Location = new System.Drawing.Point(669, 332);
+            this.btnExecuteAction.Location = new System.Drawing.Point(647, 332);
             this.btnExecuteAction.Name = "btnExecuteAction";
-            this.btnExecuteAction.Size = new System.Drawing.Size(88, 32);
+            this.btnExecuteAction.Size = new System.Drawing.Size(110, 32);
             this.btnExecuteAction.TabIndex = 5;
             this.btnExecuteAction.Text = "Execute Action";
             this.btnExecuteAction.Click += new System.EventHandler(this.btnExecuteAction_Click);
@@ -311,13 +325,14 @@ namespace FIA_Biosum_Manager
             this.cmbAction.FormattingEnabled = true;
             this.cmbAction.Items.AddRange(new object[] {
             "Create FVS Input Database Files",
+            "Create FVS Input Database Files From FIA2FVS",
             "Create FVS Output Database Files",
             "Delete Standard FVS Output Tables",
             "Delete POTFIRE Base Year Output Tables",
             "Delete Both Standard and POTFIRE Base Year Output Tables",
             "Write KCP Template Scripts",
             "View KCP Template Scripts"});
-            this.cmbAction.Location = new System.Drawing.Point(301, 339);
+            this.cmbAction.Location = new System.Drawing.Point(279, 337);
             this.cmbAction.Name = "cmbAction";
             this.cmbAction.Size = new System.Drawing.Size(362, 24);
             this.cmbAction.TabIndex = 4;
@@ -348,7 +363,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnChkAll.Location = new System.Drawing.Point(6, 332);
             this.btnChkAll.Name = "btnChkAll";
-            this.btnChkAll.Size = new System.Drawing.Size(64, 32);
+            this.btnChkAll.Size = new System.Drawing.Size(75, 32);
             this.btnChkAll.TabIndex = 1;
             this.btnChkAll.Text = "Check All";
             this.btnChkAll.Click += new System.EventHandler(this.btnChkAll_Click);
@@ -365,9 +380,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnClearAll
             // 
-            this.btnClearAll.Location = new System.Drawing.Point(69, 332);
+            this.btnClearAll.Location = new System.Drawing.Point(85, 332);
             this.btnClearAll.Name = "btnClearAll";
-            this.btnClearAll.Size = new System.Drawing.Size(64, 32);
+            this.btnClearAll.Size = new System.Drawing.Size(75, 32);
             this.btnClearAll.TabIndex = 2;
             this.btnClearAll.Text = "Clear All";
             this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
@@ -384,7 +399,7 @@ namespace FIA_Biosum_Manager
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(132, 332);
+            this.btnRefresh.Location = new System.Drawing.Point(165, 332);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(64, 32);
             this.btnRefresh.TabIndex = 3;
@@ -680,6 +695,53 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 99;
             this.lblTitle.Text = "Create FVS Input";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.panel1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(763, 454);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "FVSIn FIA2FVS";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnDatamart);
+            this.panel1.Controls.Add(this.txtFIADatamart);
+            this.panel1.Controls.Add(this.lblFiaDatamartFile);
+            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(751, 171);
+            this.panel1.TabIndex = 0;
+            // 
+            // btnDatamart
+            // 
+            this.btnDatamart.Image = ((System.Drawing.Image)(resources.GetObject("btnDatamart.Image")));
+            this.btnDatamart.Location = new System.Drawing.Point(612, 30);
+            this.btnDatamart.Name = "btnDatamart";
+            this.btnDatamart.Size = new System.Drawing.Size(59, 35);
+            this.btnDatamart.TabIndex = 40;
+            this.btnDatamart.Click += new System.EventHandler(this.btnDatamart_Click);
+            // 
+            // txtFIADatamart
+            // 
+            this.txtFIADatamart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFIADatamart.Location = new System.Drawing.Point(6, 36);
+            this.txtFIADatamart.Name = "txtFIADatamart";
+            this.txtFIADatamart.Size = new System.Drawing.Size(600, 26);
+            this.txtFIADatamart.TabIndex = 39;
+            // 
+            // lblFiaDatamartFile
+            // 
+            this.lblFiaDatamartFile.AutoSize = true;
+            this.lblFiaDatamartFile.Location = new System.Drawing.Point(3, 11);
+            this.lblFiaDatamartFile.Name = "lblFiaDatamartFile";
+            this.lblFiaDatamartFile.Size = new System.Drawing.Size(308, 17);
+            this.lblFiaDatamartFile.TabIndex = 38;
+            this.lblFiaDatamartFile.Text = "Path to the FIA Datamart input SQLite database";
+            // 
             // uc_fvs_input
             // 
             this.Controls.Add(this.groupBox1);
@@ -699,6 +761,9 @@ namespace FIA_Biosum_Manager
             this.grpDWMOptions.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1544,6 +1609,11 @@ namespace FIA_Biosum_Manager
         private void btnViewScript_Click(object sender, System.EventArgs e)
         {
             ViewScripts();
+        }
+
+        public void CreateFia2FvsInputFiles()
+        {
+            MessageBox.Show("This feature is not yet available!", "FIA Biosum");
         }
 
         private string[] GetCheckedListBoxItems(CheckedListBox chkListBox)
@@ -2438,6 +2508,9 @@ namespace FIA_Biosum_Manager
                 case "CREATE FVS INPUT DATABASE FILES":
                     btnAppend_Click(null, null);
                     break;
+                case "CREATE FVS INPUT DATABASE FILES FROM FIA2FVS":
+                    CreateFia2FvsInputFiles();
+                    break;
                 case "CREATE FVS OUTPUT DATABASE FILES":
                     CreateFvsOutFiles();
                     break;
@@ -2580,7 +2653,16 @@ namespace FIA_Biosum_Manager
             System.Diagnostics.Process.Start("https://www.fs.usda.gov/treesearch/pubs/download/9521.pdf");
         }
 
-
-
+        private void btnDatamart_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog oDialog = new System.Windows.Forms.OpenFileDialog();
+            oDialog.Title = "FIA Datamart database containing FIA2FVS files";
+            oDialog.Filter = "SQLite databases (*.db;*.db3)|*.db;*.db3|All files (*.*)|*.*";
+            DialogResult result = oDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                txtFIADatamart.Text = oDialog.FileName;
+            }
+        }
     }
 }

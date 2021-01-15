@@ -514,9 +514,9 @@ namespace FIA_Biosum_Manager
             this.lblRScriptDir.AutoSize = true;
             this.lblRScriptDir.Location = new System.Drawing.Point(18, 23);
             this.lblRScriptDir.Name = "lblRScriptDir";
-            this.lblRScriptDir.Size = new System.Drawing.Size(318, 18);
+            this.lblRScriptDir.Size = new System.Drawing.Size(314, 18);
             this.lblRScriptDir.TabIndex = 31;
-            this.lblRScriptDir.Text = "Directory path of the (i386) RScript.exe location";
+            this.lblRScriptDir.Text = "Directory path of the (x64) RScript.exe location";
             // 
             // btnSave
             // 
@@ -719,7 +719,7 @@ namespace FIA_Biosum_Manager
         private void btnRdir_Click(object sender, EventArgs e)
         {
             System.Windows.Forms.OpenFileDialog oDialog = new OpenFileDialog();
-            oDialog.Title = "32-bit version of RScript.exe File";
+            oDialog.Title = "64-bit version of RScript.exe File";
             oDialog.Filter = "RScript File (RScript.EXE) |RScript.EXE";
             DialogResult result = oDialog.ShowDialog();
             if (result == DialogResult.OK)
