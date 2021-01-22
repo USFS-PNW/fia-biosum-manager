@@ -326,7 +326,7 @@ namespace FIA_Biosum_Manager
             this.cmbAction.FormattingEnabled = true;
             this.cmbAction.Items.AddRange(new object[] {
             "Create FVS Input Database Files",
-            "Create FVS Input Database Files From FIA2FVS",
+            //"Create FVS Input Database Files From FIA2FVS",
             "Create FVS Output Database Files",
             "Delete Standard FVS Output Tables",
             "Delete POTFIRE Base Year Output Tables",
@@ -1857,48 +1857,36 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
             }
 
+            dao_data_access oDao = new dao_data_access();
+            ado_data_access oAdo = new ado_data_access();
             try
             {
                 string strSourceDbDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtFIADatamart, "Text", false);
 
-                // Add INCLUDE column to FIA2FVS SQLite databases
+                // Get a temporary database name for processing
+                string strTempMDB = frmMain.g_oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
+                // Create a temporary mdb that will contain all our required table links
+                oDao.CreateMDB(strTempMDB);
+                // Link to the source SQLite table; Takes the whole path to the DB
+                oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName.ToUpper(), Tables.FIA2FVS.DefaultFvsInputStandTableName.ToUpper(),
+                    "FIADB_OR", strSourceDbDir);
+                // Set the index, required to update
+                oDao.CreatePrimaryKeyIndex(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, "STAND_CN");
+
+                //string strConn = oAdo.getMDBConnString(strTempMDB, "", "");
+                //using (var oConn = new System.Data.OleDb.OleDbConnection(strConn))
+                //{
+                //    oConn.Open();
+                //    oAdo.SqlNonQuery(oConn, "UPDATE " + Tables.FIA2FVS.DefaultFvsInputStandTableName + " SET ADDFILES = 'ABC'");
+                //}
+
                 SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
                 string connSourceDb = oDataMgr.GetConnectionString(strSourceDbDir);
-                string strInclude = "INCLUDE";
                 using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connSourceDb))
                 {
                     string strSql = "";
                     con.Open();
-                    string[] arrTables = { Tables.FIA2FVS.DefaultFvsInputStandTableName, Tables.FIA2FVS.DefaultFvsInputTreeTableName };
-                    for (int i = 0; i < 2; i++)
-                    {
-                        if (oDataMgr.ColumnExist(con, arrTables[i], strInclude))
-                        {
-                            strSql = "UPDATE " + arrTables[i] + " SET " + strInclude + " = 'N'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oDataMgr.SqlNonQuery(con, strSql);
-                            if (oDataMgr.m_intError != 0)
-                            {
-                                if (frmMain.g_bDebug)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n!!!Error Executing SQL!!!\r\n");
-                                this.m_intError = this.m_ado.m_intError;
-                            }
-                        }
-                        else
-                        {
-                            strSql = "ALTER TABLE " + arrTables[i] + " ADD COLUMN " + strInclude + " TEXT DEFAULT 'N'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oDataMgr.SqlNonQuery(con, strSql);
-                            if (oDataMgr.m_intError != 0)
-                            {
-                                if (frmMain.g_bDebug)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n!!!Error Executing SQL!!!\r\n");
-                                this.m_intError = this.m_ado.m_intError;
-                            }
-                        }
-                    }
+                    // Do stuff in sqlite side
                 }
 
                 string strDataDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtDataDir, "Text", false);
@@ -2176,7 +2164,17 @@ namespace FIA_Biosum_Manager
             {
                 m_oHelp = new Help(m_xpsFile, m_oEnv);
             }
-            m_oHelp.ShowHelp(new string[] { "FVS", "INPUT_DATA" });
+            string helpPage = "INPUT_DATA";
+            switch (tabControl1.SelectedIndex)
+            {
+                case 0:
+                    helpPage = "INPUT_DATA";
+                    break;
+                case 1:
+                    helpPage = "INPUT_OPTIONS";
+                    break;
+            }
+            m_oHelp.ShowHelp(new string[] { "FVS", helpPage });
         }
         private void txtDataDir_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
