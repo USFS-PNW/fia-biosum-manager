@@ -5915,9 +5915,9 @@ namespace FIA_Biosum_Manager
             {
             }
             static public string DefaultFvsInputFile { get { return "FVSIn.db"; } }
-            static public string DefaultFvsInputStandTableName { get { return "FVS_StandInit_Cond"; } }
-            static public string DefaultFvsInputTreeTableName { get { return "FVS_TreeInit_Cond"; } }
-            static public string DefaultFvsInputKeywordsTableName { get { return "FVS_GroupAddFilesAndKeywords"; } }
+            static public string DefaultFvsInputStandTableName { get { return "FVS_STANDINIT_COND"; } }
+            static public string DefaultFvsInputTreeTableName { get { return "FVS_TREEINIT_COND"; } }
+            static public string DefaultFvsInputKeywordsTableName { get { return "FVS_GROUPADDFILESANDKEYWORDS"; } }
             static public string DefaultFvsInputFolderName { get { return @"\fvs\data"; } }
 
         }
