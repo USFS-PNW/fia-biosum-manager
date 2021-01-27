@@ -1877,7 +1877,7 @@ namespace FIA_Biosum_Manager
 
                 // Link to cond table
                 m_strCondTable = m_oQueries.m_oFIAPlot.m_strCondTable;
-                string strCondMdb = Path.GetDirectoryName(m_oQueries.m_oDataSource.getFullPathAndFile(Datasource.TableTypes.Condition));
+                string strCondMdb = m_oQueries.m_oDataSource.getFullPathAndFile(Datasource.TableTypes.Condition);
                 oDao.CreateTableLink(strTempMDB, m_strCondTable, strCondMdb, m_strCondTable);
                 
                 // Link to the input SQLite table; Takes the whole path to the DB
@@ -1920,8 +1920,8 @@ namespace FIA_Biosum_Manager
                         File.Copy(applicationDb, strInDirAndFile, true);
 
                         // Connect to target database (FVS_In.db)
-                        string connSourceDb = oDataMgr.GetConnectionString(strInDirAndFile);
-                        using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connSourceDb))
+                        string connTargetDb = oDataMgr.GetConnectionString(strInDirAndFile);
+                        using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connTargetDb))
                         {
                             con.Open();
                             string strSql = "ATTACH DATABASE '" + strSourceDbDir + "' AS source";
@@ -1980,55 +1980,56 @@ namespace FIA_Biosum_Manager
                                 oDataMgr.SqlNonQuery(con, strSql);
                             }
 
-                            // Check to see if the target DSN exists and if so, delete so we can add
-                            if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
-                            {
-                                odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
-                            }
-                            odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strInDirAndFile);
-
-                            // Link stand table to temp database
-                            oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, Tables.FIA2FVS.DefaultFvsInputStandTableName,
-                                ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strSourceDbDir);
-                            // Set the index, required to by ODBC to update
-                            oDao.CreatePrimaryKeyIndex(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, "STAND_CN");
-
-                            string strAccdbConnection = oAdo.getMDBConnString(strTempMDB, "", "");
-                            using (OleDbConnection oAccessConn = new OleDbConnection(strAccdbConnection))
-                            {
-                                oAccessConn.Open();
-                                strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputStandTableName +
-                                         " SELECT " + strSourceStandTableAlias + ".*" +
-                                         " FROM " + strSourceStandTableAlias +
-                                         " INNER JOIN cond ON COND.cn = " + strSourceStandTableAlias + ".STAND_CN" +
-                                         " AND COND.INVYR = " + strSourceStandTableAlias + ".INV_YEAR" +
-                                         " WHERE " + strSourceStandTableAlias + ".VARIANT = '" + strCurVariant + "'";
-                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                                oAdo.SqlNonQuery(oAccessConn, strSql);
-                            }
-
-                            // Delete link to target stand table from temp database
-                            strSql = "DROP TABLE " + Tables.FIA2FVS.DefaultFvsInputStandTableName;
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
-
-
                             // Disconnect from source database
                             strSql = "DETACH DATABASE 'source'";
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
                             oDataMgr.SqlNonQuery(con, strSql);
-
-                            // Remove target DSN if it exists
-                            if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
-                            {
-                                odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
-                            }
-
-
                         }
+
+
+                        // Check to see if the target DSN exists and if so, delete so we can add
+                        if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
+                        {
+                            odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
+                        }
+                        odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strInDirAndFile);
+
+                        // Link stand table to temp database
+                        oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, Tables.FIA2FVS.DefaultFvsInputStandTableName,
+                            ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strInDirAndFile);
+                        // Set the index, required to by ODBC to update
+                        oDao.CreatePrimaryKeyIndex(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, "STAND_CN");
+
+                        string strAccdbConnection = oAdo.getMDBConnString(strTempMDB, "", "");
+                        using (OleDbConnection oAccessConn = new OleDbConnection(strAccdbConnection))
+                        {
+                            oAccessConn.Open();
+                            string strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputStandTableName +
+                                         " SELECT " + strSourceStandTableAlias + ".*" +
+                                         " FROM " + strSourceStandTableAlias +
+                                         " INNER JOIN cond ON COND.cn = " + strSourceStandTableAlias + ".STAND_CN" +
+                                         " AND COND.INVYR = " + strSourceStandTableAlias + ".INV_YEAR" +
+                                         " WHERE " + strSourceStandTableAlias + ".VARIANT = '" + strCurVariant + "'";
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                            oAdo.SqlNonQuery(oAccessConn, strSql);
+
+                            // Delete link to target stand table from temp database
+                            strSql = "DROP TABLE " + strSourceStandTableAlias;
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                            oAdo.SqlNonQuery(oAccessConn, strSql);
+                        }
+
+                        // Remove target DSN if it exists
+                        if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
+                        {
+                            odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
+                        }
+
+
+
 
 
                         // This happens at the end
@@ -2069,6 +2070,15 @@ namespace FIA_Biosum_Manager
             }
             catch (ThreadAbortException)
             {
+                if (oAdo != null)
+                {
+                    if (oAdo.m_DataSet != null)
+                    {
+                        oAdo.m_DataSet.Clear();
+                        oAdo.m_DataSet.Dispose();
+                    }
+                    oAdo = null;
+                }
                 m_intError = -1;
             }
             catch (Exception err)
@@ -2082,6 +2092,19 @@ namespace FIA_Biosum_Manager
             }
             finally
             {
+                if (oAdo != null)
+                {
+                    if (oAdo.m_DataSet != null)
+                    {
+                        oAdo.m_DataSet.Clear();
+                        oAdo.m_DataSet.Dispose();
+                    }
+                    oAdo = null;
+                }
+                //destroy the object and release it from memory
+                oDao.m_DaoWorkspace.Close();
+                oDao.m_DaoWorkspace = null;
+                oDao = null;
                 if (m_intError == 0)
                 {
                     ThreadCleanUp();
@@ -2294,7 +2317,7 @@ namespace FIA_Biosum_Manager
                         if (oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputTreeTableName))
                         {
                             strSql = "SELECT COUNT(*) as TreeInitCount " +
-                                     "FROM (SELECT DISTINCT TREE_CN " + Tables.FIA2FVS.DefaultFvsInputTreeTableName + ")";
+                                     "FROM (SELECT DISTINCT TREE_CN FROM " + Tables.FIA2FVS.DefaultFvsInputTreeTableName + ")";
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
                             trees = (int)oDataMgr.getSingleDoubleValueFromSQLQuery(con, strSql, Tables.FIA2FVS.DefaultFvsInputTreeTableName);
