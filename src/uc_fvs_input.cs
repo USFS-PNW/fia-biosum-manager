@@ -1659,7 +1659,6 @@ namespace FIA_Biosum_Manager
             this.m_thread.IsBackground = true;
             this.m_thread.Start();
 
-            MessageBox.Show("This feature is not yet available!", "FIA Biosum");
         }
 
         private string[] GetCheckedListBoxItems(CheckedListBox chkListBox)
@@ -1862,6 +1861,7 @@ namespace FIA_Biosum_Manager
             {
                 string strSourceDbDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtFIADatamart, "Text", false);
                 strSourceDbDir = strSourceDbDir.Trim();
+                fvs_input p_fvsinput = new fvs_input(this.m_strProjDir, this.m_frmTherm);
 
                 // Get a temporary database name for processing
                 string strTempMDB = frmMain.g_oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
@@ -1887,8 +1887,10 @@ namespace FIA_Biosum_Manager
                     ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName, strSourceDbDir);
                 // Set the index, required to by ODBC to update
                 oDao.CreatePrimaryKeyIndex(strTempMDB, strSourceStandTableAlias, "STAND_CN");
-
-                SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+                oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputTreeTableName, strSourceTreeTableAlias,
+                    ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName, strSourceDbDir);
+                // Set the index, required to by ODBC to update
+                oDao.CreatePrimaryKeyIndex(strTempMDB, strSourceTreeTableAlias, "TREE_CN");
 
                 string strDataDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtDataDir, "Text", false);
                 strDataDir = strDataDir.Trim();
@@ -1903,7 +1905,10 @@ namespace FIA_Biosum_Manager
                         //see if this is a new variant
                         if (strVariant.Trim().ToUpper() != strCurVariant.Trim().ToUpper())
                         {
-                            strCurVariant = strVariant;                           
+                            strCurVariant = strVariant;
+                            p_fvsinput.StartFIA2FVS(odbcmgr, oDao, oAdo, strTempMDB, 
+                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, 
+                                strSourceTreeTableAlias);
                         }
                         frmMain.g_oDelegate.SetControlPropertyValue(
                             m_frmTherm.progressBar1,
@@ -1911,129 +1916,11 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oDelegate.GetControlPropertyValue(
                                     m_frmTherm.progressBar1, "Maximum", false));
 
+                        // This happens at the end
                         // Set Location file column to blank; Don't think this is relevant with FIA2FVS
                         frmMain.g_oDelegate.SetListViewSubItemPropertyValue(this.lstFvsInput, x, COL_LOC, "Text", "");
-
-                        // Copy the target database from BioSum application directory
-                        string applicationDb = frmMain.g_oEnv.strAppDir + "\\db\\" + Tables.FIA2FVS.DefaultFvsInputFile;
                         string strInDirAndFile = strDataDir + "\\" + strVariant + "\\" + Tables.FIA2FVS.DefaultFvsInputFile;
-                        File.Copy(applicationDb, strInDirAndFile, true);
-
-                        // Connect to target database (FVS_In.db)
-                        string connTargetDb = oDataMgr.GetConnectionString(strInDirAndFile);
-                        using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connTargetDb))
-                        {
-                            con.Open();
-                            string strSql = "ATTACH DATABASE '" + strSourceDbDir + "' AS source";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oDataMgr.SqlNonQuery(con, strSql);
-
-                            // Query schema from original table
-                            strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
-                                     "AND name = '" + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName + "'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
-
-                            // Execute the create table statement
-                            if (! String.IsNullOrEmpty(strSql))
-                            {
-                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                                oDataMgr.SqlNonQuery(con, strSql);
-
-                                // Populate the table from the source
-                                if (oDataMgr.m_intError == 0)
-                                {
-                                    strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName +
-                                             " SELECT * FROM source." + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName;
-                                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                                    oDataMgr.SqlNonQuery(con, strSql);
-                                }
-                            }
-
-                            // Create empty stand table
-                            strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
-                                "AND name = '" + Tables.FIA2FVS.DefaultFvsInputStandTableName + "'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
-                            if (!String.IsNullOrEmpty(strSql))
-                            {
-                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                                oDataMgr.SqlNonQuery(con, strSql);
-                            }
-
-                            // Create empty tree table
-                            strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
-                                "AND name = '" + Tables.FIA2FVS.DefaultFvsInputTreeTableName + "'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
-                            if (!String.IsNullOrEmpty(strSql))
-                            {
-                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                                oDataMgr.SqlNonQuery(con, strSql);
-                            }
-
-                            // Disconnect from source database
-                            strSql = "DETACH DATABASE 'source'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oDataMgr.SqlNonQuery(con, strSql);
-                        }
-
-
-                        // Check to see if the target DSN exists and if so, delete so we can add
-                        if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
-                        {
-                            odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
-                        }
-                        odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strInDirAndFile);
-
-                        // Link stand table to temp database
-                        oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, Tables.FIA2FVS.DefaultFvsInputStandTableName,
-                            ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName, strInDirAndFile);
-                        // Set the index, required to by ODBC to update
-                        oDao.CreatePrimaryKeyIndex(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, "STAND_CN");
-
-                        string strAccdbConnection = oAdo.getMDBConnString(strTempMDB, "", "");
-                        using (OleDbConnection oAccessConn = new OleDbConnection(strAccdbConnection))
-                        {
-                            oAccessConn.Open();
-                            string strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputStandTableName +
-                                         " SELECT " + strSourceStandTableAlias + ".*" +
-                                         " FROM " + strSourceStandTableAlias +
-                                         " INNER JOIN cond ON COND.cn = " + strSourceStandTableAlias + ".STAND_CN" +
-                                         " AND COND.INVYR = " + strSourceStandTableAlias + ".INV_YEAR" +
-                                         " WHERE " + strSourceStandTableAlias + ".VARIANT = '" + strCurVariant + "'";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oAdo.SqlNonQuery(oAccessConn, strSql);
-
-                            // Delete link to target stand table from temp database
-                            strSql = "DROP TABLE " + strSourceStandTableAlias;
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                            oAdo.SqlNonQuery(oAccessConn, strSql);
-                        }
-
-                        // Remove target DSN if it exists
-                        if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName))
-                        {
-                            odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsOutputDsnName);
-                        }
-
-
-
-
-
-                        // This happens at the end
-                        if (System.IO.File.Exists(strInDirAndFile) == true) //redundant check here, but leaves " " instead of new "0"
+                        if (File.Exists(strInDirAndFile) == true) //redundant check here, but leaves " " instead of new "0"
                         {
                             int[] fvsInputRecordCounts = getFVSSQLiteInputRecordCounts(strInDirAndFile);
                             frmMain.g_oDelegate.SetListViewSubItemPropertyValue(this.lstFvsInput, x, COL_STANDCOUNT, "Text",
