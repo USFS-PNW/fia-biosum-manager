@@ -1905,16 +1905,16 @@ namespace FIA_Biosum_Manager
                         //see if this is a new variant
                         if (strVariant.Trim().ToUpper() != strCurVariant.Trim().ToUpper())
                         {
+                            frmMain.g_oDelegate.SetControlPropertyValue(
+                                m_frmTherm.progressBar1,
+                                "Value", 20);
                             strCurVariant = strVariant;
                             p_fvsinput.StartFIA2FVS(odbcmgr, oDao, oAdo, strTempMDB, 
-                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, 
-                                strSourceTreeTableAlias);
+                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, strSourceTreeTableAlias);
                         }
                         frmMain.g_oDelegate.SetControlPropertyValue(
                             m_frmTherm.progressBar1,
-                            "Value",
-                            frmMain.g_oDelegate.GetControlPropertyValue(
-                                    m_frmTherm.progressBar1, "Maximum", false));
+                            "Value", 60);
 
                         // This happens at the end
                         // Set Location file column to blank; Don't think this is relevant with FIA2FVS

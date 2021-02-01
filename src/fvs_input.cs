@@ -3948,12 +3948,6 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
                 oAdo.SqlNonQuery(oAccessConn, strSql);
 
-                // Delete link to target stand table from temp database
-                strSql = "DROP TABLE " + strSourceStandTableAlias;
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                oAdo.SqlNonQuery(oAccessConn, strSql);
-
                 strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputTreeTableName +
                     " SELECT " + strSourceTreeTableAlias + ".* FROM " + strSourceTreeTableAlias +
                     " INNER JOIN " + Tables.FIA2FVS.DefaultFvsInputStandTableName + " ON " +
@@ -3963,8 +3957,14 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
                 oAdo.SqlNonQuery(oAccessConn, strSql);
 
+                // Delete link to target stand table from temp database
+                strSql = "DROP TABLE " + Tables.FIA2FVS.DefaultFvsInputStandTableName;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                oAdo.SqlNonQuery(oAccessConn, strSql);
+
                 // Delete link to target tree table from temp database
-                strSql = "DROP TABLE " + strSourceTreeTableAlias;
+                strSql = "DROP TABLE " + Tables.FIA2FVS.DefaultFvsInputTreeTableName;
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
                 oAdo.SqlNonQuery(oAccessConn, strSql);
