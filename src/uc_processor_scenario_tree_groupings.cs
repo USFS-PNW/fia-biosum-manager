@@ -58,9 +58,9 @@ namespace FIA_Biosum_Manager
 		private void InitializeComponent()
 		{
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.BtnTreeSpeciesGroups = new System.Windows.Forms.Button();
             this.BtnTreeDiameterGroups = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.BtnTreeSpeciesGroups = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,6 +75,17 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Size = new System.Drawing.Size(664, 424);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
+            // 
+            // BtnTreeSpeciesGroups
+            // 
+            this.BtnTreeSpeciesGroups.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnTreeSpeciesGroups.Location = new System.Drawing.Point(185, 160);
+            this.BtnTreeSpeciesGroups.Name = "BtnTreeSpeciesGroups";
+            this.BtnTreeSpeciesGroups.Size = new System.Drawing.Size(198, 33);
+            this.BtnTreeSpeciesGroups.TabIndex = 28;
+            this.BtnTreeSpeciesGroups.Text = "TREE SPECIES GROUPS";
+            this.BtnTreeSpeciesGroups.UseVisualStyleBackColor = true;
+            this.BtnTreeSpeciesGroups.Click += new System.EventHandler(this.BtnTreeSpeciesGroups_Click);
             // 
             // BtnTreeDiameterGroups
             // 
@@ -98,21 +109,12 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 26;
             this.lblTitle.Text = "Tree Groupings";
             // 
-            // BtnTreeSpeciesGroups
+            // uc_processor_scenario_tree_groupings
             // 
-            this.BtnTreeSpeciesGroups.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnTreeSpeciesGroups.Location = new System.Drawing.Point(185, 160);
-            this.BtnTreeSpeciesGroups.Name = "BtnTreeSpeciesGroups";
-            this.BtnTreeSpeciesGroups.Size = new System.Drawing.Size(198, 33);
-            this.BtnTreeSpeciesGroups.TabIndex = 28;
-            this.BtnTreeSpeciesGroups.Text = "TREE SPECIES GROUPS";
-            this.BtnTreeSpeciesGroups.UseVisualStyleBackColor = true;
-            this.BtnTreeSpeciesGroups.Click += new System.EventHandler(this.BtnTreeSpeciesGroups_Click);
-            // 
-            // uc_scenario_tree_groupings
-            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.groupBox1);
-            this.Name = "uc_scenario_tree_groupings";
+            this.Name = "uc_processor_scenario_tree_groupings";
             this.Size = new System.Drawing.Size(664, 424);
             this.Resize += new System.EventHandler(this.uc_scenario_tree_groupings_Resize);
             this.groupBox1.ResumeLayout(false);

@@ -135,6 +135,62 @@ namespace FIA_Biosum_Manager
 			}
 			
 		}
+        public void CloseAndDisposeConnection(System.Data.OleDb.OleDbConnection p_Connection, bool p_bClearPool)
+        {
+            try
+            {
+
+                if (p_Connection.State != ConnectionState.Closed)
+                {
+                    if (m_OleDbDataReader != null) m_OleDbDataReader.Dispose();
+
+                    if (m_OleDbCommand != null) m_OleDbCommand.Dispose();
+
+                    if (m_OleDbDataAdapter != null)
+                    {
+                        if (m_OleDbDataAdapter.SelectCommand != null)
+                        {
+                            m_OleDbDataAdapter.SelectCommand.Dispose();
+                        }
+                        if (m_OleDbDataAdapter.UpdateCommand != null)
+                        {
+                            m_OleDbDataAdapter.UpdateCommand.Dispose();
+                        }
+                        if (m_OleDbDataAdapter.DeleteCommand != null)
+                        {
+                            m_OleDbDataAdapter.DeleteCommand.Dispose();
+                        }
+                        if (m_OleDbDataAdapter.InsertCommand != null)
+                        {
+                            m_OleDbDataAdapter.InsertCommand.Dispose();
+                        }
+                    }
+
+                }
+                while (p_Connection.State != System.Data.ConnectionState.Closed)
+                {
+
+                    p_Connection.Close();
+                    System.Threading.Thread.Sleep(1000);
+
+
+
+                }
+                if (p_Connection.State == ConnectionState.Closed)
+                {
+                    if (p_bClearPool) System.Data.OleDb.OleDbConnection.ReleaseObjectPool();
+                    p_Connection.Dispose();
+                    p_Connection = null;
+
+                }
+            }
+            catch (Exception e)
+            {
+                m_strError = e.Message;
+                m_intError = -1;
+            }
+        }
+
         /// <summary>
         /// Close an MS Access Database file connection
         /// </summary>
@@ -1270,20 +1326,18 @@ namespace FIA_Biosum_Manager
             }
             return intRecTtl;
 		}
-
-
-	    /// <summary>
-	    /// return number of rows
-	    /// </summary>
-	    /// <param name="p_conn"></param>
-	    /// <param name="strSQL"></param>
-	    /// <param name="strTableName"></param>
-	    /// <returns></returns>
-	    public int getRecordCount(System.Data.OleDb.OleDbConnection p_conn, string strSQL, string strTableName)
-	    {
-	        int intRecTtl = 0;
-	        this.m_intError = 0;
-	        this.m_strError = "";
+        /// <summary>
+        /// return number of rows
+        /// </summary>
+        /// <param name="p_conn"></param>
+        /// <param name="strSQL"></param>
+        /// <param name="strTableName"></param>
+        /// <returns></returns>
+        public int getRecordCount(System.Data.OleDb.OleDbConnection p_conn, string strSQL, string strTableName)
+        {
+            int intRecTtl = 0;
+            this.m_intError = 0;
+            this.m_strError = "";
             using (var p_OleDbCommand = new OleDbCommand(strSQL, p_conn))
             {
                 try
@@ -1302,9 +1356,8 @@ namespace FIA_Biosum_Manager
                             System.Windows.Forms.MessageBoxIcon.Exclamation);
                 }
             }
-	        return intRecTtl;
-	    }
-
+            return intRecTtl;
+        }
 
         /// <summary>
         /// return number of rows
@@ -1339,8 +1392,38 @@ namespace FIA_Biosum_Manager
             }
 	        return intRecTtl;
 		}
-
-
+        /// <summary>
+        /// return number of rows
+        /// </summary>
+        /// <param name="p_conn"></param>
+        /// <param name="strSQL"></param>
+        /// <param name="strTableName"></param>
+        /// <returns></returns>
+        public uint getRecordCountUInt(System.Data.OleDb.OleDbConnection p_conn, string strSQL, string strTableName)
+        {
+            uint intRecTtl = 0;
+            this.m_intError = 0;
+            this.m_strError = "";
+            using (var p_OleDbCommand = new OleDbCommand(strSQL, p_conn))
+            {
+                try
+                {
+                    intRecTtl = Convert.ToUInt32(p_OleDbCommand.ExecuteScalar());
+                }
+                catch (Exception caught)
+                {
+                    this.m_intError = -1;
+                    this.m_strError = caught.Message + "  SQL query command: " + strSQL + " failed";
+                    if (_bDisplayErrors)
+                        MessageBox.Show("!!Error!! \n" +
+                                        "Module - ado_data_access:getRecordCount  \n" +
+                                        "Err Msg - " + this.m_strError,
+                            "FIA Biosum", System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Exclamation);
+                }
+            }
+            return intRecTtl;
+        }
         /// <summary>
         /// Return a ADO.NET datatable after converting from a dataview
         /// </summary>

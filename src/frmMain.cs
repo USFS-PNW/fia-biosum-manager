@@ -167,7 +167,7 @@ namespace FIA_Biosum_Manager
 
 		public static FIA_Biosum_Manager.Tables g_oTables = new Tables();
 
-		public static FIA_Biosum_Manager.utils g_oUtils = new utils();
+		public static FIA_Biosum_Manager.utils g_oUtils = new FIA_Biosum_Manager.utils();
 
 		public static FIA_Biosum_Manager.env  g_oEnv = new env();
 
@@ -199,9 +199,11 @@ namespace FIA_Biosum_Manager
         public const int PROJDIR = 0;
         public const int OLDPROJDIR = 1;
 
-		public static string g_strAppVer = "5.8.8";
+		public static string g_strAppVer = "5.8.9";
         public static string g_strBiosumDataDir = "\\FIABiosum";
         public static int g_intRefDbVer = 2;
+        public static bool g_bUseOracleXE = false;
+
 		private System.Windows.Forms.MenuItem mnuSettings;
         private MenuItem mnuTools;
         private MenuItem mnuToolsFCS;
@@ -233,25 +235,30 @@ namespace FIA_Biosum_Manager
            
 			InitializeComponent();
 
+
             
 
-
             this.m_oEnv = new env();
-			
-			//create and initialize project form
-			this.frmProject = new FIA_Biosum_Manager.frmDialog();
-			this.frmProject.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+
+            
+
+            //create and initialize project form
+            this.frmProject = new FIA_Biosum_Manager.frmDialog();
+            
+            this.frmProject.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
 			this.frmProject.BackColor = System.Drawing.SystemColors.Control;
 			this.frmProject.ClientSize = new System.Drawing.Size(712, 488);
 			this.frmProject.Location = new System.Drawing.Point(23, 23);
 			this.frmProject.Name = "frmProject";
 
-		
-			this.frmProject.MdiParent = this;
+           
+
+            this.frmProject.MdiParent = this;
 			this.frmProject.Initialize_User_Control("PROJECT");
 			this.frmProject.Visible=false;
 
-			intGrpBoxLeftTopPosition = 0; //Math.Abs(this.btnDB.Top + this.btnDB.Height + 2) ;
+            
+            intGrpBoxLeftTopPosition = 0; //Math.Abs(this.btnDB.Top + this.btnDB.Height + 2) ;
 			for (int x=1;;x++)
 			{
                 intGrpBoxLeftTopPosition=x;
@@ -261,9 +268,9 @@ namespace FIA_Biosum_Manager
 				}
 
 			}
+            
 
-
-			intListHtPosition = this.Height - (this.btnDB.Height * 2);
+            intListHtPosition = this.Height - (this.btnDB.Height * 2);
 			
 			this.panel1.Top = intGrpBoxLeftTopPosition;
 			this.panel1.BackColor = System.Drawing.Color.Gray;
@@ -271,23 +278,23 @@ namespace FIA_Biosum_Manager
 			this.panel1.Enabled=false;
 			this.panel1.Visible=false;
 
-			
+            
+
             this.InitializeMainFormPanelsAndButtons();
 			this.panel1.Height=0;
 			
 			panel1.Height = this.grpboxLeft.Height - panel1.Top;
-            
 
-			this.m_pnlCurrent = this.m_pnlDb;
+            
+            this.m_pnlCurrent = this.m_pnlDb;
 			this.m_pnlCurrent.Enabled=false;
 			this.m_pnlCurrent.Size = this.panel1.Size;
 			this.m_pnlCurrent.Height = this.panel1.Height ;
 			this.m_pnlCurrent.Top = intGrpBoxLeftTopPosition;
 			this.m_pnlCurrent.Visible=true;
-			
 
+            
 
-			
             this.btnSave.Enabled=false;
 			this.btnContacts.Enabled=false;
 			this.btnOptimizer.Enabled = false;
@@ -369,10 +376,9 @@ namespace FIA_Biosum_Manager
 				{
 				}
 			}
-
             //get local hard drives on the pc
-			this.m_LocalHardDrive = new string[24];
-			utils p_oUtils = new utils();
+            this.m_LocalHardDrive = new string[24];
+			FIA_Biosum_Manager.utils p_oUtils = new FIA_Biosum_Manager.utils();
 			this.m_LocalHardDrive = p_oUtils.getLocalHardDriveList();
 			p_oUtils = null;
 
@@ -382,11 +388,10 @@ namespace FIA_Biosum_Manager
 
 			}
 
-			frmMain.g_oDelegate = new DelegateTools();			
+			frmMain.g_oDelegate = new DelegateTools();
 
             
-
-			this.btnDB.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
+            this.btnDB.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
 			this.btnDB.Paint += new System.Windows.Forms.PaintEventHandler(this.ProcessButton_Paint);
 			this.btnFVS.EnabledChanged += new System.EventHandler(this.ProcessButton_EnabledChanged);
 			this.btnFVS.Paint += new System.Windows.Forms.PaintEventHandler(this.ProcessButton_Paint);
@@ -425,7 +430,10 @@ namespace FIA_Biosum_Manager
 
             CheckForBiosumRefData();
 
-		}
+            Validate_OracleConnectivity();
+
+            
+        }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -485,8 +493,8 @@ namespace FIA_Biosum_Manager
             this.menuItem23 = new System.Windows.Forms.MenuItem();
             this.mnuHelpTechnicalSupport = new System.Windows.Forms.MenuItem();
             this.menuItem25 = new System.Windows.Forms.MenuItem();
-            this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.mnuReleaseNotes = new System.Windows.Forms.MenuItem();
+            this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
             this.tlbMain = new System.Windows.Forms.ToolBar();
             this.btnOpen = new System.Windows.Forms.ToolBarButton();
             this.btnSave = new System.Windows.Forms.ToolBarButton();
@@ -704,20 +712,21 @@ namespace FIA_Biosum_Manager
             this.menuItem25.Index = 3;
             this.menuItem25.Text = "-";
             // 
-            // mnuHelpAbout
-            // 
-            this.mnuHelpAbout.Index = 5;
-            this.mnuHelpAbout.Text = "About FIA Biosum";
-            this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
-            // 
             // mnuReleaseNotes
             // 
             this.mnuReleaseNotes.Index = 4;
             this.mnuReleaseNotes.Text = "Release Notes";
             this.mnuReleaseNotes.Click += new System.EventHandler(this.mnuReleaseNotes_Click);
             // 
+            // mnuHelpAbout
+            // 
+            this.mnuHelpAbout.Index = 5;
+            this.mnuHelpAbout.Text = "About FIA Biosum";
+            this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
+            // 
             // tlbMain
             // 
+            this.tlbMain.AutoSize = false;
             this.tlbMain.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
             this.btnOpen,
             this.btnSave,
@@ -730,9 +739,10 @@ namespace FIA_Biosum_Manager
             this.tlbMain.DropDownArrows = true;
             this.tlbMain.ImageList = this.imgList1;
             this.tlbMain.Location = new System.Drawing.Point(0, 0);
+            this.tlbMain.Margin = new System.Windows.Forms.Padding(4);
             this.tlbMain.Name = "tlbMain";
             this.tlbMain.ShowToolTips = true;
-            this.tlbMain.Size = new System.Drawing.Size(654, 45);
+            this.tlbMain.Size = new System.Drawing.Size(981, 49);
             this.tlbMain.TabIndex = 1;
             this.tlbMain.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbMain_ButtonClick);
             this.tlbMain.Click += new System.EventHandler(this.tlbMain_Click);
@@ -796,9 +806,11 @@ namespace FIA_Biosum_Manager
             this.grpboxLeft.Controls.Add(this.btnDB);
             this.grpboxLeft.Controls.Add(this.panel1);
             this.grpboxLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.grpboxLeft.Location = new System.Drawing.Point(0, 45);
+            this.grpboxLeft.Location = new System.Drawing.Point(0, 49);
+            this.grpboxLeft.Margin = new System.Windows.Forms.Padding(4);
             this.grpboxLeft.Name = "grpboxLeft";
-            this.grpboxLeft.Size = new System.Drawing.Size(144, 372);
+            this.grpboxLeft.Padding = new System.Windows.Forms.Padding(4);
+            this.grpboxLeft.Size = new System.Drawing.Size(180, 577);
             this.grpboxLeft.TabIndex = 7;
             this.grpboxLeft.TabStop = false;
             this.grpboxLeft.Resize += new System.EventHandler(this.grpboxLeft_Resize);
@@ -807,9 +819,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnOptimizer.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnOptimizer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnOptimizer.Location = new System.Drawing.Point(3, 286);
+            this.btnOptimizer.Location = new System.Drawing.Point(4, 465);
+            this.btnOptimizer.Margin = new System.Windows.Forms.Padding(4);
             this.btnOptimizer.Name = "btnOptimizer";
-            this.btnOptimizer.Size = new System.Drawing.Size(138, 27);
+            this.btnOptimizer.Size = new System.Drawing.Size(172, 34);
             this.btnOptimizer.TabIndex = 5;
             this.btnOptimizer.Text = "Optimizer";
             this.btnOptimizer.Click += new System.EventHandler(this.btnCoreAnalysis_Click);
@@ -818,9 +831,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnFVS.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnFVS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFVS.Location = new System.Drawing.Point(3, 313);
+            this.btnFVS.Location = new System.Drawing.Point(4, 499);
+            this.btnFVS.Margin = new System.Windows.Forms.Padding(4);
             this.btnFVS.Name = "btnFVS";
-            this.btnFVS.Size = new System.Drawing.Size(138, 28);
+            this.btnFVS.Size = new System.Drawing.Size(172, 38);
             this.btnFVS.TabIndex = 3;
             this.btnFVS.Text = "FVS";
             this.btnFVS.Click += new System.EventHandler(this.btnFVS_Click);
@@ -829,9 +843,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnProcessor.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnProcessor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnProcessor.Location = new System.Drawing.Point(3, 341);
+            this.btnProcessor.Location = new System.Drawing.Point(4, 537);
+            this.btnProcessor.Margin = new System.Windows.Forms.Padding(4);
             this.btnProcessor.Name = "btnProcessor";
-            this.btnProcessor.Size = new System.Drawing.Size(138, 28);
+            this.btnProcessor.Size = new System.Drawing.Size(172, 36);
             this.btnProcessor.TabIndex = 2;
             this.btnProcessor.Text = "Processor";
             this.btnProcessor.Click += new System.EventHandler(this.btnProcessor_Click);
@@ -840,9 +855,10 @@ namespace FIA_Biosum_Manager
             // 
             this.btnDB.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDB.Location = new System.Drawing.Point(3, 18);
+            this.btnDB.Location = new System.Drawing.Point(4, 19);
+            this.btnDB.Margin = new System.Windows.Forms.Padding(4);
             this.btnDB.Name = "btnDB";
-            this.btnDB.Size = new System.Drawing.Size(138, 27);
+            this.btnDB.Size = new System.Drawing.Size(172, 34);
             this.btnDB.TabIndex = 0;
             this.btnDB.Text = "Database";
             this.btnDB.Click += new System.EventHandler(this.btnDB_Click);
@@ -851,17 +867,19 @@ namespace FIA_Biosum_Manager
             // 
             this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.btnMain1);
-            this.panel1.Location = new System.Drawing.Point(10, 55);
+            this.panel1.Location = new System.Drawing.Point(12, 72);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(120, 268);
+            this.panel1.Size = new System.Drawing.Size(150, 348);
             this.panel1.TabIndex = 13;
             // 
             // btnMain1
             // 
             this.btnMain1.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnMain1.Location = new System.Drawing.Point(14, 9);
+            this.btnMain1.Location = new System.Drawing.Point(18, 12);
+            this.btnMain1.Margin = new System.Windows.Forms.Padding(4);
             this.btnMain1.Name = "btnMain1";
-            this.btnMain1.Size = new System.Drawing.Size(90, 65);
+            this.btnMain1.Size = new System.Drawing.Size(112, 84);
             this.btnMain1.TabIndex = 13;
             this.btnMain1.MouseEnter += new System.EventHandler(this.btnMain1_MouseEnter);
             this.btnMain1.MouseLeave += new System.EventHandler(this.btnMain1_MouseLeave);
@@ -884,23 +902,25 @@ namespace FIA_Biosum_Manager
             this.txtDropDown.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDropDown.ForeColor = System.Drawing.SystemColors.ControlText;
             this.txtDropDown.HideSelection = false;
-            this.txtDropDown.Location = new System.Drawing.Point(230, 102);
+            this.txtDropDown.Location = new System.Drawing.Point(288, 132);
+            this.txtDropDown.Margin = new System.Windows.Forms.Padding(4);
             this.txtDropDown.Multiline = true;
             this.txtDropDown.Name = "txtDropDown";
             this.txtDropDown.ReadOnly = true;
-            this.txtDropDown.Size = new System.Drawing.Size(183, 27);
+            this.txtDropDown.Size = new System.Drawing.Size(226, 34);
             this.txtDropDown.TabIndex = 11;
             this.txtDropDown.Visible = false;
             // 
             // frmMain
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(654, 417);
+            this.ClientSize = new System.Drawing.Size(981, 626);
             this.Controls.Add(this.grpboxLeft);
             this.Controls.Add(this.tlbMain);
             this.Controls.Add(this.txtDropDown);
             this.IsMdiContainer = true;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Menu = this.mnuMain;
             this.Name = "frmMain";
             this.Text = "FIA Biosum Manager";
@@ -955,7 +975,7 @@ namespace FIA_Biosum_Manager
 		
 		private void frmMain_Resize(object sender, System.EventArgs e)
 		{
-			
+			if  (sbpInfo != null)
 			this.sbpInfo.Width=(this.Width / 2);
 			
         
@@ -2113,7 +2133,7 @@ namespace FIA_Biosum_Manager
                         StartRxPackageDialog(this);
 						
 						break;
-					case "FVS INPUT DATA":
+					case "FVS INPUT":
                         StartFVSInputDataDialog();
                         
 
@@ -2807,7 +2827,7 @@ namespace FIA_Biosum_Manager
             
 			//check to make sure this project is not already open
 			//lets see if this project is already open
-			utils p_oUtils = new utils();
+			FIA_Biosum_Manager.utils p_oUtils = new FIA_Biosum_Manager.utils();
 			if (p_oUtils.FindWindowLike((IntPtr)0, "FIA Biosum Manager (" + this.frmProject.uc_project1.m_strNewProjectId + ")","*",true,true) > 0)
 			{
 				MessageBox.Show("!!Project Already Open!!","Project Open",MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -3736,8 +3756,8 @@ namespace FIA_Biosum_Manager
 			this.m_btnFvsInput.Size = this.btnMain1.Size;
 			this.m_btnFvsInput.Left = this.m_btnFvsVariant.Left;
 			this.m_btnFvsInput.Top = this.m_btnFvsTreeSpc.Top + this.m_btnFvsTreeSpc.Height + 5;
-			this.m_btnFvsInput.Text = "FVS Input Data";
-			this.m_btnFvsInput.strToolTip = "Step 5 - Create FVS Input Files";
+			this.m_btnFvsInput.Text = "FVS Input";
+			this.m_btnFvsInput.strToolTip = "Step 5 - Create FVS Input";
 
 
 			//fvs output button
@@ -4142,9 +4162,13 @@ namespace FIA_Biosum_Manager
                 this.Width,
                 this.Top);
             frmFCSTreeVolumeEdit oForm = new frmFCSTreeVolumeEdit();
-            oForm.MdiParent = this;
             this.DeactivateStandByAnimation();
-            oForm.Show();
+            if (oForm.DialogResult != System.Windows.Forms.DialogResult.Abort)
+            {
+                oForm.MdiParent = this;
+
+                oForm.Show();
+            }
         }
         public void ActivateStandByAnimation()
         {
@@ -4256,5 +4280,121 @@ namespace FIA_Biosum_Manager
                     System.IO.Path.GetDirectoryName(strDestFile) + " !!", "FIA Biosum");
             }
         }
+        public static int Validate_OracleConnectivity()
+        {
+            int ErrCode = 0;
+            string ErrMsg = "";
+            FIA_Biosum_Manager.utils.FS_NETWORK = FIA_Biosum_Manager.utils.FS_NETWORK_CHECK();
+            if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            {
+                System.Threading.Thread.Sleep(5000);
+                for (; ; )
+                {
+                    DialogResult result =
+                        MessageBox.Show("FS Network not detected by application. Do you wish to continue testing for the FS NETWORK? (Yes/No) \r\n\r\n Yes=PING FS ORACLE SERVER/No=USE Oracle XE", "FIA BIOSUM", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        FIA_Biosum_Manager.utils.FS_NETWORK = FIA_Biosum_Manager.utils.FS_NETWORK_CHECK();
+                        if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.Available)
+                        {
+                            break;
+                        }
+                    }
+                    else break;
+                }
+            }
+            Oracle.ADO.FCSOracle.FCSConnectionString = FCSConnectionString;
+            Oracle.ADO.FCSOracle.FCSSchema = FCSSchema;
+            if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            {
+                string str = System.Environment.GetEnvironmentVariable("PATH");
+                if (str.IndexOf(@"oraclexe\app\oracle\product\11.2.0\server\bin", 0) < 0)
+                {
+                    MessageBox.Show("!!FS Network Not Detected and Oracle XE not found.\r\n" + "One of these must exist to input plot records!!", "FIA Biosum");
+                    return -1;
+                }
+                FIADBOracle.Services oAdo = new FIADBOracle.Services();
+                oAdo.Start();
+                if (oAdo.m_intError == 0)
+                    oAdo.FCSEntities.InitializeADOOracleObject();
+                ErrCode = oAdo.m_intError;
+                if (ErrCode != 0)
+                {
+                    MessageBox.Show("!!Problem creating a connection to Oracle XE!!", "FIA Biosum");
+                    return -1;
+                }
+                oAdo = null;
+            }
+            else
+            {
+                if (System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db") == false)
+                {
+                    ErrCode = -1;
+                    ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db not found";
+                }
+                if (ErrCode == 0 && System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\BioSumComps.JAR") == false)
+                {
+                    ErrCode = -1;
+                    ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\BioSumComps.JAR not found";
+                }
+                if (ErrCode == 0 && System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\fcs_tree_calc.bat") == false)
+                {
+                    ErrCode = -1;
+                    ErrMsg = frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\fcs_tree_calc.bat not found";
+                }
+                if (ErrCode == 0)
+                {
+                    FIADBOracle.Services oAdo = new FIADBOracle.Services();
+                    oAdo.Start();
+                    if (oAdo.m_intError == 0)
+                        oAdo.FCSEntities.InitializeADOOracleObject();
+                    ErrCode = oAdo.m_intError;
+                    if (ErrCode != 0)
+                    {
+                        MessageBox.Show("!!Problem creating a connection to Oracle FIADB01P!!", "FIA Biosum");
+                        return -1;
+                    }
+                    oAdo = null;
+                }
+                else
+                {
+                    MessageBox.Show(ErrMsg, "FIA Biosum");
+                    return -1;
+                }
+            }
+            return ErrCode;
+        }
+
+        public static string FCSConnectionString
+        {
+            get
+            {
+                if (FIA_Biosum_Manager.utils.FS_NETWORK == FIA_Biosum_Manager.utils.FS_NETWORK_STATUS.NotAvailable)
+                {
+                    return "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=LOCALHOST)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=XE)));User Id=fcs_biosum;Password=fcs;Pooling=true;Min Pool Size=1;Max Pool Size=5;";
+                }
+                else
+                {
+                    return "SERVER=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=fsxrndx0178.fdc.fs.usda.gov)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=fiadb01p.fdc.fs.usda.gov)));uid=/;pwd=;Integrated Security=yes;";
+                    //return "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=fsxrndx0178.fdc.fs.usda.gov)(PORT=1521))(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=fiadb01p.fdc.fs.usda.gov)));User Id=/;Password=;Pooling=true;Min Pool Size=1;Max Pool Size=5;";
+                }
+            }
+        }
+        public static string FCSSchema
+        {
+            get
+            {
+                if (FIA_Biosum_Manager.utils.FS_NETWORK == FIA_Biosum_Manager.utils.FS_NETWORK_STATUS.NotAvailable)
+                {
+                    return "FCS_BIOSUM";
+                }
+                else
+                {
+                    return "ANL_PNW_FIA_FCS";
+                }
+            }
+        }
+        
+
 	}
 }

@@ -120,6 +120,8 @@ namespace FIA_Biosum_Manager
     private ProgressBarBasic.ProgressBarBasic progressBarBasic1;
     private Label lblVOLTSGRS;
     private Label label21;
+    private Label label16;
+    private Label lblFSNetwork;
 
     
 
@@ -129,6 +131,16 @@ namespace FIA_Biosum_Manager
 
     public frmFCSTreeVolumeEdit()
     {
+
+        if (frmMain.Validate_OracleConnectivity() < 0)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.Abort;
+            this.Close();
+            return;
+        }
+
+        
+     
      this.SetStyle(ControlStyles.OptimizedDoubleBuffer |
                ControlStyles.AllPaintingInWmPaint,
                true);
@@ -224,8 +236,8 @@ namespace FIA_Biosum_Manager
       
    
       LoadDefaultSingleRecordValues();
-      
-      
+
+      lblFSNetwork.Text = FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable ? "ORACLE XE" : "FS NETWORK ANL_PNW_FIA_FCS";
     }
      /// <summary>
     /// Required designer variable.
@@ -260,6 +272,8 @@ namespace FIA_Biosum_Manager
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnDefaultSingle = new System.Windows.Forms.Button();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblVOLTSGRS = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
             this.lblDRYBIOM = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.lblDRYBIOT = new System.Windows.Forms.Label();
@@ -300,12 +314,12 @@ namespace FIA_Biosum_Manager
             this.txtCountyCd = new System.Windows.Forms.TextBox();
             this.btnTreeVolSingle = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblFSNetwork = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.btnEdit = new System.Windows.Forms.Button();
             this.btnLoad = new System.Windows.Forms.Button();
             this.cmbDatasource = new System.Windows.Forms.ComboBox();
             this.btnLinkTableTest = new System.Windows.Forms.Button();
-            this.lblVOLTSGRS = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -314,9 +328,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnTreeVolBatch
             // 
-            this.btnTreeVolBatch.Location = new System.Drawing.Point(387, 286);
+            this.btnTreeVolBatch.Location = new System.Drawing.Point(387, 293);
             this.btnTreeVolBatch.Name = "btnTreeVolBatch";
-            this.btnTreeVolBatch.Size = new System.Drawing.Size(208, 20);
+            this.btnTreeVolBatch.Size = new System.Drawing.Size(208, 21);
             this.btnTreeVolBatch.TabIndex = 2;
             this.btnTreeVolBatch.Text = "Batch Calculate Volume And Biomass";
             this.btnTreeVolBatch.UseVisualStyleBackColor = true;
@@ -332,7 +346,7 @@ namespace FIA_Biosum_Manager
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(901, 576);
+            this.panel1.Size = new System.Drawing.Size(856, 467);
             this.panel1.TabIndex = 3;
             // 
             // progressBarBasic1
@@ -340,7 +354,7 @@ namespace FIA_Biosum_Manager
             this.progressBarBasic1.BackColor = System.Drawing.Color.White;
             this.progressBarBasic1.Font = new System.Drawing.Font("Arial", 10.25F);
             this.progressBarBasic1.ForeColor = System.Drawing.Color.ForestGreen;
-            this.progressBarBasic1.Location = new System.Drawing.Point(12, 541);
+            this.progressBarBasic1.Location = new System.Drawing.Point(12, 555);
             this.progressBarBasic1.Name = "progressBarBasic1";
             this.progressBarBasic1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.progressBarBasic1.Size = new System.Drawing.Size(803, 23);
@@ -351,9 +365,9 @@ namespace FIA_Biosum_Manager
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(820, 542);
+            this.btnCancel.Location = new System.Drawing.Point(820, 556);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(69, 22);
+            this.btnCancel.Size = new System.Drawing.Size(69, 23);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel\r\n";
             this.btnCancel.UseVisualStyleBackColor = false;
@@ -393,18 +407,18 @@ namespace FIA_Biosum_Manager
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.txtCountyCd);
             this.groupBox2.Controls.Add(this.btnTreeVolSingle);
-            this.groupBox2.Location = new System.Drawing.Point(12, 322);
+            this.groupBox2.Location = new System.Drawing.Point(12, 330);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(877, 213);
+            this.groupBox2.Size = new System.Drawing.Size(877, 219);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tree Volumes And Biomass One Record Test";
             // 
             // btnDefaultSingle
             // 
-            this.btnDefaultSingle.Location = new System.Drawing.Point(18, 141);
+            this.btnDefaultSingle.Location = new System.Drawing.Point(18, 145);
             this.btnDefaultSingle.Name = "btnDefaultSingle";
-            this.btnDefaultSingle.Size = new System.Drawing.Size(126, 39);
+            this.btnDefaultSingle.Size = new System.Drawing.Size(126, 40);
             this.btnDefaultSingle.TabIndex = 32;
             this.btnDefaultSingle.Text = "Default Values";
             this.btnDefaultSingle.UseVisualStyleBackColor = true;
@@ -426,18 +440,38 @@ namespace FIA_Biosum_Manager
             this.groupBox3.Controls.Add(this.label15);
             this.groupBox3.Location = new System.Drawing.Point(500, 15);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(303, 192);
+            this.groupBox3.Size = new System.Drawing.Size(303, 197);
             this.groupBox3.TabIndex = 31;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Results";
+            // 
+            // lblVOLTSGRS
+            // 
+            this.lblVOLTSGRS.BackColor = System.Drawing.Color.Beige;
+            this.lblVOLTSGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVOLTSGRS.Location = new System.Drawing.Point(152, 156);
+            this.lblVOLTSGRS.Name = "lblVOLTSGRS";
+            this.lblVOLTSGRS.Size = new System.Drawing.Size(142, 30);
+            this.lblVOLTSGRS.TabIndex = 22;
+            this.lblVOLTSGRS.Text = "0";
+            this.lblVOLTSGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(192, 135);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(65, 13);
+            this.label21.TabIndex = 21;
+            this.label21.Text = "VOLTSGRS";
             // 
             // lblDRYBIOM
             // 
             this.lblDRYBIOM.BackColor = System.Drawing.Color.Beige;
             this.lblDRYBIOM.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDRYBIOM.Location = new System.Drawing.Point(154, 91);
+            this.lblDRYBIOM.Location = new System.Drawing.Point(154, 93);
             this.lblDRYBIOM.Name = "lblDRYBIOM";
-            this.lblDRYBIOM.Size = new System.Drawing.Size(142, 29);
+            this.lblDRYBIOM.Size = new System.Drawing.Size(142, 30);
             this.lblDRYBIOM.TabIndex = 20;
             this.lblDRYBIOM.Text = "0";
             this.lblDRYBIOM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -445,7 +479,7 @@ namespace FIA_Biosum_Manager
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(185, 73);
+            this.label20.Location = new System.Drawing.Point(185, 75);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(57, 13);
             this.label20.TabIndex = 19;
@@ -455,9 +489,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblDRYBIOT.BackColor = System.Drawing.Color.Beige;
             this.lblDRYBIOT.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDRYBIOT.Location = new System.Drawing.Point(4, 152);
+            this.lblDRYBIOT.Location = new System.Drawing.Point(4, 156);
             this.lblDRYBIOT.Name = "lblDRYBIOT";
-            this.lblDRYBIOT.Size = new System.Drawing.Size(142, 29);
+            this.lblDRYBIOT.Size = new System.Drawing.Size(142, 30);
             this.lblDRYBIOT.TabIndex = 18;
             this.lblDRYBIOT.Text = "0";
             this.lblDRYBIOT.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -466,9 +500,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCFNET.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCFNET.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCFNET.Location = new System.Drawing.Point(4, 91);
+            this.lblVOLCFNET.Location = new System.Drawing.Point(4, 93);
             this.lblVOLCFNET.Name = "lblVOLCFNET";
-            this.lblVOLCFNET.Size = new System.Drawing.Size(142, 29);
+            this.lblVOLCFNET.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCFNET.TabIndex = 16;
             this.lblVOLCFNET.Text = "0";
             this.lblVOLCFNET.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -476,7 +510,7 @@ namespace FIA_Biosum_Manager
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(41, 73);
+            this.label18.Location = new System.Drawing.Point(41, 75);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(63, 13);
             this.label18.TabIndex = 15;
@@ -485,7 +519,7 @@ namespace FIA_Biosum_Manager
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(49, 130);
+            this.label19.Location = new System.Drawing.Point(49, 133);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(55, 13);
             this.label19.TabIndex = 17;
@@ -495,9 +529,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCSGRS.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCSGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCSGRS.Location = new System.Drawing.Point(154, 38);
+            this.lblVOLCSGRS.Location = new System.Drawing.Point(154, 39);
             this.lblVOLCSGRS.Name = "lblVOLCSGRS";
-            this.lblVOLCSGRS.Size = new System.Drawing.Size(142, 29);
+            this.lblVOLCSGRS.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCSGRS.TabIndex = 12;
             this.lblVOLCSGRS.Text = "0";
             this.lblVOLCSGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -516,9 +550,9 @@ namespace FIA_Biosum_Manager
             // 
             this.lblVOLCFGRS.BackColor = System.Drawing.Color.Beige;
             this.lblVOLCFGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLCFGRS.Location = new System.Drawing.Point(4, 38);
+            this.lblVOLCFGRS.Location = new System.Drawing.Point(4, 39);
             this.lblVOLCFGRS.Name = "lblVOLCFGRS";
-            this.lblVOLCFGRS.Size = new System.Drawing.Size(142, 29);
+            this.lblVOLCFGRS.Size = new System.Drawing.Size(142, 30);
             this.lblVOLCFGRS.TabIndex = 10;
             this.lblVOLCFGRS.Text = "0";
             this.lblVOLCFGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -535,7 +569,7 @@ namespace FIA_Biosum_Manager
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(363, 77);
+            this.label14.Location = new System.Drawing.Point(363, 79);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(56, 13);
             this.label14.TabIndex = 30;
@@ -543,7 +577,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtRoughCull
             // 
-            this.txtRoughCull.Location = new System.Drawing.Point(425, 74);
+            this.txtRoughCull.Location = new System.Drawing.Point(425, 76);
             this.txtRoughCull.Name = "txtRoughCull";
             this.txtRoughCull.Size = new System.Drawing.Size(62, 20);
             this.txtRoughCull.TabIndex = 29;
@@ -551,7 +585,7 @@ namespace FIA_Biosum_Manager
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(255, 77);
+            this.label13.Location = new System.Drawing.Point(255, 79);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(24, 13);
             this.label13.TabIndex = 28;
@@ -559,7 +593,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtCull
             // 
-            this.txtCull.Location = new System.Drawing.Point(286, 77);
+            this.txtCull.Location = new System.Drawing.Point(286, 79);
             this.txtCull.Name = "txtCull";
             this.txtCull.Size = new System.Drawing.Size(71, 20);
             this.txtCull.TabIndex = 27;
@@ -567,7 +601,7 @@ namespace FIA_Biosum_Manager
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(131, 80);
+            this.label12.Location = new System.Drawing.Point(131, 82);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(51, 13);
             this.label12.TabIndex = 26;
@@ -575,7 +609,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtTreeClCd
             // 
-            this.txtTreeClCd.Location = new System.Drawing.Point(190, 77);
+            this.txtTreeClCd.Location = new System.Drawing.Point(190, 79);
             this.txtTreeClCd.Name = "txtTreeClCd";
             this.txtTreeClCd.Size = new System.Drawing.Size(59, 20);
             this.txtTreeClCd.TabIndex = 25;
@@ -583,7 +617,7 @@ namespace FIA_Biosum_Manager
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(15, 80);
+            this.label11.Location = new System.Drawing.Point(15, 82);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(50, 13);
             this.label11.TabIndex = 24;
@@ -591,7 +625,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtStatusCd
             // 
-            this.txtStatusCd.Location = new System.Drawing.Point(66, 77);
+            this.txtStatusCd.Location = new System.Drawing.Point(66, 79);
             this.txtStatusCd.Name = "txtStatusCd";
             this.txtStatusCd.Size = new System.Drawing.Size(59, 20);
             this.txtStatusCd.TabIndex = 23;
@@ -599,7 +633,7 @@ namespace FIA_Biosum_Manager
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(15, 105);
+            this.label10.Location = new System.Drawing.Point(15, 108);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(89, 13);
             this.label10.TabIndex = 22;
@@ -607,7 +641,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtCR
             // 
-            this.txtCR.Location = new System.Drawing.Point(104, 102);
+            this.txtCR.Location = new System.Drawing.Point(104, 105);
             this.txtCR.Name = "txtCR";
             this.txtCR.Size = new System.Drawing.Size(80, 20);
             this.txtCR.TabIndex = 21;
@@ -615,7 +649,7 @@ namespace FIA_Biosum_Manager
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(363, 57);
+            this.label9.Location = new System.Drawing.Point(363, 59);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(48, 13);
             this.label9.TabIndex = 20;
@@ -623,7 +657,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtActualHt
             // 
-            this.txtActualHt.Location = new System.Drawing.Point(425, 52);
+            this.txtActualHt.Location = new System.Drawing.Point(425, 53);
             this.txtActualHt.Name = "txtActualHt";
             this.txtActualHt.Size = new System.Drawing.Size(62, 20);
             this.txtActualHt.TabIndex = 19;
@@ -631,7 +665,7 @@ namespace FIA_Biosum_Manager
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(255, 57);
+            this.label8.Location = new System.Drawing.Point(255, 59);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(18, 13);
             this.label8.TabIndex = 18;
@@ -639,7 +673,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtHt
             // 
-            this.txtHt.Location = new System.Drawing.Point(286, 54);
+            this.txtHt.Location = new System.Drawing.Point(286, 55);
             this.txtHt.Name = "txtHt";
             this.txtHt.Size = new System.Drawing.Size(71, 20);
             this.txtHt.TabIndex = 17;
@@ -647,7 +681,7 @@ namespace FIA_Biosum_Manager
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(131, 57);
+            this.label7.Location = new System.Drawing.Point(131, 59);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(30, 13);
             this.label7.TabIndex = 16;
@@ -655,7 +689,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtDbh
             // 
-            this.txtDbh.Location = new System.Drawing.Point(190, 54);
+            this.txtDbh.Location = new System.Drawing.Point(190, 55);
             this.txtDbh.Name = "txtDbh";
             this.txtDbh.Size = new System.Drawing.Size(59, 20);
             this.txtDbh.TabIndex = 15;
@@ -663,7 +697,7 @@ namespace FIA_Biosum_Manager
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 57);
+            this.label6.Location = new System.Drawing.Point(15, 59);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(33, 13);
             this.label6.TabIndex = 14;
@@ -671,7 +705,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtSpCd
             // 
-            this.txtSpCd.Location = new System.Drawing.Point(66, 54);
+            this.txtSpCd.Location = new System.Drawing.Point(66, 55);
             this.txtSpCd.Name = "txtSpCd";
             this.txtSpCd.Size = new System.Drawing.Size(59, 20);
             this.txtSpCd.TabIndex = 13;
@@ -679,7 +713,7 @@ namespace FIA_Biosum_Manager
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(363, 36);
+            this.label5.Location = new System.Drawing.Point(363, 37);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(32, 13);
             this.label5.TabIndex = 12;
@@ -687,7 +721,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtInvYr
             // 
-            this.txtInvYr.Location = new System.Drawing.Point(425, 33);
+            this.txtInvYr.Location = new System.Drawing.Point(425, 34);
             this.txtInvYr.Name = "txtInvYr";
             this.txtInvYr.Size = new System.Drawing.Size(62, 20);
             this.txtInvYr.TabIndex = 11;
@@ -695,7 +729,7 @@ namespace FIA_Biosum_Manager
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(190, 105);
+            this.label4.Location = new System.Drawing.Point(190, 108);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(69, 13);
             this.label4.TabIndex = 10;
@@ -703,7 +737,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtVolLocGrp
             // 
-            this.txtVolLocGrp.Location = new System.Drawing.Point(265, 102);
+            this.txtVolLocGrp.Location = new System.Drawing.Point(265, 105);
             this.txtVolLocGrp.Name = "txtVolLocGrp";
             this.txtVolLocGrp.Size = new System.Drawing.Size(80, 20);
             this.txtVolLocGrp.TabIndex = 9;
@@ -711,7 +745,7 @@ namespace FIA_Biosum_Manager
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 36);
+            this.label3.Location = new System.Drawing.Point(15, 37);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 8;
@@ -719,7 +753,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtStateCd
             // 
-            this.txtStateCd.Location = new System.Drawing.Point(66, 33);
+            this.txtStateCd.Location = new System.Drawing.Point(66, 34);
             this.txtStateCd.Name = "txtStateCd";
             this.txtStateCd.Size = new System.Drawing.Size(59, 20);
             this.txtStateCd.TabIndex = 7;
@@ -728,7 +762,7 @@ namespace FIA_Biosum_Manager
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(255, 36);
+            this.label2.Location = new System.Drawing.Point(255, 37);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(25, 13);
             this.label2.TabIndex = 6;
@@ -736,7 +770,7 @@ namespace FIA_Biosum_Manager
             // 
             // txtPlot
             // 
-            this.txtPlot.Location = new System.Drawing.Point(286, 33);
+            this.txtPlot.Location = new System.Drawing.Point(286, 34);
             this.txtPlot.Name = "txtPlot";
             this.txtPlot.Size = new System.Drawing.Size(71, 20);
             this.txtPlot.TabIndex = 5;
@@ -744,7 +778,7 @@ namespace FIA_Biosum_Manager
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(131, 36);
+            this.label1.Location = new System.Drawing.Point(131, 37);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 4;
@@ -752,16 +786,16 @@ namespace FIA_Biosum_Manager
             // 
             // txtCountyCd
             // 
-            this.txtCountyCd.Location = new System.Drawing.Point(190, 33);
+            this.txtCountyCd.Location = new System.Drawing.Point(190, 34);
             this.txtCountyCd.Name = "txtCountyCd";
             this.txtCountyCd.Size = new System.Drawing.Size(59, 20);
             this.txtCountyCd.TabIndex = 3;
             // 
             // btnTreeVolSingle
             // 
-            this.btnTreeVolSingle.Location = new System.Drawing.Point(193, 138);
+            this.btnTreeVolSingle.Location = new System.Drawing.Point(193, 141);
             this.btnTreeVolSingle.Name = "btnTreeVolSingle";
-            this.btnTreeVolSingle.Size = new System.Drawing.Size(98, 44);
+            this.btnTreeVolSingle.Size = new System.Drawing.Size(98, 45);
             this.btnTreeVolSingle.TabIndex = 2;
             this.btnTreeVolSingle.Text = "Calculate Volume And Biomass";
             this.btnTreeVolSingle.UseVisualStyleBackColor = true;
@@ -769,6 +803,8 @@ namespace FIA_Biosum_Manager
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.lblFSNetwork);
+            this.groupBox1.Controls.Add(this.label16);
             this.groupBox1.Controls.Add(this.btnEdit);
             this.groupBox1.Controls.Add(this.btnLoad);
             this.groupBox1.Controls.Add(this.cmbDatasource);
@@ -776,16 +812,36 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Controls.Add(this.btnTreeVolBatch);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(886, 313);
+            this.groupBox1.Size = new System.Drawing.Size(886, 321);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tree Volumes And Biomass Batch Test";
             // 
+            // lblFSNetwork
+            // 
+            this.lblFSNetwork.AutoSize = true;
+            this.lblFSNetwork.Location = new System.Drawing.Point(180, 16);
+            this.lblFSNetwork.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblFSNetwork.Name = "lblFSNetwork";
+            this.lblFSNetwork.Size = new System.Drawing.Size(22, 13);
+            this.lblFSNetwork.TabIndex = 9;
+            this.lblFSNetwork.Text = "NA";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(5, 16);
+            this.label16.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(170, 13);
+            this.label16.TabIndex = 8;
+            this.label16.Text = "FCS Volume and Biomass Method:";
+            // 
             // btnEdit
             // 
-            this.btnEdit.Location = new System.Drawing.Point(267, 286);
+            this.btnEdit.Location = new System.Drawing.Point(267, 293);
             this.btnEdit.Name = "btnEdit";
-            this.btnEdit.Size = new System.Drawing.Size(114, 20);
+            this.btnEdit.Size = new System.Drawing.Size(114, 21);
             this.btnEdit.TabIndex = 7;
             this.btnEdit.Text = "Edit Selected Row";
             this.btnEdit.UseVisualStyleBackColor = true;
@@ -793,7 +849,7 @@ namespace FIA_Biosum_Manager
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(184, 285);
+            this.btnLoad.Location = new System.Drawing.Point(184, 292);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(77, 21);
             this.btnLoad.TabIndex = 6;
@@ -806,7 +862,7 @@ namespace FIA_Biosum_Manager
             this.cmbDatasource.FormattingEnabled = true;
             this.cmbDatasource.Items.AddRange(new object[] {
             "Tree Sample"});
-            this.cmbDatasource.Location = new System.Drawing.Point(12, 286);
+            this.cmbDatasource.Location = new System.Drawing.Point(12, 293);
             this.cmbDatasource.Name = "cmbDatasource";
             this.cmbDatasource.Size = new System.Drawing.Size(166, 21);
             this.cmbDatasource.TabIndex = 5;
@@ -814,39 +870,18 @@ namespace FIA_Biosum_Manager
             // 
             // btnLinkTableTest
             // 
-            this.btnLinkTableTest.Location = new System.Drawing.Point(601, 286);
+            this.btnLinkTableTest.Location = new System.Drawing.Point(601, 293);
             this.btnLinkTableTest.Name = "btnLinkTableTest";
-            this.btnLinkTableTest.Size = new System.Drawing.Size(249, 20);
+            this.btnLinkTableTest.Size = new System.Drawing.Size(249, 21);
             this.btnLinkTableTest.TabIndex = 3;
             this.btnLinkTableTest.Text = "Test Link To Oracle BIOSUM_VOLUME table";
             this.btnLinkTableTest.UseVisualStyleBackColor = true;
             this.btnLinkTableTest.Click += new System.EventHandler(this.btnLinkTableTest_Click);
             // 
-            // lblVOLTSGRS
-            // 
-            this.lblVOLTSGRS.BackColor = System.Drawing.Color.Beige;
-            this.lblVOLTSGRS.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVOLTSGRS.Location = new System.Drawing.Point(152, 152);
-            this.lblVOLTSGRS.Name = "lblVOLTSGRS";
-            this.lblVOLTSGRS.Size = new System.Drawing.Size(142, 29);
-            this.lblVOLTSGRS.TabIndex = 22;
-            this.lblVOLTSGRS.Text = "0";
-            this.lblVOLTSGRS.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(192, 131);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(65, 13);
-            this.label21.TabIndex = 21;
-            this.label21.Text = "VOLTSGRS";
-            // 
             // frmFCSTreeVolumeEdit
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(901, 576);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(856, 467);
             this.Controls.Add(this.panel1);
             this.Name = "frmFCSTreeVolumeEdit";
             this.Text = "Tree Volume and Biomass Calculator Troubleshooter";
@@ -858,6 +893,7 @@ namespace FIA_Biosum_Manager
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
     }
@@ -891,7 +927,10 @@ namespace FIA_Biosum_Manager
         lblDRYBIOM.Text = "0"; lblDRYBIOT.Text = "0"; lblVOLCFGRS.Text = "0";
         lblVOLCFNET.Text = "0"; lblVOLCSGRS.Text = "0"; lblVOLTSGRS.Text = "0";
 
+       FIADBOracle.Services.FS_NETWORK_AVAILABLE = FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.Available ? true : false;
+     
       FIADBOracle.Services m_oOracleServices = new FIADBOracle.Services();
+      
       m_oOracleServices.Start();
       m_oOracleServices.m_oTree.GetVolumesMode = FIADBOracle.Services.Tree.GetVolumesModeValues.InsertRowTrigger;
       if( m_oOracleServices.m_intError == 0 )
@@ -990,11 +1029,18 @@ namespace FIA_Biosum_Manager
         frmMain.g_oDelegate.InitializeThreadEvents();
         frmMain.g_oDelegate.m_oEventStopThread.Reset();
         frmMain.g_oDelegate.m_oEventThreadStopped.Reset();
-        frmMain.g_oDelegate.m_oThread = new Thread(new ThreadStart(this.RunBatch_Main));
+
+        FIA_Biosum_Manager.utils.FS_NETWORK_CHECK();
+
+        if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+             frmMain.g_oDelegate.m_oThread = new Thread(new ThreadStart(this.RunBatch_Main_XE));
+        else
+             frmMain.g_oDelegate.m_oThread = new Thread(new ThreadStart(this.RunBatch_Main_FS_NETWORK));
         frmMain.g_oDelegate.m_oThread.IsBackground = true;
         frmMain.g_oDelegate.m_oThread.Start();
     }
-    private void RunBatch_Main()
+    
+    private void RunBatch_Main_XE()
     {
         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
         {
@@ -1015,7 +1061,7 @@ namespace FIA_Biosum_Manager
         int intThermValue = 0;
         string strTable = "";
 
-       
+        FIADBOracle.Services.FS_NETWORK_AVAILABLE = false;
         dao_data_access oDao = new dao_data_access();
         System.Data.DataRow p_rowFound;
 
@@ -1052,7 +1098,9 @@ namespace FIA_Biosum_Manager
             frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Create Access Table Link To BIOSUM_VOLUME Oracle Table...Stand By");
             strWorkDbFile = m_strTempDBFile;
             m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
+
             oDao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", strWorkDbFile, "fcs_biosum_volume");
+
             oDao.m_DaoWorkspace.Close();
             oDao = null;
             
@@ -1069,8 +1117,11 @@ namespace FIA_Biosum_Manager
             intThermValue++;
             UpdateThermPercent(0, intRecordCount + 8, intThermValue);
 
+
             if (m_oOracleServices.m_oTree == null) MessageBox.Show("m_oTree==null");
             m_oOracleServices.m_oTree.GetVolumesMode = FIADBOracle.Services.Tree.GetVolumesModeValues.SQLUpdate;
+            
+
             if (m_strGridTableSource.Trim() != Tables.FVS.DefaultOracleInputVolumesTable)
             {
                 //step 5 - delete and create work tables
@@ -1214,6 +1265,236 @@ namespace FIA_Biosum_Manager
             frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "---Leaving: frmFCSTreeVolumeEdit.RunBatch_Main \r\n");
 
     }
+     
+    private void RunBatch_Main_FS_NETWORK()
+    {
+        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+        {
+            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "\r\n//\r\n");
+            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "//frmFCSTreeVolumeEdit.RunBatch_Main \r\n");
+            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "//\r\n");
+        }
+        string strWorkDbFile = "";
+        string strConn = "";
+        string strColumns = "";
+        string strValues = "";
+        int x = 0;
+        int y = 0;
+        System.Windows.Forms.CurrencyManager oCm;
+        System.Data.DataView oDv;
+        int intCurrRow = 0;
+        int intRecordCount = 0;
+        int intThermValue = 0;
+        string strTable = "";
+
+        FIADBOracle.Services.FS_NETWORK_AVAILABLE = true;
+
+        dao_data_access oDao = new dao_data_access();
+        System.Data.DataRow p_rowFound;
+
+        frmMain.g_oDelegate.CurrentThreadProcessName = "main";
+        frmMain.g_oDelegate.CurrentThreadProcessStarted = true;
+
+        strTable = m_strGridTableSource;
+
+        intRecordCount = Convert.ToInt32(m_oAdo.getRecordCount(
+            m_oAdo.getMDBConnString(m_strTempDBFile, "", ""),
+            "SELECT COUNT(*) FROM " + strTable,
+            strTable));
+
+        frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Minimum", 0);
+        frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Value", 0);
+        frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Maximum", 100);
+        frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Visible", true);
+
+
+
+        //step 1 - delete old existing link
+        if (oDao.TableExists(m_strTempDBFile, "fcs_biosum_volume"))
+        {
+
+            oDao.DeleteTableFromMDB(m_strTempDBFile, "fcs_biosum_volume");
+
+
+
+        }
+        intThermValue++;
+
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+        //step 2 - create new link
+        frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Create Access Table Link To BIOSUM_VOLUME Oracle Table...Stand By");
+        strWorkDbFile = m_strTempDBFile;
+        m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
+
+        if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            oDao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", strWorkDbFile, "fcs_biosum_volume");
+        else
+            oDao.CreateOracleTableLink(strWorkDbFile, "BIOSUM_VOLUME", "fcs_biosum_volume", "FIADB01P", "ANL_PNW_FIA_FCS");
+
+        oDao.m_DaoWorkspace.Close();
+        oDao = null;
+
+        intThermValue++;
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+        //step 3 - open ado connection
+        m_oAdo.OpenConnection(m_oAdo.getMDBConnString(m_strTempDBFile, "", ""));
+        intThermValue++;
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+        //step 4 - start oracle XE services
+        frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Starting Oracle Services...Stand By");
+        FIADBOracle.Services m_oOracleServices = new FIADBOracle.Services();
+        m_oOracleServices.Start();
+        intThermValue++;
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+
+        if (m_oOracleServices.m_oTree == null) MessageBox.Show("m_oTree==null");
+        //LPOTTS m_oOracleServices.m_oTree.GetVolumesMode = FIADBOracle.Services.Tree.GetVolumesModeValues.SQLUpdate;
+        m_oOracleServices.m_oTree.GetVolumesMode = FIADBOracle.Services.Tree.GetVolumesModeValues.InsertRowTrigger;
+        if (m_strGridTableSource.Trim() != Tables.FVS.DefaultOracleInputVolumesTable)
+        {
+            //step 5 - delete and create work tables
+            if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, Tables.FVS.DefaultOracleInputVolumesTable))
+                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE " + Tables.FVS.DefaultOracleInputVolumesTable);
+            frmMain.g_oTables.m_oFvs.CreateOracleInputBiosumVolumesTable(m_oAdo, m_oAdo.m_OleDbConnection, Tables.FVS.DefaultOracleInputVolumesTable);
+
+            if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, Tables.FVS.DefaultOracleInputFCSVolumesTable))
+                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE " + Tables.FVS.DefaultOracleInputFCSVolumesTable);
+            frmMain.g_oTables.m_oFvs.CreateOracleInputFCSBiosumVolumesTable(m_oAdo, m_oAdo.m_OleDbConnection, Tables.FVS.DefaultOracleInputFCSVolumesTable);
+
+            intThermValue++;
+            UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+
+            //step 6 - insert records
+            frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Prepare Tree Data For Oracle...Stand By");
+            strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
+                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+
+
+            strValues = "CINT(MID(BIOSUM_COND_ID,6,2)) AS STATECD," +
+                        "CINT(MID(BIOSUM_COND_ID,12,3)) AS COUNTYCD," +
+                        "CINT(MID(BIOSUM_COND_ID,16,5)) AS PLOT," +
+                        "INVYR,VOL_LOC_GRP,ID AS TREE,SPCD,DBH AS DIA,HT,ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                        "CSTR(ID) AS TRE_CN," +
+                        "BIOSUM_COND_ID AS CND_CN," +
+                        "MID(BIOSUM_COND_ID,1,LEN(BIOSUM_COND_ID)-1) AS PLT_CN";
+
+            m_oAdo.m_strSQL = "INSERT INTO " + Tables.FVS.DefaultOracleInputFCSVolumesTable + " " +
+                             "(" + strColumns + ") SELECT " + strValues + " FROM " + strTable;
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, m_oAdo.m_strSQL + "\r\n\r\n");
+            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+        }
+        else
+        {
+            strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
+                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+            intThermValue++;
+            UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+        }
+
+        m_oAdo.m_strSQL = "INSERT INTO fcs_biosum_volume (" + strColumns + ") SELECT " + strColumns + " FROM " + Tables.FVS.DefaultOracleInputFCSVolumesTable;
+        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, m_oAdo.m_strSQL + "\r\n\r\n");
+        m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+        intThermValue++;
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+
+        //step 7 - Get returned results from FCS Oracle 
+        frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Wait For Oracle Volume Compilation To Complete...Stand By");
+        //LPOTTS m_oOracleServices.m_oTree.GetBiosumVolumes();
+        intThermValue++;
+        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+        //step 8 - Update grid with returned results
+        frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Update Grid With Volume Values...Stand By");
+        if (m_oOracleServices.m_intError == 0)
+        {
+            //LPOTTS all data will be lost if connection is closed
+
+            //strConn = m_oAdo.m_OleDbConnection.ConnectionString;
+            //m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
+
+            //m_oAdo.OpenConnection(strConn);
+
+            oCm = (CurrencyManager)this.BindingContext[uc_gridview1.m_dg.DataSource, uc_gridview1.m_dg.DataMember];
+            oDv = (DataView)oCm.List;
+            intCurrRow = uc_gridview1.m_intCurrRow - 1;
+            y = oDv.Count;
+
+
+
+            m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, "SELECT * FROM fcs_biosum_volume");
+            if (m_oAdo.m_OleDbDataReader.HasRows)
+            {
+                DataColumn[] colPk = new DataColumn[1];
+                colPk[0] = uc_gridview1.m_ds.Tables[0].Columns["id"];
+                uc_gridview1.m_ds.Tables[0].PrimaryKey = colPk;
+                while (m_oAdo.m_OleDbDataReader.Read())
+                {
+                    if (intThermValue < intRecordCount + 8)
+                    {
+                        intThermValue++;
+                        UpdateThermPercent(0, intRecordCount + 8, intThermValue);
+                    }
+                    System.Object[] p_searchID = new Object[1];
+                    p_searchID[0] = Convert.ToInt32(m_oAdo.m_OleDbDataReader["tre_cn"]);
+                    p_rowFound = uc_gridview1.m_ds.Tables[0].Rows.Find(p_searchID[0]);
+                    if (p_rowFound != null)
+                    {
+                        if (m_oAdo.m_OleDbDataReader["VOLCSGRS_CALC"] != DBNull.Value)
+                            p_rowFound["volcsgrs"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["VOLCSGRS_CALC"]);
+                        else
+                            p_rowFound["volcsgrs"] = DBNull.Value;
+
+                        if (m_oAdo.m_OleDbDataReader["VOLCFGRS_CALC"] != DBNull.Value)
+                            p_rowFound["VOLCFGRS"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["VOLCFGRS_CALC"]);
+                        else
+                            p_rowFound["VOLCFGRS"] = DBNull.Value;
+
+                        if (m_oAdo.m_OleDbDataReader["VOLCFNET_CALC"] != DBNull.Value)
+                            p_rowFound["VOLCFNET"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["VOLCFNET_CALC"]);
+                        else
+                            p_rowFound["VOLCFNET"] = DBNull.Value;
+
+                        if (m_oAdo.m_OleDbDataReader["DRYBIOM_CALC"] != DBNull.Value)
+                            p_rowFound["DRYBIOM"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["DRYBIOM_CALC"]);
+                        else
+                            p_rowFound["DRYBIOM"] = DBNull.Value;
+
+                        if (m_oAdo.m_OleDbDataReader["DRYBIOT_CALC"] != DBNull.Value)
+                            p_rowFound["DRYBIOT"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["DRYBIOT_CALC"]);
+                        else
+                            p_rowFound["DRYBIOT"] = DBNull.Value;
+
+                        if (m_oAdo.m_OleDbDataReader["VOLTSGRS_CALC"] != DBNull.Value)
+                            p_rowFound["VOLTSGRS"] = Convert.ToDouble(m_oAdo.m_OleDbDataReader["VOLTSGRS_CALC"]);
+                        else
+                            p_rowFound["VOLTSGRS"] = DBNull.Value;
+                    }
+                }
+            }
+            m_oAdo.m_OleDbDataReader.Close();
+            UpdateThermPercent(0, intRecordCount + 8, intRecordCount + 8);
+            System.Threading.Thread.Sleep(2000);
+        }
+        else
+        {
+            MessageBox.Show(m_oOracleServices.m_strError, "FIA Biosum", MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+        }
+        frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Visible", false);
+        frmMain.g_oDelegate.SetControlPropertyValue(btnCancel, "Visible", false);
+
+
+        RunBatch_Finished();
+
+
+        frmMain.g_oDelegate.CurrentThreadProcessDone = true;
+        frmMain.g_oDelegate.m_oEventThreadStopped.Set();
+        this.Invoke(frmMain.g_oDelegate.m_oDelegateThreadFinished);
+        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "---Leaving: frmFCSTreeVolumeEdit.RunBatch_Main \r\n");
+
+    }
+
     private void RunBatch_Finished()
     {
         frmMain.g_oDelegate.SetControlPropertyValue(progressBarBasic1, "Visible", false);
@@ -1695,10 +1976,17 @@ namespace FIA_Biosum_Manager
     {
         frmMain.g_oDelegate.CurrentThreadProcessDone = false;
         string strFile = frmMain.g_oUtils.getRandomFile(frmMain.g_oEnv.strTempDir, "accdb");
-        
-        string str = "ODBC\r\n-----------------\r\nData Source Name:FIA Biosum Oracle Services\r\nTNS Service Name:XE\r\nUser Id:fcs\r\nOracle Table Name:BIOSUM_VOLUME\r\nMS Access Table Link Name:fcs_biosum_volume\r\nConnection Status:";
+        string str="";
         try
         {
+            if (utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            {
+                str = "ODBC\r\n-----------------\r\nData Source Name:FIA Biosum Oracle Services\r\nTNS Service Name:XE\r\nUser Id:fcs\r\nOracle Table Name:BIOSUM_VOLUME\r\nMS Access Table Link Name:fcs_biosum_volume\r\nConnection Status:";
+            }
+            else
+            {
+                str = "ODBC\r\n-----------------\r\nData Source Name:FIADB01P\r\nTNS Service Name:FIADB01P\r\nUser Id:Windows Authentication\r\nOracle Table Name:BIOSUM_VOLUME\r\nMS Access Table Link Name:fcs_biosum_volume\r\nConnection Status:";
+            }
             frmMain.g_oFrmMain.ActivateStandByAnimation(
                  this.WindowState,
                  this.Left,
@@ -1707,7 +1995,14 @@ namespace FIA_Biosum_Manager
                  this.Top);
             FIA_Biosum_Manager.dao_data_access oDao = new FIA_Biosum_Manager.dao_data_access();
             oDao.CreateMDB(strFile);
-            oDao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", strFile, "fcs_biosum_volume");
+            if (utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
+            {
+                oDao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", strFile, "fcs_biosum_volume");
+            }
+            else
+            {
+                oDao.CreateOracleTableLink(strFile, "BIOSUM_VOLUME", "fcs_biosum_volume", "FIADB01P", "ANL_PNW_FIA_FCS");
+            }
             frmMain.g_oFrmMain.DeactivateStandByAnimation();
             if (oDao.TableExists(strFile, "fcs_biosum_volume"))
             {
@@ -1715,7 +2010,10 @@ namespace FIA_Biosum_Manager
             }
             else
             {
-                MessageBox.Show(str + "Error creating MS Access table link to Oracle XE table 'BIOSUM_VOLUME'", "FIA Biosum");
+                if (utils.FS_NETWORK == utils.FS_NETWORK_STATUS.Available)
+                    MessageBox.Show(str + "Error creating MS Access table link to FIADB01P Oracle table 'ANL_PNW_FIA_FCS.BIOSUM_VOLUME'", "FIA Biosum");
+                else
+                    MessageBox.Show(str + "Error creating MS Access table link to Oracle XE table 'BIOSUM_VOLUME'", "FIA Biosum");
             }
             oDao.m_DaoDbEngine.Idle(1);
             oDao.m_DaoDbEngine.Idle(8);

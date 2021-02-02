@@ -107,7 +107,7 @@ namespace FIA_Biosum_Manager
             this.txtCycle1.MaxLength = 5;
             this.txtCycle1.Name = "txtCycle1";
             this.txtCycle1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtCycle1.Size = new System.Drawing.Size(112, 20);
+            this.txtCycle1.Size = new System.Drawing.Size(112, 22);
             this.txtCycle1.TabIndex = 0;
             this.txtCycle1.Text = "1.00";
             this.txtCycle1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -120,7 +120,7 @@ namespace FIA_Biosum_Manager
             this.txtCycle2.MaxLength = 5;
             this.txtCycle2.Name = "txtCycle2";
             this.txtCycle2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtCycle2.Size = new System.Drawing.Size(112, 20);
+            this.txtCycle2.Size = new System.Drawing.Size(112, 22);
             this.txtCycle2.TabIndex = 1;
             this.txtCycle2.Text = "1.00";
             this.txtCycle2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -133,7 +133,7 @@ namespace FIA_Biosum_Manager
             this.txtCycle3.MaxLength = 5;
             this.txtCycle3.Name = "txtCycle3";
             this.txtCycle3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtCycle3.Size = new System.Drawing.Size(112, 20);
+            this.txtCycle3.Size = new System.Drawing.Size(112, 22);
             this.txtCycle3.TabIndex = 2;
             this.txtCycle3.Text = "1.00";
             this.txtCycle3.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -142,6 +142,7 @@ namespace FIA_Biosum_Manager
             // 
             // uc_processor_scenario_escalators_value
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.txtCycle3);
             this.Controls.Add(this.txtCycle2);
             this.Controls.Add(this.txtCycle1);

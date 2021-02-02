@@ -20,6 +20,9 @@ namespace FIA_Biosum_Manager
 		private  bool m_lDone=false;
 		private  long m_longFindWindowLike=0;
 	    public   int  m_intLevel=0;
+        public static string g_strError="";
+        public static int g_intError = 0;
+
 		class User32
 		{
 			//window handle values
@@ -31,6 +34,7 @@ namespace FIA_Biosum_Manager
 			public const uint GW_CHILD = 5;
 			public const uint GW_ENABLEDPOPUP = 6;
 			internal const byte VK_CAPITAL = 0x14;
+            public const uint SHOWWINDOW_NORMAL = 1;
 
 			[DllImport("user32.dll")]
 			public static extern IntPtr  GetWindow(IntPtr hWnd, uint uCmd);
@@ -46,6 +50,9 @@ namespace FIA_Biosum_Manager
             public static extern long BringWindowToTop(IntPtr h);
             [DllImport("User32.Dll")]
             public static extern long SetFocus(IntPtr h);
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
 
 		}
 
@@ -82,6 +89,10 @@ namespace FIA_Biosum_Manager
         public void BringWindowToTop(long handle)
         {
             User32.BringWindowToTop((System.IntPtr)handle);
+        }
+        public void ShowWindow(long handle, int intWindowState)
+        {
+            User32.ShowWindow((System.IntPtr)handle, intWindowState);
         }
 		public string getFileName(string p_strFullPath)
 		{
@@ -539,9 +550,102 @@ namespace FIA_Biosum_Manager
 			oTextStreamWriter.Close();
 			oTextFileStream.Close();
 		}
-		
+        public void RunProcess(string p_strWorkingFolder, string p_strFile, string p_strFileType)
+        {
+           
+
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            try
+            {
+                proc.StartInfo.RedirectStandardOutput = false;
+                proc.StartInfo.RedirectStandardInput = false;
+                proc.StartInfo.RedirectStandardError = false;
+                proc.StartInfo.CreateNoWindow = false;
+                proc.StartInfo.UseShellExecute = false;
+                proc.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+               
+                proc.StartInfo.WorkingDirectory = p_strWorkingFolder;
+
+                proc.StartInfo.ErrorDialog = false;
+                proc.EnableRaisingEvents = false;
+                try
+                {
+                    if (p_strFileType == "BAT" || p_strFileType == "TEMPBAT")
+                    {
+                        proc.StartInfo.FileName = "cmd.exe";
+                        proc.StartInfo.Arguments = "/c START /B /WAIT " + p_strFile;
+                    }
+                    else if (p_strFileType == "VBS")
+                    {
+                        proc.StartInfo.FileName = "wscript";
+                        proc.StartInfo.Arguments = p_strFile;
+                    }
+                    else if (p_strFileType == "MSI")
+                    {
+                        proc.StartInfo.FileName = "msiexec.exe";
+                        proc.StartInfo.Arguments = "/I " + p_strFile + " /qn";
+
+                    }
+                    else
+                    {
+                        proc.StartInfo.FileName = p_strFile;
+                    }
+                    proc.Start();
+                    ShowWindow((long)proc.MainWindowHandle, (int)utils.User32.SHOWWINDOW_NORMAL);
+                    proc.WaitForExit();
+                }
+                catch (Exception e)
+                {
+                    g_intError = -1;
+                    g_strError = "Installer.RunProcess e:" + e.Message;
+                }
+            }
+            catch (System.ComponentModel.Win32Exception w32e)
+            {
+                g_intError = -1;
+                g_strError = "Installer.RunProcess w32e:" + w32e.Message;
+
+            }
+
+        }
 
 
+        public static FS_NETWORK_STATUS FS_NETWORK = FS_NETWORK_STATUS.NotAvailable;
+        public enum FS_NETWORK_STATUS
+        {
+            Available,
+            NotAvailable
+        }
+        public static FS_NETWORK_STATUS FS_NETWORK_CHECK()
+        {
+            //FIADB01P: PRODUCTION ORACLE SERVER
+            return Ping("fsxrndx0178.fdc.fs.usda.gov");
+        }
+        public static FS_NETWORK_STATUS Ping(string host)
+        {
+            FS_NETWORK_STATUS oStatus = FS_NETWORK_STATUS.NotAvailable;
+            string strError = "";
+            if (host != null && host.Trim().Length > 0)
+            {
+                try
+                {
+                    System.Net.NetworkInformation.Ping p = new System.Net.NetworkInformation.Ping();
+                    
+                    if (p.Send(host, 500).Status == System.Net.NetworkInformation.IPStatus.Success)
+                    {
+                        oStatus = FS_NETWORK_STATUS.Available;
+                    }
+                    p.Dispose();
+                    p = null;
+
+                }
+                catch (Exception e)
+                {
+                    strError = e.Message;
+                }
+            }
+            return oStatus;
+        }
 	}
 
 

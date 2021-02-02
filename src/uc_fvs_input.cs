@@ -9,8 +9,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Win32;
 using System.Threading;
-
-
+using System.Data.OleDb;
 
 namespace FIA_Biosum_Manager
 {
@@ -23,7 +22,6 @@ namespace FIA_Biosum_Manager
         public System.Windows.Forms.Label lblTitle;
         public System.Windows.Forms.ListView lstFvsInput;
         private System.Windows.Forms.Label lblRxCnt;
-        private System.Windows.Forms.Label lblVarCnt;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnChkAll;
         private System.Windows.Forms.Button btnClearAll;
@@ -73,9 +71,6 @@ namespace FIA_Biosum_Manager
         private System.Windows.Forms.Button btnCancel;
         private bool bAbort = false;
         public FIA_Biosum_Manager.frmTherm m_frmTherm;
-        private System.Windows.Forms.Label lblTreeSpcVarCnt;
-        private System.Windows.Forms.Button btnPlotVariants;
-        private System.Windows.Forms.Button btnTreeSpcVariants;
         private System.Windows.Forms.Button btnRx;
         private FIA_Biosum_Manager.ListViewAlternateBackgroundColors m_oLvRowColors = new ListViewAlternateBackgroundColors();
         private System.Windows.Forms.Label lblRxPackageCnt;
@@ -116,6 +111,12 @@ namespace FIA_Biosum_Manager
         private GroupBox otherOptionsGroupBox;
         private Label lblTreeAgeOffset;
         private TextBox treeAgeTxtBox;
+        private TabPage tabPage3;
+        private Panel panel1;
+        private Button btnDatamart;
+        private TextBox txtFIADatamart;
+        private Label lblFiaDatamartFile;
+        private string m_strDebugFile;
 
         delegate string[] GetListBoxItemsDlg(CheckedListBox checkedListBox);
 
@@ -173,16 +174,15 @@ namespace FIA_Biosum_Manager
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(uc_fvs_input));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btnPlotVariants = new System.Windows.Forms.Button();
             this.txtDataDir = new System.Windows.Forms.TextBox();
             this.btnExecuteAction = new System.Windows.Forms.Button();
             this.lstFvsInput = new System.Windows.Forms.ListView();
             this.cmbAction = new System.Windows.Forms.ComboBox();
             this.lblRxCnt = new System.Windows.Forms.Label();
-            this.lblVarCnt = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btnChkAll = new System.Windows.Forms.Button();
             this.btnRxPackage = new System.Windows.Forms.Button();
@@ -190,9 +190,10 @@ namespace FIA_Biosum_Manager
             this.lblRxPackageCnt = new System.Windows.Forms.Label();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.btnRx = new System.Windows.Forms.Button();
-            this.lblTreeSpcVarCnt = new System.Windows.Forms.Label();
-            this.btnTreeSpcVariants = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.otherOptionsGroupBox = new System.Windows.Forms.GroupBox();
+            this.lblTreeAgeOffset = new System.Windows.Forms.Label();
+            this.treeAgeTxtBox = new System.Windows.Forms.TextBox();
             this.grpGRMOptions = new System.Windows.Forms.GroupBox();
             this.chkGRM = new System.Windows.Forms.CheckBox();
             this.grpDWMOptions = new System.Windows.Forms.GroupBox();
@@ -210,23 +211,27 @@ namespace FIA_Biosum_Manager
             this.txtMinCwdTL = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtMinSmallFwdTL = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnDatamart = new System.Windows.Forms.Button();
+            this.txtFIADatamart = new System.Windows.Forms.TextBox();
+            this.lblFiaDatamartFile = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.lblProgress = new System.Windows.Forms.Label();
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.otherOptionsGroupBox = new System.Windows.Forms.GroupBox();
-            this.lblTreeAgeOffset = new System.Windows.Forms.Label();
-            this.treeAgeTxtBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.otherOptionsGroupBox.SuspendLayout();
             this.grpGRMOptions.SuspendLayout();
             this.grpDWMOptions.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.otherOptionsGroupBox.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -250,6 +255,7 @@ namespace FIA_Biosum_Manager
             // 
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(7, 51);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -260,13 +266,11 @@ namespace FIA_Biosum_Manager
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btnPlotVariants);
             this.tabPage2.Controls.Add(this.txtDataDir);
             this.tabPage2.Controls.Add(this.btnExecuteAction);
             this.tabPage2.Controls.Add(this.lstFvsInput);
             this.tabPage2.Controls.Add(this.cmbAction);
             this.tabPage2.Controls.Add(this.lblRxCnt);
-            this.tabPage2.Controls.Add(this.lblVarCnt);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btnChkAll);
             this.tabPage2.Controls.Add(this.btnRxPackage);
@@ -274,8 +278,6 @@ namespace FIA_Biosum_Manager
             this.tabPage2.Controls.Add(this.lblRxPackageCnt);
             this.tabPage2.Controls.Add(this.btnRefresh);
             this.tabPage2.Controls.Add(this.btnRx);
-            this.tabPage2.Controls.Add(this.lblTreeSpcVarCnt);
-            this.tabPage2.Controls.Add(this.btnTreeSpcVariants);
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -285,29 +287,19 @@ namespace FIA_Biosum_Manager
             this.tabPage2.UseVisualStyleBackColor = true;
             this.tabPage2.SizeChanged += new System.EventHandler(this.tabControl1_Resize);
             // 
-            // btnPlotVariants
-            // 
-            this.btnPlotVariants.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPlotVariants.Location = new System.Drawing.Point(6, 6);
-            this.btnPlotVariants.Name = "btnPlotVariants";
-            this.btnPlotVariants.Size = new System.Drawing.Size(232, 24);
-            this.btnPlotVariants.TabIndex = 99;
-            this.btnPlotVariants.Text = "Plots Missing FVS Variant Value";
-            this.btnPlotVariants.Click += new System.EventHandler(this.btnPlotVariants_Click);
-            // 
             // txtDataDir
             // 
             this.txtDataDir.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDataDir.Location = new System.Drawing.Point(96, 60);
+            this.txtDataDir.Location = new System.Drawing.Point(128, 48);
             this.txtDataDir.Name = "txtDataDir";
-            this.txtDataDir.Size = new System.Drawing.Size(661, 23);
+            this.txtDataDir.Size = new System.Drawing.Size(629, 23);
             this.txtDataDir.TabIndex = 99;
             // 
             // btnExecuteAction
             // 
-            this.btnExecuteAction.Location = new System.Drawing.Point(669, 332);
+            this.btnExecuteAction.Location = new System.Drawing.Point(647, 357);
             this.btnExecuteAction.Name = "btnExecuteAction";
-            this.btnExecuteAction.Size = new System.Drawing.Size(88, 32);
+            this.btnExecuteAction.Size = new System.Drawing.Size(110, 32);
             this.btnExecuteAction.TabIndex = 5;
             this.btnExecuteAction.Text = "Execute Action";
             this.btnExecuteAction.Click += new System.EventHandler(this.btnExecuteAction_Click);
@@ -318,7 +310,7 @@ namespace FIA_Biosum_Manager
             this.lstFvsInput.GridLines = true;
             this.lstFvsInput.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstFvsInput.HideSelection = false;
-            this.lstFvsInput.Location = new System.Drawing.Point(6, 87);
+            this.lstFvsInput.Location = new System.Drawing.Point(6, 103);
             this.lstFvsInput.MultiSelect = false;
             this.lstFvsInput.Name = "lstFvsInput";
             this.lstFvsInput.Size = new System.Drawing.Size(751, 239);
@@ -333,13 +325,14 @@ namespace FIA_Biosum_Manager
             this.cmbAction.FormattingEnabled = true;
             this.cmbAction.Items.AddRange(new object[] {
             "Create FVS Input Database Files",
+            "Create FVS Input Database Files From FIA2FVS",
             "Create FVS Output Database Files",
             "Delete Standard FVS Output Tables",
             "Delete POTFIRE Base Year Output Tables",
             "Delete Both Standard and POTFIRE Base Year Output Tables",
             "Write KCP Template Scripts",
             "View KCP Template Scripts"});
-            this.cmbAction.Location = new System.Drawing.Point(301, 339);
+            this.cmbAction.Location = new System.Drawing.Point(279, 362);
             this.cmbAction.Name = "cmbAction";
             this.cmbAction.Size = new System.Drawing.Size(362, 24);
             this.cmbAction.TabIndex = 4;
@@ -351,36 +344,26 @@ namespace FIA_Biosum_Manager
             // 
             this.lblRxCnt.BackColor = System.Drawing.Color.White;
             this.lblRxCnt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRxCnt.Location = new System.Drawing.Point(400, 10);
+            this.lblRxCnt.Location = new System.Drawing.Point(191, 12);
             this.lblRxCnt.Name = "lblRxCnt";
             this.lblRxCnt.Size = new System.Drawing.Size(32, 16);
             this.lblRxCnt.TabIndex = 99;
             this.lblRxCnt.Text = "0";
             // 
-            // lblVarCnt
-            // 
-            this.lblVarCnt.BackColor = System.Drawing.Color.White;
-            this.lblVarCnt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVarCnt.Location = new System.Drawing.Point(244, 10);
-            this.lblVarCnt.Name = "lblVarCnt";
-            this.lblVarCnt.Size = new System.Drawing.Size(56, 16);
-            this.lblVarCnt.TabIndex = 99;
-            this.lblVarCnt.Text = "0";
-            // 
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(6, 63);
+            this.label1.Location = new System.Drawing.Point(6, 48);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(96, 24);
+            this.label1.Size = new System.Drawing.Size(116, 24);
             this.label1.TabIndex = 99;
             this.label1.Text = "Data Directory";
             // 
             // btnChkAll
             // 
-            this.btnChkAll.Location = new System.Drawing.Point(6, 332);
+            this.btnChkAll.Location = new System.Drawing.Point(6, 357);
             this.btnChkAll.Name = "btnChkAll";
-            this.btnChkAll.Size = new System.Drawing.Size(64, 32);
+            this.btnChkAll.Size = new System.Drawing.Size(75, 32);
             this.btnChkAll.TabIndex = 1;
             this.btnChkAll.Text = "Check All";
             this.btnChkAll.Click += new System.EventHandler(this.btnChkAll_Click);
@@ -388,18 +371,18 @@ namespace FIA_Biosum_Manager
             // btnRxPackage
             // 
             this.btnRxPackage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRxPackage.Location = new System.Drawing.Point(305, 30);
+            this.btnRxPackage.Location = new System.Drawing.Point(229, 6);
             this.btnRxPackage.Name = "btnRxPackage";
-            this.btnRxPackage.Size = new System.Drawing.Size(90, 24);
+            this.btnRxPackage.Size = new System.Drawing.Size(90, 30);
             this.btnRxPackage.TabIndex = 99;
             this.btnRxPackage.Text = "Packages";
             this.btnRxPackage.Click += new System.EventHandler(this.btnRxPackage_Click);
             // 
             // btnClearAll
             // 
-            this.btnClearAll.Location = new System.Drawing.Point(69, 332);
+            this.btnClearAll.Location = new System.Drawing.Point(85, 357);
             this.btnClearAll.Name = "btnClearAll";
-            this.btnClearAll.Size = new System.Drawing.Size(64, 32);
+            this.btnClearAll.Size = new System.Drawing.Size(75, 32);
             this.btnClearAll.TabIndex = 2;
             this.btnClearAll.Text = "Clear All";
             this.btnClearAll.Click += new System.EventHandler(this.btnClearAll_Click);
@@ -408,7 +391,7 @@ namespace FIA_Biosum_Manager
             // 
             this.lblRxPackageCnt.BackColor = System.Drawing.Color.White;
             this.lblRxPackageCnt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRxPackageCnt.Location = new System.Drawing.Point(400, 32);
+            this.lblRxPackageCnt.Location = new System.Drawing.Point(324, 11);
             this.lblRxPackageCnt.Name = "lblRxPackageCnt";
             this.lblRxPackageCnt.Size = new System.Drawing.Size(32, 16);
             this.lblRxPackageCnt.TabIndex = 99;
@@ -416,7 +399,7 @@ namespace FIA_Biosum_Manager
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(132, 332);
+            this.btnRefresh.Location = new System.Drawing.Point(165, 357);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(64, 32);
             this.btnRefresh.TabIndex = 3;
@@ -426,32 +409,12 @@ namespace FIA_Biosum_Manager
             // btnRx
             // 
             this.btnRx.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRx.Location = new System.Drawing.Point(305, 6);
+            this.btnRx.Location = new System.Drawing.Point(96, 6);
             this.btnRx.Name = "btnRx";
-            this.btnRx.Size = new System.Drawing.Size(90, 24);
+            this.btnRx.Size = new System.Drawing.Size(90, 30);
             this.btnRx.TabIndex = 99;
             this.btnRx.Text = "Treatments";
             this.btnRx.Click += new System.EventHandler(this.btnRx_Click);
-            // 
-            // lblTreeSpcVarCnt
-            // 
-            this.lblTreeSpcVarCnt.BackColor = System.Drawing.Color.White;
-            this.lblTreeSpcVarCnt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTreeSpcVarCnt.Location = new System.Drawing.Point(243, 32);
-            this.lblTreeSpcVarCnt.Name = "lblTreeSpcVarCnt";
-            this.lblTreeSpcVarCnt.Size = new System.Drawing.Size(56, 16);
-            this.lblTreeSpcVarCnt.TabIndex = 99;
-            this.lblTreeSpcVarCnt.Text = "0";
-            // 
-            // btnTreeSpcVariants
-            // 
-            this.btnTreeSpcVariants.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnTreeSpcVariants.Location = new System.Drawing.Point(6, 30);
-            this.btnTreeSpcVariants.Name = "btnTreeSpcVariants";
-            this.btnTreeSpcVariants.Size = new System.Drawing.Size(232, 24);
-            this.btnTreeSpcVariants.TabIndex = 99;
-            this.btnTreeSpcVariants.Text = "Tree Species Missing FVS Variant Value";
-            this.btnTreeSpcVariants.Click += new System.EventHandler(this.btnTreeSpcVariants_Click);
             // 
             // tabPage1
             // 
@@ -463,8 +426,39 @@ namespace FIA_Biosum_Manager
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(763, 454);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Options";
+            this.tabPage1.Text = "FVSIn Options";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // otherOptionsGroupBox
+            // 
+            this.otherOptionsGroupBox.Controls.Add(this.lblTreeAgeOffset);
+            this.otherOptionsGroupBox.Controls.Add(this.treeAgeTxtBox);
+            this.otherOptionsGroupBox.Location = new System.Drawing.Point(451, 96);
+            this.otherOptionsGroupBox.Name = "otherOptionsGroupBox";
+            this.otherOptionsGroupBox.Size = new System.Drawing.Size(316, 85);
+            this.otherOptionsGroupBox.TabIndex = 103;
+            this.otherOptionsGroupBox.TabStop = false;
+            this.otherOptionsGroupBox.Text = "Other Options";
+            // 
+            // lblTreeAgeOffset
+            // 
+            this.lblTreeAgeOffset.AutoSize = true;
+            this.lblTreeAgeOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.lblTreeAgeOffset.Location = new System.Drawing.Point(56, 26);
+            this.lblTreeAgeOffset.Name = "lblTreeAgeOffset";
+            this.lblTreeAgeOffset.Size = new System.Drawing.Size(254, 17);
+            this.lblTreeAgeOffset.TabIndex = 101;
+            this.lblTreeAgeOffset.Tag = "";
+            this.lblTreeAgeOffset.Text = "Tree Age Offset, added to BHAge (yrs)";
+            // 
+            // treeAgeTxtBox
+            // 
+            this.treeAgeTxtBox.Location = new System.Drawing.Point(5, 23);
+            this.treeAgeTxtBox.Name = "treeAgeTxtBox";
+            this.treeAgeTxtBox.Size = new System.Drawing.Size(45, 22);
+            this.treeAgeTxtBox.TabIndex = 100;
+            this.treeAgeTxtBox.Text = "4";
+            this.treeAgeTxtBox.Validating += new System.ComponentModel.CancelEventHandler(this.treeAgeTxtBox_Validating);
             // 
             // grpGRMOptions
             // 
@@ -644,6 +638,53 @@ namespace FIA_Biosum_Manager
             this.txtMinSmallFwdTL.Text = "10";
             this.txtMinSmallFwdTL.Validating += new System.ComponentModel.CancelEventHandler(this.txtMinSmallFwdTL_Validating);
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.panel1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(763, 454);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "FVSIn FIA2FVS";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btnDatamart);
+            this.panel1.Controls.Add(this.txtFIADatamart);
+            this.panel1.Controls.Add(this.lblFiaDatamartFile);
+            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(751, 171);
+            this.panel1.TabIndex = 0;
+            // 
+            // btnDatamart
+            // 
+            this.btnDatamart.Image = ((System.Drawing.Image)(resources.GetObject("btnDatamart.Image")));
+            this.btnDatamart.Location = new System.Drawing.Point(612, 30);
+            this.btnDatamart.Name = "btnDatamart";
+            this.btnDatamart.Size = new System.Drawing.Size(59, 35);
+            this.btnDatamart.TabIndex = 40;
+            this.btnDatamart.Click += new System.EventHandler(this.btnDatamart_Click);
+            // 
+            // txtFIADatamart
+            // 
+            this.txtFIADatamart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFIADatamart.Location = new System.Drawing.Point(6, 36);
+            this.txtFIADatamart.Name = "txtFIADatamart";
+            this.txtFIADatamart.Size = new System.Drawing.Size(600, 26);
+            this.txtFIADatamart.TabIndex = 39;
+            // 
+            // lblFiaDatamartFile
+            // 
+            this.lblFiaDatamartFile.AutoSize = true;
+            this.lblFiaDatamartFile.Location = new System.Drawing.Point(3, 11);
+            this.lblFiaDatamartFile.Name = "lblFiaDatamartFile";
+            this.lblFiaDatamartFile.Size = new System.Drawing.Size(308, 17);
+            this.lblFiaDatamartFile.TabIndex = 38;
+            this.lblFiaDatamartFile.Text = "Path to the FIA Datamart input SQLite database";
+            // 
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(567, 540);
@@ -701,37 +742,6 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 99;
             this.lblTitle.Text = "Create FVS Input";
             // 
-            // otherOptionsGroupBox
-            // 
-            this.otherOptionsGroupBox.Controls.Add(this.lblTreeAgeOffset);
-            this.otherOptionsGroupBox.Controls.Add(this.treeAgeTxtBox);
-            this.otherOptionsGroupBox.Location = new System.Drawing.Point(451, 96);
-            this.otherOptionsGroupBox.Name = "otherOptionsGroupBox";
-            this.otherOptionsGroupBox.Size = new System.Drawing.Size(316, 85);
-            this.otherOptionsGroupBox.TabIndex = 103;
-            this.otherOptionsGroupBox.TabStop = false;
-            this.otherOptionsGroupBox.Text = "Other Options";
-            // 
-            // lblTreeAgeOffset
-            // 
-            this.lblTreeAgeOffset.AutoSize = true;
-            this.lblTreeAgeOffset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblTreeAgeOffset.Location = new System.Drawing.Point(56, 26);
-            this.lblTreeAgeOffset.Name = "lblTreeAgeOffset";
-            this.lblTreeAgeOffset.Size = new System.Drawing.Size(254, 17);
-            this.lblTreeAgeOffset.TabIndex = 101;
-            this.lblTreeAgeOffset.Tag = "";
-            this.lblTreeAgeOffset.Text = "Tree Age Offset, added to BHAge (yrs)";
-            // 
-            // treeAgeTxtBox
-            // 
-            this.treeAgeTxtBox.Location = new System.Drawing.Point(5, 23);
-            this.treeAgeTxtBox.Name = "treeAgeTxtBox";
-            this.treeAgeTxtBox.Size = new System.Drawing.Size(45, 22);
-            this.treeAgeTxtBox.TabIndex = 100;
-            this.treeAgeTxtBox.Text = "4";
-            this.treeAgeTxtBox.Validating += new System.ComponentModel.CancelEventHandler(this.treeAgeTxtBox_Validating);
-            // 
             // uc_fvs_input
             // 
             this.Controls.Add(this.groupBox1);
@@ -743,14 +753,17 @@ namespace FIA_Biosum_Manager
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
+            this.otherOptionsGroupBox.ResumeLayout(false);
+            this.otherOptionsGroupBox.PerformLayout();
             this.grpGRMOptions.ResumeLayout(false);
             this.grpGRMOptions.PerformLayout();
             this.grpDWMOptions.ResumeLayout(false);
             this.grpDWMOptions.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.otherOptionsGroupBox.ResumeLayout(false);
-            this.otherOptionsGroupBox.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -812,15 +825,6 @@ namespace FIA_Biosum_Manager
 
                 this.lblRxCnt.Text = Convert.ToString((int)this.m_ado.getRecordCount(m_ado.m_OleDbConnection, "select count(*) from " + m_oQueries.m_oFvs.m_strRxTable + " where rx IS NOT NULL AND LEN(TRIM(rx)) > 0;", m_oQueries.m_oFvs.m_strRxTable));
                 this.lblRxPackageCnt.Text = Convert.ToString((int)this.m_ado.getRecordCount(m_ado.m_OleDbConnection, "select count(*) from " + m_oQueries.m_oFvs.m_strRxPackageTable + " WHERE rxpackage IS NOT NULL AND LEN(TRIM(rxpackage)) > 0;", m_oQueries.m_oFvs.m_strRxTable));
-                this.lblVarCnt.Text = Convert.ToString((int)this.m_ado.getRecordCount(m_ado.m_OleDbConnection, "select count(*) from " + this.m_oQueries.m_oFIAPlot.m_strPlotTable + " where fvs_variant IS NULL OR LEN(TRIM(fvs_variant)) = 0;", m_oQueries.m_oFIAPlot.m_strPlotTable));
-                this.lblTreeSpcVarCnt.Text =
-                    Convert.ToString((int)this.m_ado.getRecordCount(m_ado.m_OleDbConnection, "select count(*) " +
-                                                                                   "from (select fvs_variant " +
-                                                                                         "from " + m_oQueries.m_oFIAPlot.m_strPlotTable + " p " +
-                                                                                         "where not exists (select fvs_variant " +
-                                                                                                           "from " + this.m_oQueries.m_oFvs.m_strTreeSpcTable + " t " +
-                                                                                                           "where trim(p.fvs_variant)=trim(t.fvs_variant)))", "missingvariantcount"));
-
                 this.lstFvsInput.Clear();
                 this.m_oLvRowColors.InitializeRowCollection();
 
@@ -1607,6 +1611,56 @@ namespace FIA_Biosum_Manager
             ViewScripts();
         }
 
+        public void CreateFia2FvsInputFiles()
+        {
+            // Make sure the database is chosen and that such a file exists
+            bool bValidFile = true;
+            if (!String.IsNullOrEmpty(txtFIADatamart.Text))
+            {
+                if (System.IO.File.Exists(txtFIADatamart.Text))
+                {
+                    // Do nothing; All is well
+                }
+                else
+                {
+                    bValidFile = false;
+                }
+            }
+            else
+            {
+                bValidFile = false;
+            }
+            if (bValidFile == false)
+            {
+                MessageBox.Show("You must specify a source input database on the FVSIn FIA2FVS tab before proceeding!", "FIA Biosum");
+                return;
+            }
+
+            this.m_frmTherm = new frmTherm(((frmDialog)ParentForm), "EXTRACT FIA2FVS FVS INPUT FILE",
+                                 "FIA2FVS FVS Input", "2");
+
+            this.m_frmTherm.Visible = false;
+            this.m_frmTherm.lblMsg.Text = "";
+            this.Enabled = false;
+
+            //progress bar 1: represents a single process
+            this.m_frmTherm.progressBar1.Minimum = 0;
+            this.m_frmTherm.progressBar1.Maximum = 100;
+            this.m_frmTherm.progressBar1.Value = 0;
+            this.m_frmTherm.lblMsg.Text = "";
+            this.m_frmTherm.Show(this);
+
+            //progress bar 2: represents overall progress 
+            this.m_frmTherm.progressBar2.Minimum = 0;
+            this.m_frmTherm.progressBar2.Maximum = 100;
+            this.m_frmTherm.progressBar2.Value = 0;
+            this.m_frmTherm.lblMsg2.Text = "Overall Progress";
+            this.m_thread = new Thread(new ThreadStart(this.ExtractFIA2FVSRecords));
+            this.m_thread.IsBackground = true;
+            this.m_thread.Start();
+
+        }
+
         private string[] GetCheckedListBoxItems(CheckedListBox chkListBox)
         {
             if (chkListBox.InvokeRequired)
@@ -1786,6 +1840,165 @@ namespace FIA_Biosum_Manager
 
         }
 
+        private void ExtractFIA2FVSRecords()
+        {
+            m_intError = 0;
+            string strCurVariant = "";
+            string strVariant = "";
+            m_strDebugFile = this.strProjectDirectory + Tables.FIA2FVS.DefaultFvsInputFolderName + "\\fia2fvs_input.log";
+            if (System.IO.File.Exists(m_strDebugFile)) System.IO.File.Delete(m_strDebugFile);
+
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n//\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "//ExtractFIA2FVSRecords\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
+            }
+
+            dao_data_access oDao = new dao_data_access();
+            ado_data_access oAdo = new ado_data_access();
+            try
+            {
+                string strSourceDbDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtFIADatamart, "Text", false);
+                strSourceDbDir = strSourceDbDir.Trim();
+                fvs_input p_fvsinput = new fvs_input(this.m_strProjDir, this.m_frmTherm);
+
+                // Get a temporary database name for processing
+                string strTempMDB = frmMain.g_oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
+                // Create a temporary mdb that will contain all our required table links
+                oDao.CreateMDB(strTempMDB);
+                // Check to see if the input DSN exists and if so, delete so we can add
+                ODBCMgr odbcmgr = new ODBCMgr();
+                if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName))
+                {
+                    odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName);
+                }
+                odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName, strSourceDbDir);
+
+                // Link to cond table
+                m_strCondTable = m_oQueries.m_oFIAPlot.m_strCondTable;
+                string strCondMdb = m_oQueries.m_oDataSource.getFullPathAndFile(Datasource.TableTypes.Condition);
+                oDao.CreateTableLink(strTempMDB, m_strCondTable, strCondMdb, m_strCondTable);
+                
+                // Link to the input SQLite table; Takes the whole path to the DB
+                string strSourceStandTableAlias = Tables.FIA2FVS.DefaultFvsInputStandTableName + "_1";
+                string strSourceTreeTableAlias = Tables.FIA2FVS.DefaultFvsInputTreeTableName + "_1";
+                oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputStandTableName, strSourceStandTableAlias,
+                    ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName, strSourceDbDir);
+                // Set the index, required to by ODBC to update
+                oDao.CreatePrimaryKeyIndex(strTempMDB, strSourceStandTableAlias, "STAND_CN");
+                oDao.CreateSQLiteTableLink(strTempMDB, Tables.FIA2FVS.DefaultFvsInputTreeTableName, strSourceTreeTableAlias,
+                    ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName, strSourceDbDir);
+                // Set the index, required to by ODBC to update
+                oDao.CreatePrimaryKeyIndex(strTempMDB, strSourceTreeTableAlias, "TREE_CN");
+
+                string strDataDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtDataDir, "Text", false);
+                strDataDir = strDataDir.Trim();
+                for (int x = 0; x <= this.lstFvsInput.Items.Count - 1; x++)
+                {
+                    int intValue = Convert.ToInt32((double)(((double)(x + 1) / (double)this.lstFvsInput.Items.Count) * 100));
+                    frmMain.g_oDelegate.SetControlPropertyValue(m_frmTherm.progressBar2, "Value", intValue);
+                    if ((bool)frmMain.g_oDelegate.GetListViewItemPropertyValue(lstFvsInput, x, "Checked", false) == true)
+                    {
+                        //get the variant
+                        strVariant = frmMain.g_oDelegate.GetListViewSubItemPropertyValue(lstFvsInput, x, COL_VARIANT, "Text", false).ToString().Trim();
+                        //see if this is a new variant
+                        if (strVariant.Trim().ToUpper() != strCurVariant.Trim().ToUpper())
+                        {
+                            frmMain.g_oDelegate.SetControlPropertyValue(
+                                m_frmTherm.progressBar1,
+                                "Value", 20);
+                            strCurVariant = strVariant;
+                            p_fvsinput.StartFIA2FVS(odbcmgr, oDao, oAdo, strTempMDB, 
+                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, strSourceTreeTableAlias);
+                        }
+                        frmMain.g_oDelegate.SetControlPropertyValue(
+                            m_frmTherm.progressBar1,
+                            "Value", 60);
+
+                        // This happens at the end
+                        // Set Location file column to blank; Don't think this is relevant with FIA2FVS
+                        frmMain.g_oDelegate.SetListViewSubItemPropertyValue(this.lstFvsInput, x, COL_LOC, "Text", "");
+                        string strInDirAndFile = strDataDir + "\\" + strVariant + "\\" + Tables.FIA2FVS.DefaultFvsInputFile;
+                        if (File.Exists(strInDirAndFile) == true) //redundant check here, but leaves " " instead of new "0"
+                        {
+                            int[] fvsInputRecordCounts = getFVSSQLiteInputRecordCounts(strInDirAndFile);
+                            frmMain.g_oDelegate.SetListViewSubItemPropertyValue(this.lstFvsInput, x, COL_STANDCOUNT, "Text",
+                                Convert.ToString(fvsInputRecordCounts[0]));
+                            frmMain.g_oDelegate.SetListViewSubItemPropertyValue(this.lstFvsInput, x, COL_TREECOUNT, "Text",
+                                Convert.ToString(fvsInputRecordCounts[1]));
+                        }
+
+                    }
+
+                    frmMain.g_oDelegate.SetControlPropertyValue(
+                            m_frmTherm.progressBar1,
+                            "Value",
+                            frmMain.g_oDelegate.GetControlPropertyValue(
+                                    m_frmTherm.progressBar1, "Maximum", false));
+                    Application.DoEvents();
+                    if (bAbort == true) break;
+
+                }
+
+                odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.Fia2FvsInputDsnName);    // Clean up DSN
+
+                frmMain.g_oDelegate.SetControlPropertyValue(
+                            m_frmTherm.progressBar2,
+                            "Value",
+                            frmMain.g_oDelegate.GetControlPropertyValue(
+                                    m_frmTherm.progressBar2, "Maximum", false));
+
+            }
+            catch (ThreadInterruptedException err)
+            {
+                m_intError = -1;
+                MessageBox.Show("Threading Interruption Error " + err.Message.ToString());
+            }
+            catch (ThreadAbortException)
+            {
+                if (oAdo != null)
+                {
+                    if (oAdo.m_DataSet != null)
+                    {
+                        oAdo.m_DataSet.Clear();
+                        oAdo.m_DataSet.Dispose();
+                    }
+                    oAdo = null;
+                }
+                m_intError = -1;
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("!!Error!! \n" +
+                    "Module - uc_fvs_input:ExtractFIA2FVSRecords  \n" +
+                    "Err Msg - " + err.Message.ToString().Trim(),
+                    "Append Records", System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                this.m_intError = -1;
+            }
+            finally
+            {
+                if (oAdo != null)
+                {
+                    if (oAdo.m_DataSet != null)
+                    {
+                        oAdo.m_DataSet.Clear();
+                        oAdo.m_DataSet.Dispose();
+                    }
+                    oAdo = null;
+                }
+                //destroy the object and release it from memory
+                oDao.m_DaoWorkspace.Close();
+                oDao.m_DaoWorkspace = null;
+                oDao = null;
+                if (m_intError == 0)
+                {
+                    ThreadCleanUp();
+                }
+            }
+        }
+
         private void btnAppend_Click(object sender, System.EventArgs e)
         {
             if (this.lstFvsInput.CheckedItems.Count == 0)
@@ -1921,49 +2134,6 @@ namespace FIA_Biosum_Manager
             }
 
         }
-        private int getSlfPlotCount(string strDirAndFile)
-        {
-            int x = 0;
-            try
-            {
-                if (System.IO.File.Exists(strDirAndFile) == false) return 0;
-
-                System.IO.FileStream p_fs = new FileStream(strDirAndFile, FileMode.Open, FileAccess.Read);
-                System.IO.StreamReader p_sr = new StreamReader(p_fs);
-                string strLine;
-
-                // Read and display lines from the file until the end of 
-                // the file is reached.
-                while ((strLine = p_sr.ReadLine()) != null)
-                {
-                    if (strLine.Trim().Length > 0)
-                        x++;
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("!!Error!! \n" +
-                    "Module - uc_fvs_input:getSlfPlotCount  \n" +
-                    "Err Msg - " + e.Message.ToString().Trim(),
-                    "FVS Input", System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
-                this.m_intError = -1;
-                if (x > 2)
-                {
-                    x = (int)(x / 2);
-                }
-                return x;
-
-            }
-            if (x > 2)
-            {
-                x = (int)(x / 2);
-            }
-            return x;
-
-
-
-        }
 
         private int[] getFVSInputRecordCounts(string strDirAndFile)
         {
@@ -2008,47 +2178,51 @@ namespace FIA_Biosum_Manager
             return new int[] { stands, trees };
         }
 
-
-        private int getFvsTreeFileCount(string strVariant)
+        private int[] getFVSSQLiteInputRecordCounts(string strDirAndFile)
         {
-            int x = 0;
+            int stands = 0;
+            int trees = 0;
             try
             {
-                string strDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtDataDir, "Text", false);
-
-                if (System.IO.Directory.Exists(strDir.Trim() + "\\" + strVariant.Trim()) == false) return 0;
-
-                string strSearchPattern = "*.FVS";
-
-                string[] strFiles = System.IO.Directory.GetFiles(strDir.Trim() + "\\" + strVariant.Trim(), strSearchPattern);
-                x = strFiles.Length;
+                if (File.Exists(strDirAndFile))
+                {
+                    SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+                    string connSourceDb = oDataMgr.GetConnectionString(strDirAndFile);
+                    using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connSourceDb))
+                    {
+                        string strSql = "";
+                        con.Open();
+                        // Do stuff in sqlite side
+                        if (oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputStandTableName))
+                        {
+                            strSql = "SELECT COUNT(*) as StandInitCount " +
+                                     "FROM (SELECT DISTINCT STAND_CN FROM " + Tables.FIA2FVS.DefaultFvsInputStandTableName + ")";
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                            stands = (int)oDataMgr.getSingleDoubleValueFromSQLQuery(con, strSql, Tables.FIA2FVS.DefaultFvsInputStandTableName);
+                        }
+                        if (oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputTreeTableName))
+                        {
+                            strSql = "SELECT COUNT(*) as TreeInitCount " +
+                                     "FROM (SELECT DISTINCT TREE_CN FROM " + Tables.FIA2FVS.DefaultFvsInputTreeTableName + ")";
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                            trees = (int)oDataMgr.getSingleDoubleValueFromSQLQuery(con, strSql, Tables.FIA2FVS.DefaultFvsInputTreeTableName);
+                        }
+                    }
+                    oDataMgr = null;  
+                }
             }
             catch (Exception e)
             {
                 MessageBox.Show("!!Error!! \n" +
-                    "Module - uc_fvs_input:getFvsTreeFileCount  \n" +
-                    "Err Msg - " + e.Message.ToString().Trim(),
-                    "FVS Input", System.Windows.Forms.MessageBoxButtons.OK,
-                    System.Windows.Forms.MessageBoxIcon.Exclamation);
+                                "Module - uc_fvs_input:getFVSSQLiteInputRecordCounts  \n" +
+                                "Err Msg - " + e.Message.ToString().Trim(),
+                    "FVS Input", MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
                 this.m_intError = -1;
-                return x;
-
             }
-            return x;
-
-
-        }
-
-        private void btnPlotVariants_Click(object sender, System.EventArgs e)
-        {
-
-            frmMain.g_oFrmMain.StartPlotFVSVariantsDialog(this.ReferenceParentDialogForm);
-        }
-
-        private void btnTreeSpcVariants_Click(object sender, System.EventArgs e)
-        {
-
-            frmMain.g_oFrmMain.LoadProcessorTreeSpcForm(this.ReferenceParentDialogForm, "FVS");
+            return new int[] { stands, trees };
         }
 
         private void btnRx_Click(object sender, System.EventArgs e)
@@ -2063,7 +2237,17 @@ namespace FIA_Biosum_Manager
             {
                 m_oHelp = new Help(m_xpsFile, m_oEnv);
             }
-            m_oHelp.ShowHelp(new string[] { "FVS", "INPUT_DATA" });
+            string helpPage = "INPUT_DATA";
+            switch (tabControl1.SelectedIndex)
+            {
+                case 0:
+                    helpPage = "INPUT_DATA";
+                    break;
+                case 1:
+                    helpPage = "INPUT_OPTIONS";
+                    break;
+            }
+            m_oHelp.ShowHelp(new string[] { "FVS", helpPage });
         }
         private void txtDataDir_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
@@ -2078,73 +2262,6 @@ namespace FIA_Biosum_Manager
         private void txtOutDir_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
         {
             e.Handled = true;
-        }
-
-        private void btnDeleteFvsOutTables_Click(object sender, System.EventArgs e)
-        {
-            if (this.lstFvsInput.CheckedItems.Count == 0)
-            {
-                MessageBox.Show("No Boxes Are Checked", "Delete FVS Out Tables", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            DialogResult result = MessageBox.Show("Backup The MDB File(s) Before Deleting The Tables? (Y/N)",
-                                                  "FIA Biosum",
-                                                  System.Windows.Forms.MessageBoxButtons.YesNoCancel,
-                                                  System.Windows.Forms.MessageBoxIcon.Question);
-            switch (result)
-            {
-                case DialogResult.Yes:
-                    this.cmbAction.Enabled = false;
-
-                    this.btnExecuteAction.Enabled = false;
-                    this.btnRefresh.Enabled = false;
-
-                    this.btnChkAll.Enabled = false;
-                    this.btnClearAll.Enabled = false;
-                    this.btnClose.Enabled = false;
-                    this.btnHelp.Enabled = false;
-
-                    this.BackupFVSOutTables("B");
-                    this.DeleteFVSOutTables("B");
-
-                    this.cmbAction.Enabled = true;
-
-                    this.btnExecuteAction.Enabled = true;
-                    this.btnRefresh.Enabled = true;
-                    this.btnChkAll.Enabled = true;
-                    this.btnClearAll.Enabled = true;
-                    this.btnClose.Enabled = true;
-                    this.btnHelp.Enabled = true;
-
-
-                    break;
-                case DialogResult.No:
-                    this.cmbAction.Enabled = false;
-
-                    this.btnExecuteAction.Enabled = false;
-                    this.btnRefresh.Enabled = false;
-                    this.btnChkAll.Enabled = false;
-                    this.btnClearAll.Enabled = false;
-                    this.btnClose.Enabled = false;
-                    this.btnHelp.Enabled = false;
-
-
-                    this.DeleteFVSOutTables("B");
-
-                    this.btnExecuteAction.Enabled = true;
-
-                    this.cmbAction.Enabled = true;
-                    this.btnRefresh.Enabled = true;
-                    this.btnChkAll.Enabled = true;
-                    this.btnClearAll.Enabled = true;
-                    this.btnClose.Enabled = true;
-                    this.btnHelp.Enabled = true;
-
-
-                    break;
-            }
-
         }
 
         private void BackupBeforeDelete(string p_strAction)
@@ -2652,6 +2769,9 @@ namespace FIA_Biosum_Manager
                 case "CREATE FVS INPUT DATABASE FILES":
                     btnAppend_Click(null, null);
                     break;
+                case "CREATE FVS INPUT DATABASE FILES FROM FIA2FVS":
+                    CreateFia2FvsInputFiles();
+                    break;
                 case "CREATE FVS OUTPUT DATABASE FILES":
                     CreateFvsOutFiles();
                     break;
@@ -2740,6 +2860,10 @@ namespace FIA_Biosum_Manager
             label1.Left = tabPage2.Left + 5;
             txtDataDir.Left = label1.Right + 5;
             txtDataDir.Width = tabPage2.Width - txtDataDir.Left;
+            btnRx.Left = txtDataDir.Left;
+            lblRxCnt.Left = btnRx.Left + btnRx.Width + 10;
+            btnRxPackage.Left = lblRxCnt.Left + lblRxCnt.Width + 10;
+            lblRxPackageCnt.Left = btnRxPackage.Left + btnRxPackage.Width + 10;
 
             //resize all of the controls on the inside
             lstFvsInput.Left = tabPage2.Left + 5;
@@ -2790,7 +2914,37 @@ namespace FIA_Biosum_Manager
             System.Diagnostics.Process.Start("https://www.fs.usda.gov/treesearch/pubs/download/9521.pdf");
         }
 
+        private void btnDatamart_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.OpenFileDialog oDialog = new System.Windows.Forms.OpenFileDialog();
+            oDialog.Title = "FIA Datamart database containing FIA2FVS files";
+            oDialog.Filter = "SQLite databases (*.db;*.db3)|*.db;*.db3|All files (*.*)|*.*";
+            DialogResult result = oDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                txtFIADatamart.Text = oDialog.FileName;
 
-
+                // Check for the 2 required databases
+                SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+                string connSourceDb = oDataMgr.GetConnectionString(txtFIADatamart.Text.Trim());
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(connSourceDb))
+                {
+                    con.Open();
+                    if (!oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputStandTableName))
+                    {
+                        MessageBox.Show("A valid input database was not selected. The " + Tables.FIA2FVS.DefaultFvsInputStandTableName + " table is missing!",
+                            "FIA Biosum");
+                        txtFIADatamart.Text = "";
+                        return;
+                    }
+                    if (!oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputTreeTableName))
+                    {
+                        MessageBox.Show("A valid input database was not selected. The " + Tables.FIA2FVS.DefaultFvsInputTreeTableName + " table is missing!",
+                            "FIA Biosum");
+                        txtFIADatamart.Text = "";
+                    }
+                }
+            }
+        }
     }
 }

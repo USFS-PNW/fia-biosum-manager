@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
 
+
 namespace FIA_Biosum_Manager
 {
 	/// <summary>
@@ -225,6 +226,10 @@ namespace FIA_Biosum_Manager
 			switch (e.Button.Text.Trim().ToUpper())
 			{
 				case "ADD PLOT DATA":
+                    if (frmMain.Validate_OracleConnectivity() < 0)
+                    {
+                        return;
+                    }
 					frmDialog frmTemp = new frmDialog(((frmDialog)this.ParentForm).m_frmMain);
 					frmTemp.Visible=false;
 					//FIA_Biosum_Manager.uc_plot_input uc_plot_input1 = new uc_plot_input();

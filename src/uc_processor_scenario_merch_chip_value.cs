@@ -617,8 +617,9 @@ namespace FIA_Biosum_Manager
             this.panel1.PerformLayout();
             this.pnlMerchValues.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 
-		}
+        }
 		#endregion
 
 		private void label2_Click(object sender, System.EventArgs e)

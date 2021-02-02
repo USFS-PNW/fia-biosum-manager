@@ -327,7 +327,7 @@ namespace FIA_Biosum_Manager
             // 
             // frmRxItem
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(808, 462);
             this.Controls.Add(this.panel1);
             this.Name = "frmRxItem";

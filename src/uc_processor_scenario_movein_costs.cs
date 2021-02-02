@@ -138,9 +138,9 @@ namespace FIA_Biosum_Manager
             this.panel1.Controls.Add(this.txtYardDistThreshold);
             this.panel1.Controls.Add(this.lblYardDistThreshold);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 48);
+            this.panel1.Location = new System.Drawing.Point(3, 50);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(690, 397);
+            this.panel1.Size = new System.Drawing.Size(690, 395);
             this.panel1.TabIndex = 31;
             // 
             // label10
@@ -178,7 +178,7 @@ namespace FIA_Biosum_Manager
             this.txtMoveInAddend.ForeColor = System.Drawing.Color.Black;
             this.txtMoveInAddend.Location = new System.Drawing.Point(221, 252);
             this.txtMoveInAddend.Name = "txtMoveInAddend";
-            this.txtMoveInAddend.Size = new System.Drawing.Size(45, 20);
+            this.txtMoveInAddend.Size = new System.Drawing.Size(45, 22);
             this.txtMoveInAddend.TabIndex = 65;
             this.txtMoveInAddend.Text = "1.0";
             this.txtMoveInAddend.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMoveInHoursAddend_KeyPress);
@@ -210,7 +210,7 @@ namespace FIA_Biosum_Manager
             this.txtMoveInTimeMultiplier.ForeColor = System.Drawing.Color.Black;
             this.txtMoveInTimeMultiplier.Location = new System.Drawing.Point(221, 159);
             this.txtMoveInTimeMultiplier.Name = "txtMoveInTimeMultiplier";
-            this.txtMoveInTimeMultiplier.Size = new System.Drawing.Size(45, 20);
+            this.txtMoveInTimeMultiplier.Size = new System.Drawing.Size(45, 22);
             this.txtMoveInTimeMultiplier.TabIndex = 62;
             this.txtMoveInTimeMultiplier.Text = "0.0";
             this.txtMoveInTimeMultiplier.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtMoveInTimeMultiplier_KeyPress);
@@ -251,7 +251,7 @@ namespace FIA_Biosum_Manager
             this.txtAssumedHarvestArea.ForeColor = System.Drawing.Color.Black;
             this.txtAssumedHarvestArea.Location = new System.Drawing.Point(221, 97);
             this.txtAssumedHarvestArea.Name = "txtAssumedHarvestArea";
-            this.txtAssumedHarvestArea.Size = new System.Drawing.Size(45, 20);
+            this.txtAssumedHarvestArea.Size = new System.Drawing.Size(45, 22);
             this.txtAssumedHarvestArea.TabIndex = 58;
             this.txtAssumedHarvestArea.Text = "80.0";
             this.txtAssumedHarvestArea.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtAssumedHarvestArea_KeyPress);
@@ -284,7 +284,7 @@ namespace FIA_Biosum_Manager
             this.txtYardDistThreshold.ForeColor = System.Drawing.Color.Black;
             this.txtYardDistThreshold.Location = new System.Drawing.Point(221, 7);
             this.txtYardDistThreshold.Name = "txtYardDistThreshold";
-            this.txtYardDistThreshold.Size = new System.Drawing.Size(45, 20);
+            this.txtYardDistThreshold.Size = new System.Drawing.Size(45, 22);
             this.txtYardDistThreshold.TabIndex = 55;
             this.txtYardDistThreshold.Text = "150.0";
             this.txtYardDistThreshold.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtYardDistThreshold_KeyPress);
@@ -305,7 +305,7 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(3, 18);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(690, 32);
             this.lblTitle.TabIndex = 30;
@@ -313,6 +313,7 @@ namespace FIA_Biosum_Manager
             // 
             // uc_processor_scenario_movein_costs
             // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_processor_scenario_movein_costs";
             this.Size = new System.Drawing.Size(696, 448);

@@ -144,18 +144,20 @@ namespace FIA_Biosum_Manager
             // 
             this.lblMsg.Enabled = false;
             this.lblMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMsg.Location = new System.Drawing.Point(8, 370);
+            this.lblMsg.Location = new System.Drawing.Point(9, 361);
+            this.lblMsg.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(650, 16);
+            this.lblMsg.Size = new System.Drawing.Size(693, 15);
             this.lblMsg.TabIndex = 5;
             this.lblMsg.Text = "lblMsg";
             this.lblMsg.Visible = false;
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(304, 424);
+            this.btnCancel.Location = new System.Drawing.Point(324, 413);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(72, 24);
+            this.btnCancel.Size = new System.Drawing.Size(77, 23);
             this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -163,9 +165,10 @@ namespace FIA_Biosum_Manager
             // progressBar1
             // 
             this.progressBar1.Enabled = false;
-            this.progressBar1.Location = new System.Drawing.Point(8, 393);
+            this.progressBar1.Location = new System.Drawing.Point(9, 383);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(656, 24);
+            this.progressBar1.Size = new System.Drawing.Size(699, 23);
             this.progressBar1.TabIndex = 3;
             this.progressBar1.Visible = false;
             this.progressBar1.Click += new System.EventHandler(this.progressBar1_Click);
@@ -192,17 +195,20 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Controls.Add(this.btnCancel);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(672, 470);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(448, 313);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Resize += new System.EventHandler(this.groupBox1_Resize);
             // 
             // btnViewLog
             // 
-            this.btnViewLog.Location = new System.Drawing.Point(543, 37);
+            this.btnViewLog.Location = new System.Drawing.Point(579, 36);
+            this.btnViewLog.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnViewLog.Name = "btnViewLog";
-            this.btnViewLog.Size = new System.Drawing.Size(120, 20);
+            this.btnViewLog.Size = new System.Drawing.Size(128, 19);
             this.btnViewLog.TabIndex = 30;
             this.btnViewLog.Text = "View Log File";
             this.btnViewLog.Click += new System.EventHandler(this.btnViewLog_Click);
@@ -210,9 +216,10 @@ namespace FIA_Biosum_Manager
             // btnAccess
             // 
             this.btnAccess.Enabled = false;
-            this.btnAccess.Location = new System.Drawing.Point(423, 16);
+            this.btnAccess.Location = new System.Drawing.Point(451, 15);
+            this.btnAccess.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnAccess.Name = "btnAccess";
-            this.btnAccess.Size = new System.Drawing.Size(120, 20);
+            this.btnAccess.Size = new System.Drawing.Size(128, 20);
             this.btnAccess.TabIndex = 29;
             this.btnAccess.Text = "Microsoft Access";
             this.btnAccess.Click += new System.EventHandler(this.btnAccess_Click);
@@ -234,9 +241,11 @@ namespace FIA_Biosum_Manager
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label4);
-            this.groupBox3.Location = new System.Drawing.Point(8, 167);
+            this.groupBox3.Location = new System.Drawing.Point(9, 163);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(656, 193);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox3.Size = new System.Drawing.Size(699, 188);
             this.groupBox3.TabIndex = 27;
             this.groupBox3.TabStop = false;
             // 
@@ -244,125 +253,140 @@ namespace FIA_Biosum_Manager
             // 
             this.chkAuditTables.Checked = true;
             this.chkAuditTables.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAuditTables.Location = new System.Drawing.Point(416, 16);
+            this.chkAuditTables.Location = new System.Drawing.Point(444, 15);
+            this.chkAuditTables.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chkAuditTables.Name = "chkAuditTables";
-            this.chkAuditTables.Size = new System.Drawing.Size(224, 16);
+            this.chkAuditTables.Size = new System.Drawing.Size(239, 16);
             this.chkAuditTables.TabIndex = 14;
             this.chkAuditTables.Text = "Populate Valid Combination Audit Data";
             // 
             // lblProcBestRxOwner
             // 
-            this.lblProcBestRxOwner.Location = new System.Drawing.Point(9, 160);
+            this.lblProcBestRxOwner.Location = new System.Drawing.Point(9, 156);
+            this.lblProcBestRxOwner.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcBestRxOwner.Name = "lblProcBestRxOwner";
-            this.lblProcBestRxOwner.Size = new System.Drawing.Size(79, 16);
+            this.lblProcBestRxOwner.Size = new System.Drawing.Size(85, 15);
             this.lblProcBestRxOwner.TabIndex = 13;
             this.lblProcBestRxOwner.Text = "Not Done";
             // 
             // lblProcBestRxPSite
             // 
-            this.lblProcBestRxPSite.Location = new System.Drawing.Point(9, 136);
+            this.lblProcBestRxPSite.Location = new System.Drawing.Point(9, 133);
+            this.lblProcBestRxPSite.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcBestRxPSite.Name = "lblProcBestRxPSite";
-            this.lblProcBestRxPSite.Size = new System.Drawing.Size(79, 16);
+            this.lblProcBestRxPSite.Size = new System.Drawing.Size(85, 15);
             this.lblProcBestRxPSite.TabIndex = 12;
             this.lblProcBestRxPSite.Text = "Not Done";
             // 
             // lblProcBestRxPlot
             // 
-            this.lblProcBestRxPlot.Location = new System.Drawing.Point(9, 112);
+            this.lblProcBestRxPlot.Location = new System.Drawing.Point(9, 109);
+            this.lblProcBestRxPlot.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcBestRxPlot.Name = "lblProcBestRxPlot";
-            this.lblProcBestRxPlot.Size = new System.Drawing.Size(79, 16);
+            this.lblProcBestRxPlot.Size = new System.Drawing.Size(85, 15);
             this.lblProcBestRxPlot.TabIndex = 11;
             this.lblProcBestRxPlot.Text = "Not Done";
             // 
             // lblProcBestRx
             // 
-            this.lblProcBestRx.Location = new System.Drawing.Point(9, 85);
+            this.lblProcBestRx.Location = new System.Drawing.Point(9, 83);
+            this.lblProcBestRx.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcBestRx.Name = "lblProcBestRx";
-            this.lblProcBestRx.Size = new System.Drawing.Size(79, 16);
+            this.lblProcBestRx.Size = new System.Drawing.Size(85, 16);
             this.lblProcBestRx.TabIndex = 10;
             this.lblProcBestRx.Text = "Not Done";
             // 
             // lblSumWoodProducts
             // 
-            this.lblSumWoodProducts.Location = new System.Drawing.Point(9, 59);
+            this.lblSumWoodProducts.Location = new System.Drawing.Point(9, 57);
+            this.lblSumWoodProducts.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblSumWoodProducts.Name = "lblSumWoodProducts";
-            this.lblSumWoodProducts.Size = new System.Drawing.Size(79, 16);
+            this.lblSumWoodProducts.Size = new System.Drawing.Size(85, 16);
             this.lblSumWoodProducts.TabIndex = 9;
             this.lblSumWoodProducts.Text = "Not Done";
             // 
             // lblProcEffective
             // 
-            this.lblProcEffective.Location = new System.Drawing.Point(9, 37);
+            this.lblProcEffective.Location = new System.Drawing.Point(9, 36);
+            this.lblProcEffective.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcEffective.Name = "lblProcEffective";
-            this.lblProcEffective.Size = new System.Drawing.Size(79, 16);
+            this.lblProcEffective.Size = new System.Drawing.Size(85, 15);
             this.lblProcEffective.TabIndex = 8;
             this.lblProcEffective.Text = "Not Done";
             // 
             // lblProcValidCombos
             // 
-            this.lblProcValidCombos.Location = new System.Drawing.Point(9, 16);
+            this.lblProcValidCombos.Location = new System.Drawing.Point(9, 15);
+            this.lblProcValidCombos.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcValidCombos.Name = "lblProcValidCombos";
-            this.lblProcValidCombos.Size = new System.Drawing.Size(79, 16);
+            this.lblProcValidCombos.Size = new System.Drawing.Size(85, 16);
             this.lblProcValidCombos.TabIndex = 7;
             this.lblProcValidCombos.Text = "Not Done";
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(95, 160);
+            this.label10.Location = new System.Drawing.Point(101, 156);
+            this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(545, 24);
+            this.label10.Size = new System.Drawing.Size(581, 23);
             this.label10.TabIndex = 6;
             this.label10.Text = "Summarize Most Effective Treatment Yields, Revenue, Costs, And Acres By Land Owne" +
     "rship Groups";
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(95, 136);
+            this.label9.Location = new System.Drawing.Point(101, 133);
+            this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(552, 16);
+            this.label9.Size = new System.Drawing.Size(589, 15);
             this.label9.TabIndex = 5;
             this.label9.Text = "Summarize Most Effective Treatment Yields, Revenue, Costs, And Acres By Wood Proc" +
     "essing Facility";
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(95, 112);
+            this.label8.Location = new System.Drawing.Point(101, 109);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(545, 16);
+            this.label8.Size = new System.Drawing.Size(581, 15);
             this.label8.TabIndex = 4;
             this.label8.Text = "Summarize Most Effective Treatment Yields, Revenue, Costs, And Acres By Stand";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(95, 78);
+            this.label7.Location = new System.Drawing.Point(101, 76);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(553, 24);
+            this.label7.Size = new System.Drawing.Size(590, 23);
             this.label7.TabIndex = 3;
             this.label7.Text = "Find Most Effective Treatment For Torch And Crown Index Improvement, Maximum  Rev" +
     "enue, And Minimum Merchantable Wood Removal";
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(95, 57);
+            this.label6.Location = new System.Drawing.Point(101, 55);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(529, 16);
+            this.label6.Size = new System.Drawing.Size(564, 16);
             this.label6.TabIndex = 2;
             this.label6.Text = "Summarize Wood Product Volume Yields, Costs, And Net Revenue For A Stand And Trea" +
     "tment";
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(95, 36);
+            this.label5.Location = new System.Drawing.Point(101, 35);
+            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(336, 16);
+            this.label5.Size = new System.Drawing.Size(359, 15);
             this.label5.TabIndex = 1;
             this.label5.Text = "Identify Fuel And Fire Effective Treatments ";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(95, 15);
+            this.label4.Location = new System.Drawing.Point(101, 15);
+            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(305, 16);
+            this.label4.Size = new System.Drawing.Size(325, 15);
             this.label4.TabIndex = 0;
             this.label4.Text = "Apply User Defined Filters And Get Valid Plot Combinations";
             // 
@@ -370,35 +394,39 @@ namespace FIA_Biosum_Manager
             // 
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(8, 16);
+            this.lblTitle.Location = new System.Drawing.Point(9, 15);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(216, 24);
+            this.lblTitle.Size = new System.Drawing.Size(230, 23);
             this.lblTitle.TabIndex = 26;
             this.lblTitle.Text = "Run Scenario";
             // 
             // btnViewScenarioTables
             // 
-            this.btnViewScenarioTables.Location = new System.Drawing.Point(423, 37);
+            this.btnViewScenarioTables.Location = new System.Drawing.Point(451, 36);
+            this.btnViewScenarioTables.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnViewScenarioTables.Name = "btnViewScenarioTables";
-            this.btnViewScenarioTables.Size = new System.Drawing.Size(120, 20);
+            this.btnViewScenarioTables.Size = new System.Drawing.Size(128, 19);
             this.btnViewScenarioTables.TabIndex = 11;
             this.btnViewScenarioTables.Text = "View Results Tables";
             this.btnViewScenarioTables.Click += new System.EventHandler(this.btnViewScenarioTables_Click);
             // 
             // btnViewAuditTables
             // 
-            this.btnViewAuditTables.Location = new System.Drawing.Point(543, 16);
+            this.btnViewAuditTables.Location = new System.Drawing.Point(579, 15);
+            this.btnViewAuditTables.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnViewAuditTables.Name = "btnViewAuditTables";
-            this.btnViewAuditTables.Size = new System.Drawing.Size(120, 20);
+            this.btnViewAuditTables.Size = new System.Drawing.Size(128, 20);
             this.btnViewAuditTables.TabIndex = 10;
             this.btnViewAuditTables.Text = "View Audit Data";
             this.btnViewAuditTables.Click += new System.EventHandler(this.btnViewAuditTables_Click);
             // 
             // btnHelp
             // 
-            this.btnHelp.Location = new System.Drawing.Point(8, 440);
+            this.btnHelp.Location = new System.Drawing.Point(9, 429);
+            this.btnHelp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(80, 24);
+            this.btnHelp.Size = new System.Drawing.Size(85, 23);
             this.btnHelp.TabIndex = 9;
             this.btnHelp.Text = "Help";
             // 
@@ -412,60 +440,68 @@ namespace FIA_Biosum_Manager
             this.groupBox2.Controls.Add(this.lblProcAccessible);
             this.groupBox2.Controls.Add(this.chkProcSumTree);
             this.groupBox2.Controls.Add(this.chkProcTravelTimes);
-            this.groupBox2.Location = new System.Drawing.Point(8, 62);
+            this.groupBox2.Location = new System.Drawing.Point(9, 61);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(656, 96);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Size = new System.Drawing.Size(699, 93);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Optional:  Checked Boxes Will Execute";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(94, 24);
+            this.label1.Location = new System.Drawing.Point(100, 23);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(394, 16);
+            this.label1.Size = new System.Drawing.Size(421, 15);
             this.label1.TabIndex = 8;
             this.label1.Text = "Determine If Plot And Conditions Are Accessible For Treatment And Harvest";
             // 
             // btnClear
             // 
-            this.btnClear.Location = new System.Drawing.Point(544, 56);
+            this.btnClear.Location = new System.Drawing.Point(580, 55);
+            this.btnClear.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnClear.Name = "btnClear";
-            this.btnClear.Size = new System.Drawing.Size(64, 24);
+            this.btnClear.Size = new System.Drawing.Size(69, 23);
             this.btnClear.TabIndex = 7;
             this.btnClear.Text = "Clear";
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnSelectAll
             // 
-            this.btnSelectAll.Location = new System.Drawing.Point(544, 24);
+            this.btnSelectAll.Location = new System.Drawing.Point(580, 23);
+            this.btnSelectAll.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnSelectAll.Name = "btnSelectAll";
-            this.btnSelectAll.Size = new System.Drawing.Size(64, 24);
+            this.btnSelectAll.Size = new System.Drawing.Size(69, 23);
             this.btnSelectAll.TabIndex = 6;
             this.btnSelectAll.Text = "Select All";
             this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
             // 
             // lblProcSumTree
             // 
-            this.lblProcSumTree.Location = new System.Drawing.Point(9, 63);
+            this.lblProcSumTree.Location = new System.Drawing.Point(9, 61);
+            this.lblProcSumTree.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcSumTree.Name = "lblProcSumTree";
-            this.lblProcSumTree.Size = new System.Drawing.Size(79, 16);
+            this.lblProcSumTree.Size = new System.Drawing.Size(85, 15);
             this.lblProcSumTree.TabIndex = 5;
             this.lblProcSumTree.Text = "Not Done";
             // 
             // lblProcTravelTimes
             // 
-            this.lblProcTravelTimes.Location = new System.Drawing.Point(8, 44);
+            this.lblProcTravelTimes.Location = new System.Drawing.Point(9, 43);
+            this.lblProcTravelTimes.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcTravelTimes.Name = "lblProcTravelTimes";
-            this.lblProcTravelTimes.Size = new System.Drawing.Size(80, 16);
+            this.lblProcTravelTimes.Size = new System.Drawing.Size(85, 16);
             this.lblProcTravelTimes.TabIndex = 4;
             this.lblProcTravelTimes.Text = "Not Done";
             // 
             // lblProcAccessible
             // 
-            this.lblProcAccessible.Location = new System.Drawing.Point(8, 24);
+            this.lblProcAccessible.Location = new System.Drawing.Point(9, 23);
+            this.lblProcAccessible.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblProcAccessible.Name = "lblProcAccessible";
-            this.lblProcAccessible.Size = new System.Drawing.Size(72, 16);
+            this.lblProcAccessible.Size = new System.Drawing.Size(77, 15);
             this.lblProcAccessible.TabIndex = 3;
             this.lblProcAccessible.Text = "Not Done";
             // 
@@ -473,9 +509,10 @@ namespace FIA_Biosum_Manager
             // 
             this.chkProcSumTree.Checked = true;
             this.chkProcSumTree.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProcSumTree.Location = new System.Drawing.Point(95, 65);
+            this.chkProcSumTree.Location = new System.Drawing.Point(101, 63);
+            this.chkProcSumTree.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chkProcSumTree.Name = "chkProcSumTree";
-            this.chkProcSumTree.Size = new System.Drawing.Size(217, 16);
+            this.chkProcSumTree.Size = new System.Drawing.Size(231, 15);
             this.chkProcSumTree.TabIndex = 2;
             this.chkProcSumTree.Text = "Sum Tree Yields, Volume, And Value";
             // 
@@ -483,17 +520,19 @@ namespace FIA_Biosum_Manager
             // 
             this.chkProcTravelTimes.Checked = true;
             this.chkProcTravelTimes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProcTravelTimes.Location = new System.Drawing.Point(95, 44);
+            this.chkProcTravelTimes.Location = new System.Drawing.Point(101, 43);
+            this.chkProcTravelTimes.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.chkProcTravelTimes.Name = "chkProcTravelTimes";
-            this.chkProcTravelTimes.Size = new System.Drawing.Size(377, 16);
+            this.chkProcTravelTimes.Size = new System.Drawing.Size(402, 16);
             this.chkProcTravelTimes.TabIndex = 1;
             this.chkProcTravelTimes.Text = "Get Least Expensive Route From Plot To Wood Processing Facility";
             // 
             // frmRunOptimizerScenario
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(672, 470);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(448, 313);
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "frmRunOptimizerScenario";
             this.Text = "Treatment Optimizer Run Scenario";
