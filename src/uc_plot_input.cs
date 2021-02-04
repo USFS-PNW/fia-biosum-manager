@@ -7,6 +7,7 @@ using System.Data.OleDb;
 using System.Windows.Forms;
 using System.Xml;
 using System.Threading;
+using SQLite.ADO;
 
 
 
@@ -190,7 +191,7 @@ namespace FIA_Biosum_Manager
 		private System.Windows.Forms.Button btnMDBFiadbInputPrev;
 		private System.Windows.Forms.Button btnMDBFiadbInputNext;
 		private System.Windows.Forms.Button btnMDBFiadbInputCancel;
-		private System.Windows.Forms.TextBox txtMDBFiadbInputFile;
+		private System.Windows.Forms.TextBox txtFiadbInputFile;
 		private System.Windows.Forms.GroupBox groupBox24;
 		private System.Windows.Forms.ComboBox cmbFiadbSiteTreeTable;
 		private System.Windows.Forms.GroupBox groupBox25;
@@ -281,7 +282,7 @@ namespace FIA_Biosum_Manager
             this.groupBox24 = new System.Windows.Forms.GroupBox();
             this.cmbFiadbSiteTreeTable = new System.Windows.Forms.ComboBox();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
-            this.txtMDBFiadbInputFile = new System.Windows.Forms.TextBox();
+            this.txtFiadbInputFile = new System.Windows.Forms.TextBox();
             this.btnboxMDBFiadbInputFile = new System.Windows.Forms.Button();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.cmbFiadbPopEstUnitTable = new System.Windows.Forms.ComboBox();
@@ -408,8 +409,10 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Controls.Add(this.grpboxFilterByPlot);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(704, 2700);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(880, 3375);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -430,209 +433,244 @@ namespace FIA_Biosum_Manager
             this.grpboxMDBFiadbInput.Controls.Add(this.btnMDBFiadbInputPrev);
             this.grpboxMDBFiadbInput.Controls.Add(this.btnMDBFiadbInputNext);
             this.grpboxMDBFiadbInput.Controls.Add(this.btnMDBFiadbInputCancel);
-            this.grpboxMDBFiadbInput.Location = new System.Drawing.Point(15, 56);
+            this.grpboxMDBFiadbInput.Location = new System.Drawing.Point(19, 70);
+            this.grpboxMDBFiadbInput.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxMDBFiadbInput.Name = "grpboxMDBFiadbInput";
-            this.grpboxMDBFiadbInput.Size = new System.Drawing.Size(1075, 360);
+            this.grpboxMDBFiadbInput.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxMDBFiadbInput.Size = new System.Drawing.Size(1344, 450);
             this.grpboxMDBFiadbInput.TabIndex = 35;
             this.grpboxMDBFiadbInput.TabStop = false;
-            this.grpboxMDBFiadbInput.Text = "FIADB Microsoft Access Database File Input";
+            this.grpboxMDBFiadbInput.Text = "FIADB SQLite Database File Input";
             // 
             // groupBox24
             // 
             this.groupBox24.Controls.Add(this.cmbFiadbSiteTreeTable);
-            this.groupBox24.Location = new System.Drawing.Point(19, 272);
+            this.groupBox24.Location = new System.Drawing.Point(24, 340);
+            this.groupBox24.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(312, 45);
+            this.groupBox24.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox24.Size = new System.Drawing.Size(390, 56);
             this.groupBox24.TabIndex = 51;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "Site Tree ";
             // 
             // cmbFiadbSiteTreeTable
             // 
-            this.cmbFiadbSiteTreeTable.Location = new System.Drawing.Point(8, 16);
+            this.cmbFiadbSiteTreeTable.Location = new System.Drawing.Point(10, 20);
+            this.cmbFiadbSiteTreeTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbSiteTreeTable.Name = "cmbFiadbSiteTreeTable";
-            this.cmbFiadbSiteTreeTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbSiteTreeTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbSiteTreeTable.TabIndex = 3;
             // 
             // groupBox23
             // 
-            this.groupBox23.Controls.Add(this.txtMDBFiadbInputFile);
+            this.groupBox23.Controls.Add(this.txtFiadbInputFile);
             this.groupBox23.Controls.Add(this.btnboxMDBFiadbInputFile);
-            this.groupBox23.Location = new System.Drawing.Point(20, 16);
+            this.groupBox23.Location = new System.Drawing.Point(25, 20);
+            this.groupBox23.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(632, 48);
+            this.groupBox23.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox23.Size = new System.Drawing.Size(790, 60);
             this.groupBox23.TabIndex = 50;
             this.groupBox23.TabStop = false;
-            this.groupBox23.Text = "MSAccess File";
+            this.groupBox23.Text = "SQLite File";
             // 
-            // txtMDBFiadbInputFile
+            // txtFiadbInputFile
             // 
-            this.txtMDBFiadbInputFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtMDBFiadbInputFile.Location = new System.Drawing.Point(8, 13);
-            this.txtMDBFiadbInputFile.Name = "txtMDBFiadbInputFile";
-            this.txtMDBFiadbInputFile.Size = new System.Drawing.Size(576, 26);
-            this.txtMDBFiadbInputFile.TabIndex = 2;
+            this.txtFiadbInputFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtFiadbInputFile.Location = new System.Drawing.Point(10, 16);
+            this.txtFiadbInputFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFiadbInputFile.Name = "txtFiadbInputFile";
+            this.txtFiadbInputFile.Size = new System.Drawing.Size(719, 30);
+            this.txtFiadbInputFile.TabIndex = 2;
             // 
             // btnboxMDBFiadbInputFile
             // 
             this.btnboxMDBFiadbInputFile.Image = ((System.Drawing.Image)(resources.GetObject("btnboxMDBFiadbInputFile.Image")));
-            this.btnboxMDBFiadbInputFile.Location = new System.Drawing.Point(592, 10);
+            this.btnboxMDBFiadbInputFile.Location = new System.Drawing.Point(740, 12);
+            this.btnboxMDBFiadbInputFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnboxMDBFiadbInputFile.Name = "btnboxMDBFiadbInputFile";
-            this.btnboxMDBFiadbInputFile.Size = new System.Drawing.Size(32, 32);
+            this.btnboxMDBFiadbInputFile.Size = new System.Drawing.Size(40, 40);
             this.btnboxMDBFiadbInputFile.TabIndex = 1;
             this.btnboxMDBFiadbInputFile.Click += new System.EventHandler(this.btnboxMDBFiadbInputFile_Click);
             // 
             // groupBox15
             // 
             this.groupBox15.Controls.Add(this.cmbFiadbPopEstUnitTable);
-            this.groupBox15.Location = new System.Drawing.Point(340, 118);
+            this.groupBox15.Location = new System.Drawing.Point(425, 148);
+            this.groupBox15.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(312, 45);
+            this.groupBox15.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox15.Size = new System.Drawing.Size(390, 56);
             this.groupBox15.TabIndex = 49;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = "Population Estimation Unit";
             // 
             // cmbFiadbPopEstUnitTable
             // 
-            this.cmbFiadbPopEstUnitTable.Location = new System.Drawing.Point(8, 17);
+            this.cmbFiadbPopEstUnitTable.Location = new System.Drawing.Point(10, 21);
+            this.cmbFiadbPopEstUnitTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbPopEstUnitTable.Name = "cmbFiadbPopEstUnitTable";
-            this.cmbFiadbPopEstUnitTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbPopEstUnitTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbPopEstUnitTable.TabIndex = 4;
             // 
             // groupBox16
             // 
             this.groupBox16.Controls.Add(this.cmbFiadbPpsaTable);
-            this.groupBox16.Location = new System.Drawing.Point(340, 220);
+            this.groupBox16.Location = new System.Drawing.Point(425, 275);
+            this.groupBox16.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Size = new System.Drawing.Size(312, 45);
+            this.groupBox16.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox16.Size = new System.Drawing.Size(390, 56);
             this.groupBox16.TabIndex = 48;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "Population Plot Stratum Assignment";
             // 
             // cmbFiadbPpsaTable
             // 
-            this.cmbFiadbPpsaTable.Location = new System.Drawing.Point(8, 16);
+            this.cmbFiadbPpsaTable.Location = new System.Drawing.Point(10, 20);
+            this.cmbFiadbPpsaTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbPpsaTable.Name = "cmbFiadbPpsaTable";
-            this.cmbFiadbPpsaTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbPpsaTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbPpsaTable.TabIndex = 4;
             // 
             // groupBox17
             // 
             this.groupBox17.Controls.Add(this.cmbFiadbPopStratumTable);
-            this.groupBox17.Location = new System.Drawing.Point(340, 169);
+            this.groupBox17.Location = new System.Drawing.Point(425, 211);
+            this.groupBox17.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox17.Name = "groupBox17";
-            this.groupBox17.Size = new System.Drawing.Size(312, 45);
+            this.groupBox17.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox17.Size = new System.Drawing.Size(390, 56);
             this.groupBox17.TabIndex = 47;
             this.groupBox17.TabStop = false;
             this.groupBox17.Text = "Population Stratum";
             // 
             // cmbFiadbPopStratumTable
             // 
-            this.cmbFiadbPopStratumTable.Location = new System.Drawing.Point(8, 17);
+            this.cmbFiadbPopStratumTable.Location = new System.Drawing.Point(10, 21);
+            this.cmbFiadbPopStratumTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbPopStratumTable.Name = "cmbFiadbPopStratumTable";
-            this.cmbFiadbPopStratumTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbPopStratumTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbPopStratumTable.TabIndex = 4;
             // 
             // groupBox18
             // 
             this.groupBox18.Controls.Add(this.cmbFiadbPopEvalTable);
-            this.groupBox18.Location = new System.Drawing.Point(340, 71);
+            this.groupBox18.Location = new System.Drawing.Point(425, 89);
+            this.groupBox18.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox18.Name = "groupBox18";
-            this.groupBox18.Size = new System.Drawing.Size(312, 45);
+            this.groupBox18.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox18.Size = new System.Drawing.Size(390, 56);
             this.groupBox18.TabIndex = 46;
             this.groupBox18.TabStop = false;
             this.groupBox18.Text = "Population Evaluation";
             // 
             // cmbFiadbPopEvalTable
             // 
-            this.cmbFiadbPopEvalTable.Location = new System.Drawing.Point(8, 16);
+            this.cmbFiadbPopEvalTable.Location = new System.Drawing.Point(10, 20);
+            this.cmbFiadbPopEvalTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbPopEvalTable.Name = "cmbFiadbPopEvalTable";
-            this.cmbFiadbPopEvalTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbPopEvalTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbPopEvalTable.TabIndex = 4;
             // 
             // groupBox19
             // 
             this.groupBox19.Controls.Add(this.cmbFiadbTreeRegionalBiomassTable);
-            this.groupBox19.Location = new System.Drawing.Point(19, 220);
+            this.groupBox19.Location = new System.Drawing.Point(24, 275);
+            this.groupBox19.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox19.Name = "groupBox19";
-            this.groupBox19.Size = new System.Drawing.Size(312, 45);
+            this.groupBox19.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox19.Size = new System.Drawing.Size(390, 56);
             this.groupBox19.TabIndex = 45;
             this.groupBox19.TabStop = false;
             this.groupBox19.Text = "Tree Regional Biomass Data";
             // 
             // cmbFiadbTreeRegionalBiomassTable
             // 
-            this.cmbFiadbTreeRegionalBiomassTable.Location = new System.Drawing.Point(8, 16);
+            this.cmbFiadbTreeRegionalBiomassTable.Location = new System.Drawing.Point(10, 20);
+            this.cmbFiadbTreeRegionalBiomassTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbTreeRegionalBiomassTable.Name = "cmbFiadbTreeRegionalBiomassTable";
-            this.cmbFiadbTreeRegionalBiomassTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbTreeRegionalBiomassTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbTreeRegionalBiomassTable.TabIndex = 3;
             // 
             // groupBox20
             // 
             this.groupBox20.Controls.Add(this.cmbFiadbTreeTable);
-            this.groupBox20.Location = new System.Drawing.Point(20, 169);
+            this.groupBox20.Location = new System.Drawing.Point(25, 211);
+            this.groupBox20.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(312, 45);
+            this.groupBox20.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox20.Size = new System.Drawing.Size(390, 56);
             this.groupBox20.TabIndex = 44;
             this.groupBox20.TabStop = false;
             this.groupBox20.Text = "Tree Data";
             // 
             // cmbFiadbTreeTable
             // 
-            this.cmbFiadbTreeTable.Location = new System.Drawing.Point(8, 14);
+            this.cmbFiadbTreeTable.Location = new System.Drawing.Point(10, 18);
+            this.cmbFiadbTreeTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbTreeTable.Name = "cmbFiadbTreeTable";
-            this.cmbFiadbTreeTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbTreeTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbTreeTable.TabIndex = 2;
             // 
             // groupBox21
             // 
             this.groupBox21.Controls.Add(this.cmbFiadbCondTable);
-            this.groupBox21.Location = new System.Drawing.Point(20, 118);
+            this.groupBox21.Location = new System.Drawing.Point(25, 148);
+            this.groupBox21.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox21.Name = "groupBox21";
-            this.groupBox21.Size = new System.Drawing.Size(312, 45);
+            this.groupBox21.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox21.Size = new System.Drawing.Size(390, 56);
             this.groupBox21.TabIndex = 43;
             this.groupBox21.TabStop = false;
             this.groupBox21.Text = "Condition Data";
             // 
             // cmbFiadbCondTable
             // 
-            this.cmbFiadbCondTable.Location = new System.Drawing.Point(8, 16);
+            this.cmbFiadbCondTable.Location = new System.Drawing.Point(10, 20);
+            this.cmbFiadbCondTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbCondTable.Name = "cmbFiadbCondTable";
-            this.cmbFiadbCondTable.Size = new System.Drawing.Size(296, 21);
+            this.cmbFiadbCondTable.Size = new System.Drawing.Size(369, 24);
             this.cmbFiadbCondTable.TabIndex = 1;
             // 
             // groupBox22
             // 
             this.groupBox22.Controls.Add(this.cmbFiadbPlotTable);
-            this.groupBox22.Location = new System.Drawing.Point(20, 71);
+            this.groupBox22.Location = new System.Drawing.Point(25, 89);
+            this.groupBox22.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(312, 45);
+            this.groupBox22.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox22.Size = new System.Drawing.Size(390, 56);
             this.groupBox22.TabIndex = 42;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "Plot Data";
             // 
             // cmbFiadbPlotTable
             // 
-            this.cmbFiadbPlotTable.Location = new System.Drawing.Point(7, 16);
+            this.cmbFiadbPlotTable.Location = new System.Drawing.Point(9, 20);
+            this.cmbFiadbPlotTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbFiadbPlotTable.Name = "cmbFiadbPlotTable";
-            this.cmbFiadbPlotTable.Size = new System.Drawing.Size(297, 21);
+            this.cmbFiadbPlotTable.Size = new System.Drawing.Size(370, 24);
             this.cmbFiadbPlotTable.TabIndex = 0;
             // 
             // btnMDBFiadbInputFinish
             // 
             this.btnMDBFiadbInputFinish.Enabled = false;
-            this.btnMDBFiadbInputFinish.Location = new System.Drawing.Point(584, 326);
+            this.btnMDBFiadbInputFinish.Location = new System.Drawing.Point(730, 408);
+            this.btnMDBFiadbInputFinish.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMDBFiadbInputFinish.Name = "btnMDBFiadbInputFinish";
-            this.btnMDBFiadbInputFinish.Size = new System.Drawing.Size(72, 24);
+            this.btnMDBFiadbInputFinish.Size = new System.Drawing.Size(90, 30);
             this.btnMDBFiadbInputFinish.TabIndex = 7;
             this.btnMDBFiadbInputFinish.Text = "Append";
             // 
             // btnMDBFiadbInputHelp
             // 
             this.btnMDBFiadbInputHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnMDBFiadbInputHelp.Location = new System.Drawing.Point(24, 326);
+            this.btnMDBFiadbInputHelp.Location = new System.Drawing.Point(30, 408);
+            this.btnMDBFiadbInputHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMDBFiadbInputHelp.Name = "btnMDBFiadbInputHelp";
-            this.btnMDBFiadbInputHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnMDBFiadbInputHelp.Size = new System.Drawing.Size(80, 30);
             this.btnMDBFiadbInputHelp.TabIndex = 3;
             this.btnMDBFiadbInputHelp.Text = "Help";
             this.btnMDBFiadbInputHelp.Click += new System.EventHandler(this.btnMDBFiadbInputHelp_Click);
@@ -640,27 +678,30 @@ namespace FIA_Biosum_Manager
             // btnMDBFiadbInputPrev
             // 
             this.btnMDBFiadbInputPrev.Enabled = false;
-            this.btnMDBFiadbInputPrev.Location = new System.Drawing.Point(424, 326);
+            this.btnMDBFiadbInputPrev.Location = new System.Drawing.Point(530, 408);
+            this.btnMDBFiadbInputPrev.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMDBFiadbInputPrev.Name = "btnMDBFiadbInputPrev";
-            this.btnMDBFiadbInputPrev.Size = new System.Drawing.Size(72, 24);
+            this.btnMDBFiadbInputPrev.Size = new System.Drawing.Size(90, 30);
             this.btnMDBFiadbInputPrev.TabIndex = 5;
             this.btnMDBFiadbInputPrev.TabStop = false;
             this.btnMDBFiadbInputPrev.Text = "< Previous";
             // 
             // btnMDBFiadbInputNext
             // 
-            this.btnMDBFiadbInputNext.Location = new System.Drawing.Point(496, 326);
+            this.btnMDBFiadbInputNext.Location = new System.Drawing.Point(620, 408);
+            this.btnMDBFiadbInputNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMDBFiadbInputNext.Name = "btnMDBFiadbInputNext";
-            this.btnMDBFiadbInputNext.Size = new System.Drawing.Size(72, 24);
+            this.btnMDBFiadbInputNext.Size = new System.Drawing.Size(90, 30);
             this.btnMDBFiadbInputNext.TabIndex = 6;
             this.btnMDBFiadbInputNext.Text = "Next >";
             this.btnMDBFiadbInputNext.Click += new System.EventHandler(this.btnMDBFiadbInputNext_Click);
             // 
             // btnMDBFiadbInputCancel
             // 
-            this.btnMDBFiadbInputCancel.Location = new System.Drawing.Point(336, 326);
+            this.btnMDBFiadbInputCancel.Location = new System.Drawing.Point(420, 408);
+            this.btnMDBFiadbInputCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnMDBFiadbInputCancel.Name = "btnMDBFiadbInputCancel";
-            this.btnMDBFiadbInputCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnMDBFiadbInputCancel.Size = new System.Drawing.Size(80, 30);
             this.btnMDBFiadbInputCancel.TabIndex = 4;
             this.btnMDBFiadbInputCancel.Text = "Cancel";
             this.btnMDBFiadbInputCancel.Click += new System.EventHandler(this.btnMDBFiadbInputCancel_Click);
@@ -673,9 +714,11 @@ namespace FIA_Biosum_Manager
             this.grpboxFIADBInv.Controls.Add(this.btnFIADBInvPrevious);
             this.grpboxFIADBInv.Controls.Add(this.btnFIADBInvNext);
             this.grpboxFIADBInv.Controls.Add(this.btnFIADBInvCancel);
-            this.grpboxFIADBInv.Location = new System.Drawing.Point(16, 2284);
+            this.grpboxFIADBInv.Location = new System.Drawing.Point(20, 2855);
+            this.grpboxFIADBInv.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxFIADBInv.Name = "grpboxFIADBInv";
-            this.grpboxFIADBInv.Size = new System.Drawing.Size(672, 360);
+            this.grpboxFIADBInv.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxFIADBInv.Size = new System.Drawing.Size(840, 450);
             this.grpboxFIADBInv.TabIndex = 34;
             this.grpboxFIADBInv.TabStop = false;
             this.grpboxFIADBInv.Text = "Select FIADB Inventory Evalulation";
@@ -683,9 +726,10 @@ namespace FIA_Biosum_Manager
             // btnFIADBInvAppend
             // 
             this.btnFIADBInvAppend.Enabled = false;
-            this.btnFIADBInvAppend.Location = new System.Drawing.Point(584, 325);
+            this.btnFIADBInvAppend.Location = new System.Drawing.Point(730, 406);
+            this.btnFIADBInvAppend.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFIADBInvAppend.Name = "btnFIADBInvAppend";
-            this.btnFIADBInvAppend.Size = new System.Drawing.Size(72, 24);
+            this.btnFIADBInvAppend.Size = new System.Drawing.Size(90, 30);
             this.btnFIADBInvAppend.TabIndex = 34;
             this.btnFIADBInvAppend.Text = "Append";
             this.btnFIADBInvAppend.Click += new System.EventHandler(this.btnFIADBInvAppend_Click);
@@ -696,10 +740,11 @@ namespace FIA_Biosum_Manager
             this.lstFIADBInv.GridLines = true;
             this.lstFIADBInv.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstFIADBInv.HideSelection = false;
-            this.lstFIADBInv.Location = new System.Drawing.Point(16, 32);
+            this.lstFIADBInv.Location = new System.Drawing.Point(20, 40);
+            this.lstFIADBInv.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstFIADBInv.MultiSelect = false;
             this.lstFIADBInv.Name = "lstFIADBInv";
-            this.lstFIADBInv.Size = new System.Drawing.Size(1050, 280);
+            this.lstFIADBInv.Size = new System.Drawing.Size(1312, 349);
             this.lstFIADBInv.TabIndex = 30;
             this.lstFIADBInv.UseCompatibleStateImageBehavior = false;
             this.lstFIADBInv.View = System.Windows.Forms.View.Details;
@@ -708,35 +753,39 @@ namespace FIA_Biosum_Manager
             // btnFIADBInvHelp
             // 
             this.btnFIADBInvHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnFIADBInvHelp.Location = new System.Drawing.Point(16, 325);
+            this.btnFIADBInvHelp.Location = new System.Drawing.Point(20, 406);
+            this.btnFIADBInvHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFIADBInvHelp.Name = "btnFIADBInvHelp";
-            this.btnFIADBInvHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnFIADBInvHelp.Size = new System.Drawing.Size(80, 30);
             this.btnFIADBInvHelp.TabIndex = 23;
             this.btnFIADBInvHelp.Text = "Help";
             // 
             // btnFIADBInvPrevious
             // 
-            this.btnFIADBInvPrevious.Location = new System.Drawing.Point(424, 325);
+            this.btnFIADBInvPrevious.Location = new System.Drawing.Point(530, 406);
+            this.btnFIADBInvPrevious.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFIADBInvPrevious.Name = "btnFIADBInvPrevious";
-            this.btnFIADBInvPrevious.Size = new System.Drawing.Size(72, 24);
+            this.btnFIADBInvPrevious.Size = new System.Drawing.Size(90, 30);
             this.btnFIADBInvPrevious.TabIndex = 22;
             this.btnFIADBInvPrevious.Text = "< Previous";
             this.btnFIADBInvPrevious.Click += new System.EventHandler(this.btnFIADBInvPrevious_Click);
             // 
             // btnFIADBInvNext
             // 
-            this.btnFIADBInvNext.Location = new System.Drawing.Point(496, 325);
+            this.btnFIADBInvNext.Location = new System.Drawing.Point(620, 406);
+            this.btnFIADBInvNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFIADBInvNext.Name = "btnFIADBInvNext";
-            this.btnFIADBInvNext.Size = new System.Drawing.Size(72, 24);
+            this.btnFIADBInvNext.Size = new System.Drawing.Size(90, 30);
             this.btnFIADBInvNext.TabIndex = 21;
             this.btnFIADBInvNext.Text = "Next >";
             this.btnFIADBInvNext.Click += new System.EventHandler(this.btnFIADBInvNext_Click);
             // 
             // btnFIADBInvCancel
             // 
-            this.btnFIADBInvCancel.Location = new System.Drawing.Point(336, 325);
+            this.btnFIADBInvCancel.Location = new System.Drawing.Point(420, 406);
+            this.btnFIADBInvCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFIADBInvCancel.Name = "btnFIADBInvCancel";
-            this.btnFIADBInvCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnFIADBInvCancel.Size = new System.Drawing.Size(80, 30);
             this.btnFIADBInvCancel.TabIndex = 20;
             this.btnFIADBInvCancel.Text = "Cancel";
             this.btnFIADBInvCancel.Click += new System.EventHandler(this.btnFIADBInvCancel_Click);
@@ -749,9 +798,11 @@ namespace FIA_Biosum_Manager
             this.grpboxIDBInv.Controls.Add(this.btnIDBInvPrevious);
             this.grpboxIDBInv.Controls.Add(this.btnIDBInvNext);
             this.grpboxIDBInv.Controls.Add(this.btnIDBInvCancel);
-            this.grpboxIDBInv.Location = new System.Drawing.Point(16, 1916);
+            this.grpboxIDBInv.Location = new System.Drawing.Point(20, 2395);
+            this.grpboxIDBInv.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxIDBInv.Name = "grpboxIDBInv";
-            this.grpboxIDBInv.Size = new System.Drawing.Size(672, 360);
+            this.grpboxIDBInv.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxIDBInv.Size = new System.Drawing.Size(840, 450);
             this.grpboxIDBInv.TabIndex = 33;
             this.grpboxIDBInv.TabStop = false;
             this.grpboxIDBInv.Text = "Select IDB Inventory";
@@ -759,9 +810,10 @@ namespace FIA_Biosum_Manager
             // btnIDBInvAppend
             // 
             this.btnIDBInvAppend.Enabled = false;
-            this.btnIDBInvAppend.Location = new System.Drawing.Point(584, 326);
+            this.btnIDBInvAppend.Location = new System.Drawing.Point(730, 408);
+            this.btnIDBInvAppend.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIDBInvAppend.Name = "btnIDBInvAppend";
-            this.btnIDBInvAppend.Size = new System.Drawing.Size(72, 24);
+            this.btnIDBInvAppend.Size = new System.Drawing.Size(90, 30);
             this.btnIDBInvAppend.TabIndex = 34;
             this.btnIDBInvAppend.Text = "Append";
             this.btnIDBInvAppend.Click += new System.EventHandler(this.btnIDBInvAppend_Click);
@@ -772,10 +824,11 @@ namespace FIA_Biosum_Manager
             this.lstIDBInv.GridLines = true;
             this.lstIDBInv.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstIDBInv.HideSelection = false;
-            this.lstIDBInv.Location = new System.Drawing.Point(16, 32);
+            this.lstIDBInv.Location = new System.Drawing.Point(20, 40);
+            this.lstIDBInv.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstIDBInv.MultiSelect = false;
             this.lstIDBInv.Name = "lstIDBInv";
-            this.lstIDBInv.Size = new System.Drawing.Size(640, 280);
+            this.lstIDBInv.Size = new System.Drawing.Size(799, 349);
             this.lstIDBInv.TabIndex = 30;
             this.lstIDBInv.UseCompatibleStateImageBehavior = false;
             this.lstIDBInv.View = System.Windows.Forms.View.Details;
@@ -783,35 +836,39 @@ namespace FIA_Biosum_Manager
             // 
             // btnIDBInvHelp
             // 
-            this.btnIDBInvHelp.Location = new System.Drawing.Point(16, 326);
+            this.btnIDBInvHelp.Location = new System.Drawing.Point(20, 408);
+            this.btnIDBInvHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIDBInvHelp.Name = "btnIDBInvHelp";
-            this.btnIDBInvHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnIDBInvHelp.Size = new System.Drawing.Size(80, 30);
             this.btnIDBInvHelp.TabIndex = 23;
             this.btnIDBInvHelp.Text = "Help";
             // 
             // btnIDBInvPrevious
             // 
-            this.btnIDBInvPrevious.Location = new System.Drawing.Point(424, 326);
+            this.btnIDBInvPrevious.Location = new System.Drawing.Point(530, 408);
+            this.btnIDBInvPrevious.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIDBInvPrevious.Name = "btnIDBInvPrevious";
-            this.btnIDBInvPrevious.Size = new System.Drawing.Size(72, 24);
+            this.btnIDBInvPrevious.Size = new System.Drawing.Size(90, 30);
             this.btnIDBInvPrevious.TabIndex = 22;
             this.btnIDBInvPrevious.Text = "< Previous";
             this.btnIDBInvPrevious.Click += new System.EventHandler(this.btnIDBInvPrevious_Click);
             // 
             // btnIDBInvNext
             // 
-            this.btnIDBInvNext.Location = new System.Drawing.Point(496, 326);
+            this.btnIDBInvNext.Location = new System.Drawing.Point(620, 408);
+            this.btnIDBInvNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIDBInvNext.Name = "btnIDBInvNext";
-            this.btnIDBInvNext.Size = new System.Drawing.Size(72, 24);
+            this.btnIDBInvNext.Size = new System.Drawing.Size(90, 30);
             this.btnIDBInvNext.TabIndex = 21;
             this.btnIDBInvNext.Text = "Next >";
             this.btnIDBInvNext.Click += new System.EventHandler(this.btnIDBInvNext_Click);
             // 
             // btnIDBInvCancel
             // 
-            this.btnIDBInvCancel.Location = new System.Drawing.Point(336, 326);
+            this.btnIDBInvCancel.Location = new System.Drawing.Point(420, 408);
+            this.btnIDBInvCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnIDBInvCancel.Name = "btnIDBInvCancel";
-            this.btnIDBInvCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnIDBInvCancel.Size = new System.Drawing.Size(80, 30);
             this.btnIDBInvCancel.TabIndex = 20;
             this.btnIDBInvCancel.Text = "Cancel";
             this.btnIDBInvCancel.Click += new System.EventHandler(this.btnIDBInvCancel_Click);
@@ -827,36 +884,41 @@ namespace FIA_Biosum_Manager
             this.grpboxFilterByState.Controls.Add(this.btnFilterByStateNext);
             this.grpboxFilterByState.Controls.Add(this.btnFilterByStateCancel);
             this.grpboxFilterByState.ImeMode = System.Windows.Forms.ImeMode.Off;
-            this.grpboxFilterByState.Location = new System.Drawing.Point(16, 796);
+            this.grpboxFilterByState.Location = new System.Drawing.Point(20, 995);
+            this.grpboxFilterByState.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxFilterByState.Name = "grpboxFilterByState";
-            this.grpboxFilterByState.Size = new System.Drawing.Size(672, 360);
+            this.grpboxFilterByState.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxFilterByState.Size = new System.Drawing.Size(840, 450);
             this.grpboxFilterByState.TabIndex = 31;
             this.grpboxFilterByState.TabStop = false;
             this.grpboxFilterByState.Text = "Filter By State And County";
             // 
             // btnFilterByStateFinish
             // 
-            this.btnFilterByStateFinish.Location = new System.Drawing.Point(584, 325);
+            this.btnFilterByStateFinish.Location = new System.Drawing.Point(730, 406);
+            this.btnFilterByStateFinish.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateFinish.Name = "btnFilterByStateFinish";
-            this.btnFilterByStateFinish.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByStateFinish.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByStateFinish.TabIndex = 34;
             this.btnFilterByStateFinish.Text = "Append";
             this.btnFilterByStateFinish.Click += new System.EventHandler(this.btnFilterByStateFinish_Click);
             // 
             // btnFilterByStateUnselect
             // 
-            this.btnFilterByStateUnselect.Location = new System.Drawing.Point(560, 182);
+            this.btnFilterByStateUnselect.Location = new System.Drawing.Point(700, 228);
+            this.btnFilterByStateUnselect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateUnselect.Name = "btnFilterByStateUnselect";
-            this.btnFilterByStateUnselect.Size = new System.Drawing.Size(88, 48);
+            this.btnFilterByStateUnselect.Size = new System.Drawing.Size(110, 60);
             this.btnFilterByStateUnselect.TabIndex = 32;
             this.btnFilterByStateUnselect.Text = "Clear All";
             this.btnFilterByStateUnselect.Click += new System.EventHandler(this.btnFilterByStateUnselect_Click);
             // 
             // btnFilterByStateSelect
             // 
-            this.btnFilterByStateSelect.Location = new System.Drawing.Point(560, 118);
+            this.btnFilterByStateSelect.Location = new System.Drawing.Point(700, 148);
+            this.btnFilterByStateSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateSelect.Name = "btnFilterByStateSelect";
-            this.btnFilterByStateSelect.Size = new System.Drawing.Size(88, 48);
+            this.btnFilterByStateSelect.Size = new System.Drawing.Size(110, 60);
             this.btnFilterByStateSelect.TabIndex = 31;
             this.btnFilterByStateSelect.Text = "Select All";
             this.btnFilterByStateSelect.Click += new System.EventHandler(this.btnFilterByStateSelect_Click);
@@ -868,9 +930,10 @@ namespace FIA_Biosum_Manager
             this.lstFilterByState.GridLines = true;
             this.lstFilterByState.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstFilterByState.HideSelection = false;
-            this.lstFilterByState.Location = new System.Drawing.Point(136, 32);
+            this.lstFilterByState.Location = new System.Drawing.Point(170, 40);
+            this.lstFilterByState.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstFilterByState.Name = "lstFilterByState";
-            this.lstFilterByState.Size = new System.Drawing.Size(400, 280);
+            this.lstFilterByState.Size = new System.Drawing.Size(499, 349);
             this.lstFilterByState.TabIndex = 30;
             this.lstFilterByState.UseCompatibleStateImageBehavior = false;
             this.lstFilterByState.View = System.Windows.Forms.View.Details;
@@ -879,36 +942,40 @@ namespace FIA_Biosum_Manager
             // btnFilterByStateHelp
             // 
             this.btnFilterByStateHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnFilterByStateHelp.Location = new System.Drawing.Point(16, 325);
+            this.btnFilterByStateHelp.Location = new System.Drawing.Point(20, 406);
+            this.btnFilterByStateHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateHelp.Name = "btnFilterByStateHelp";
-            this.btnFilterByStateHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterByStateHelp.Size = new System.Drawing.Size(80, 30);
             this.btnFilterByStateHelp.TabIndex = 23;
             this.btnFilterByStateHelp.Text = "Help";
             this.btnFilterByStateHelp.Click += new System.EventHandler(this.btnFilterByStateHelp_Click);
             // 
             // btnFilterByStatePrevious
             // 
-            this.btnFilterByStatePrevious.Location = new System.Drawing.Point(424, 325);
+            this.btnFilterByStatePrevious.Location = new System.Drawing.Point(530, 406);
+            this.btnFilterByStatePrevious.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStatePrevious.Name = "btnFilterByStatePrevious";
-            this.btnFilterByStatePrevious.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByStatePrevious.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByStatePrevious.TabIndex = 22;
             this.btnFilterByStatePrevious.Text = "< Previous";
             this.btnFilterByStatePrevious.Click += new System.EventHandler(this.btnFilterByStatePrevious_Click);
             // 
             // btnFilterByStateNext
             // 
-            this.btnFilterByStateNext.Location = new System.Drawing.Point(496, 325);
+            this.btnFilterByStateNext.Location = new System.Drawing.Point(620, 406);
+            this.btnFilterByStateNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateNext.Name = "btnFilterByStateNext";
-            this.btnFilterByStateNext.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByStateNext.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByStateNext.TabIndex = 21;
             this.btnFilterByStateNext.Text = "Next >";
             this.btnFilterByStateNext.Click += new System.EventHandler(this.btnFilterByStateNext_Click);
             // 
             // btnFilterByStateCancel
             // 
-            this.btnFilterByStateCancel.Location = new System.Drawing.Point(336, 325);
+            this.btnFilterByStateCancel.Location = new System.Drawing.Point(420, 406);
+            this.btnFilterByStateCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByStateCancel.Name = "btnFilterByStateCancel";
-            this.btnFilterByStateCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterByStateCancel.Size = new System.Drawing.Size(80, 30);
             this.btnFilterByStateCancel.TabIndex = 20;
             this.btnFilterByStateCancel.Text = "Cancel";
             this.btnFilterByStateCancel.Click += new System.EventHandler(this.btnFilterByStateCancel_Click);
@@ -921,9 +988,11 @@ namespace FIA_Biosum_Manager
             this.grpboxFilter.Controls.Add(this.btnFilterNext);
             this.grpboxFilter.Controls.Add(this.btnFilterCancel);
             this.grpboxFilter.Controls.Add(this.groupBox7);
-            this.grpboxFilter.Location = new System.Drawing.Point(16, 424);
+            this.grpboxFilter.Location = new System.Drawing.Point(20, 530);
+            this.grpboxFilter.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxFilter.Name = "grpboxFilter";
-            this.grpboxFilter.Size = new System.Drawing.Size(672, 360);
+            this.grpboxFilter.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxFilter.Size = new System.Drawing.Size(840, 450);
             this.grpboxFilter.TabIndex = 30;
             this.grpboxFilter.TabStop = false;
             this.grpboxFilter.Text = "Filter Options";
@@ -931,9 +1000,10 @@ namespace FIA_Biosum_Manager
             // btnFilterFinish
             // 
             this.btnFilterFinish.Enabled = false;
-            this.btnFilterFinish.Location = new System.Drawing.Point(584, 326);
+            this.btnFilterFinish.Location = new System.Drawing.Point(730, 408);
+            this.btnFilterFinish.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterFinish.Name = "btnFilterFinish";
-            this.btnFilterFinish.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterFinish.Size = new System.Drawing.Size(90, 30);
             this.btnFilterFinish.TabIndex = 5;
             this.btnFilterFinish.Text = "Append";
             this.btnFilterFinish.Click += new System.EventHandler(this.btnFilterFinish_Click);
@@ -941,18 +1011,20 @@ namespace FIA_Biosum_Manager
             // btnFilterHelp
             // 
             this.btnFilterHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnFilterHelp.Location = new System.Drawing.Point(16, 326);
+            this.btnFilterHelp.Location = new System.Drawing.Point(20, 408);
+            this.btnFilterHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterHelp.Name = "btnFilterHelp";
-            this.btnFilterHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterHelp.Size = new System.Drawing.Size(80, 30);
             this.btnFilterHelp.TabIndex = 2;
             this.btnFilterHelp.Text = "Help";
             this.btnFilterHelp.Click += new System.EventHandler(this.btnFilterHelp_Click);
             // 
             // btnFilterPrevious
             // 
-            this.btnFilterPrevious.Location = new System.Drawing.Point(424, 326);
+            this.btnFilterPrevious.Location = new System.Drawing.Point(530, 408);
+            this.btnFilterPrevious.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterPrevious.Name = "btnFilterPrevious";
-            this.btnFilterPrevious.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterPrevious.Size = new System.Drawing.Size(90, 30);
             this.btnFilterPrevious.TabIndex = 4;
             this.btnFilterPrevious.Text = "< Previous";
             this.btnFilterPrevious.Click += new System.EventHandler(this.btnFilterPrevious_Click);
@@ -960,18 +1032,20 @@ namespace FIA_Biosum_Manager
             // btnFilterNext
             // 
             this.btnFilterNext.Enabled = false;
-            this.btnFilterNext.Location = new System.Drawing.Point(496, 326);
+            this.btnFilterNext.Location = new System.Drawing.Point(620, 408);
+            this.btnFilterNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterNext.Name = "btnFilterNext";
-            this.btnFilterNext.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterNext.Size = new System.Drawing.Size(90, 30);
             this.btnFilterNext.TabIndex = 5;
             this.btnFilterNext.Text = "Next >";
             this.btnFilterNext.Click += new System.EventHandler(this.btnFilterNext_Click);
             // 
             // btnFilterCancel
             // 
-            this.btnFilterCancel.Location = new System.Drawing.Point(336, 326);
+            this.btnFilterCancel.Location = new System.Drawing.Point(420, 408);
+            this.btnFilterCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterCancel.Name = "btnFilterCancel";
-            this.btnFilterCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterCancel.Size = new System.Drawing.Size(80, 30);
             this.btnFilterCancel.TabIndex = 3;
             this.btnFilterCancel.Text = "Cancel";
             this.btnFilterCancel.Click += new System.EventHandler(this.btnFilterCancel_Click);
@@ -991,9 +1065,11 @@ namespace FIA_Biosum_Manager
             this.groupBox7.Controls.Add(this.rdoFilterByFile);
             this.groupBox7.Controls.Add(this.rdoFilterByMenu);
             this.groupBox7.Controls.Add(this.rdoFilterNone);
-            this.groupBox7.Location = new System.Drawing.Point(85, 19);
+            this.groupBox7.Location = new System.Drawing.Point(106, 24);
+            this.groupBox7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(519, 289);
+            this.groupBox7.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox7.Size = new System.Drawing.Size(649, 361);
             this.groupBox7.TabIndex = 1;
             this.groupBox7.TabStop = false;
             // 
@@ -1001,17 +1077,19 @@ namespace FIA_Biosum_Manager
             // 
             this.cmbGrmComponentTable.Enabled = false;
             this.cmbGrmComponentTable.FormattingEnabled = true;
-            this.cmbGrmComponentTable.Location = new System.Drawing.Point(61, 208);
+            this.cmbGrmComponentTable.Location = new System.Drawing.Point(76, 260);
+            this.cmbGrmComponentTable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbGrmComponentTable.Name = "cmbGrmComponentTable";
-            this.cmbGrmComponentTable.Size = new System.Drawing.Size(328, 21);
+            this.cmbGrmComponentTable.Size = new System.Drawing.Size(409, 24);
             this.cmbGrmComponentTable.TabIndex = 12;
             // 
             // chkGrmImport
             // 
             this.chkGrmImport.AutoSize = true;
-            this.chkGrmImport.Location = new System.Drawing.Point(61, 190);
+            this.chkGrmImport.Location = new System.Drawing.Point(76, 238);
+            this.chkGrmImport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkGrmImport.Name = "chkGrmImport";
-            this.chkGrmImport.Size = new System.Drawing.Size(201, 17);
+            this.chkGrmImport.Size = new System.Drawing.Size(262, 21);
             this.chkGrmImport.TabIndex = 11;
             this.chkGrmImport.Text = "Use Growth, Removal, Mortality Data";
             this.chkGrmImport.UseVisualStyleBackColor = true;
@@ -1020,9 +1098,10 @@ namespace FIA_Biosum_Manager
             // chkDwmImport
             // 
             this.chkDwmImport.AutoSize = true;
-            this.chkDwmImport.Location = new System.Drawing.Point(61, 166);
+            this.chkDwmImport.Location = new System.Drawing.Point(76, 208);
+            this.chkDwmImport.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkDwmImport.Name = "chkDwmImport";
-            this.chkDwmImport.Size = new System.Drawing.Size(184, 17);
+            this.chkDwmImport.Size = new System.Drawing.Size(237, 21);
             this.chkDwmImport.TabIndex = 10;
             this.chkDwmImport.Text = "Use Down Woody Materials Data";
             this.chkDwmImport.UseVisualStyleBackColor = true;
@@ -1030,35 +1109,39 @@ namespace FIA_Biosum_Manager
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(58, 262);
+            this.label2.Location = new System.Drawing.Point(72, 328);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(339, 13);
+            this.label2.Size = new System.Drawing.Size(453, 17);
             this.label2.TabIndex = 9;
             this.label2.Text = "percent, condition status will be changed from forested to nonsampled.";
             // 
             // cmbCondPropPercent
             // 
             this.cmbCondPropPercent.FormattingEnabled = true;
-            this.cmbCondPropPercent.Location = new System.Drawing.Point(376, 235);
+            this.cmbCondPropPercent.Location = new System.Drawing.Point(470, 294);
+            this.cmbCondPropPercent.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.cmbCondPropPercent.Name = "cmbCondPropPercent";
-            this.cmbCondPropPercent.Size = new System.Drawing.Size(52, 21);
+            this.cmbCondPropPercent.Size = new System.Drawing.Size(64, 24);
             this.cmbCondPropPercent.TabIndex = 8;
             this.cmbCondPropPercent.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbCondPropPercent_KeyPress);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(58, 238);
+            this.label1.Location = new System.Drawing.Point(72, 298);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(302, 13);
+            this.label1.Size = new System.Drawing.Size(404, 17);
             this.label1.TabIndex = 7;
             this.label1.Text = "When a forested condition has a condition proportion less than";
             // 
             // chkNonForested
             // 
-            this.chkNonForested.Location = new System.Drawing.Point(133, 144);
+            this.chkNonForested.Location = new System.Drawing.Point(166, 180);
+            this.chkNonForested.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkNonForested.Name = "chkNonForested";
-            this.chkNonForested.Size = new System.Drawing.Size(112, 16);
+            this.chkNonForested.Size = new System.Drawing.Size(140, 20);
             this.chkNonForested.TabIndex = 6;
             this.chkNonForested.Text = "Non Forested";
             // 
@@ -1066,9 +1149,10 @@ namespace FIA_Biosum_Manager
             // 
             this.chkForested.Checked = true;
             this.chkForested.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkForested.Location = new System.Drawing.Point(61, 144);
+            this.chkForested.Location = new System.Drawing.Point(76, 180);
+            this.chkForested.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.chkForested.Name = "chkForested";
-            this.chkForested.Size = new System.Drawing.Size(72, 16);
+            this.chkForested.Size = new System.Drawing.Size(90, 20);
             this.chkForested.TabIndex = 5;
             this.chkForested.Text = "Forested";
             // 
@@ -1076,26 +1160,29 @@ namespace FIA_Biosum_Manager
             // 
             this.btnFilterByFileBrowse.Enabled = false;
             this.btnFilterByFileBrowse.Image = ((System.Drawing.Image)(resources.GetObject("btnFilterByFileBrowse.Image")));
-            this.btnFilterByFileBrowse.Location = new System.Drawing.Point(408, 103);
+            this.btnFilterByFileBrowse.Location = new System.Drawing.Point(510, 129);
+            this.btnFilterByFileBrowse.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByFileBrowse.Name = "btnFilterByFileBrowse";
-            this.btnFilterByFileBrowse.Size = new System.Drawing.Size(32, 32);
+            this.btnFilterByFileBrowse.Size = new System.Drawing.Size(40, 40);
             this.btnFilterByFileBrowse.TabIndex = 4;
             this.btnFilterByFileBrowse.Click += new System.EventHandler(this.btnFilterByFileBrowse_Click);
             // 
             // txtFilterByFile
             // 
             this.txtFilterByFile.Enabled = false;
-            this.txtFilterByFile.Location = new System.Drawing.Point(61, 110);
+            this.txtFilterByFile.Location = new System.Drawing.Point(76, 138);
+            this.txtFilterByFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtFilterByFile.Name = "txtFilterByFile";
-            this.txtFilterByFile.Size = new System.Drawing.Size(328, 20);
+            this.txtFilterByFile.Size = new System.Drawing.Size(409, 22);
             this.txtFilterByFile.TabIndex = 3;
             // 
             // rdoFilterByFile
             // 
             this.rdoFilterByFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoFilterByFile.Location = new System.Drawing.Point(40, 76);
+            this.rdoFilterByFile.Location = new System.Drawing.Point(50, 95);
+            this.rdoFilterByFile.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rdoFilterByFile.Name = "rdoFilterByFile";
-            this.rdoFilterByFile.Size = new System.Drawing.Size(400, 32);
+            this.rdoFilterByFile.Size = new System.Drawing.Size(500, 40);
             this.rdoFilterByFile.TabIndex = 2;
             this.rdoFilterByFile.Text = "Filter By File (Text File Containing Plot_CN numbers)";
             this.rdoFilterByFile.CheckedChanged += new System.EventHandler(this.rdoFilterByFile_CheckedChanged);
@@ -1104,9 +1191,10 @@ namespace FIA_Biosum_Manager
             // rdoFilterByMenu
             // 
             this.rdoFilterByMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoFilterByMenu.Location = new System.Drawing.Point(40, 47);
+            this.rdoFilterByMenu.Location = new System.Drawing.Point(50, 59);
+            this.rdoFilterByMenu.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rdoFilterByMenu.Name = "rdoFilterByMenu";
-            this.rdoFilterByMenu.Size = new System.Drawing.Size(400, 32);
+            this.rdoFilterByMenu.Size = new System.Drawing.Size(500, 40);
             this.rdoFilterByMenu.TabIndex = 1;
             this.rdoFilterByMenu.Text = "Filter Plots By Menu Selection (State, County, And Plot)";
             this.rdoFilterByMenu.Click += new System.EventHandler(this.rdoFilterByMenu_Click);
@@ -1115,9 +1203,10 @@ namespace FIA_Biosum_Manager
             // 
             this.rdoFilterNone.Checked = true;
             this.rdoFilterNone.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdoFilterNone.Location = new System.Drawing.Point(40, 16);
+            this.rdoFilterNone.Location = new System.Drawing.Point(50, 20);
+            this.rdoFilterNone.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.rdoFilterNone.Name = "rdoFilterNone";
-            this.rdoFilterNone.Size = new System.Drawing.Size(400, 32);
+            this.rdoFilterNone.Size = new System.Drawing.Size(500, 40);
             this.rdoFilterNone.TabIndex = 0;
             this.rdoFilterNone.TabStop = true;
             this.rdoFilterNone.Text = "Input All Plots";
@@ -1128,9 +1217,10 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(4, 19);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(698, 24);
+            this.lblTitle.Size = new System.Drawing.Size(872, 30);
             this.lblTitle.TabIndex = 27;
             this.lblTitle.Text = "Plot Data Input";
             // 
@@ -1144,9 +1234,11 @@ namespace FIA_Biosum_Manager
             this.grpboxFilterByPlot.Controls.Add(this.btnFilterByPlotPrevious);
             this.grpboxFilterByPlot.Controls.Add(this.btnFilterByPlotNext);
             this.grpboxFilterByPlot.Controls.Add(this.btnFilterByPlotCancel);
-            this.grpboxFilterByPlot.Location = new System.Drawing.Point(16, 1164);
+            this.grpboxFilterByPlot.Location = new System.Drawing.Point(20, 1455);
+            this.grpboxFilterByPlot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.grpboxFilterByPlot.Name = "grpboxFilterByPlot";
-            this.grpboxFilterByPlot.Size = new System.Drawing.Size(672, 360);
+            this.grpboxFilterByPlot.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.grpboxFilterByPlot.Size = new System.Drawing.Size(840, 450);
             this.grpboxFilterByPlot.TabIndex = 32;
             this.grpboxFilterByPlot.TabStop = false;
             this.grpboxFilterByPlot.Text = "Filter By Plot";
@@ -1154,27 +1246,30 @@ namespace FIA_Biosum_Manager
             // 
             // btnFilterByPlotFinish
             // 
-            this.btnFilterByPlotFinish.Location = new System.Drawing.Point(584, 325);
+            this.btnFilterByPlotFinish.Location = new System.Drawing.Point(730, 406);
+            this.btnFilterByPlotFinish.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotFinish.Name = "btnFilterByPlotFinish";
-            this.btnFilterByPlotFinish.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByPlotFinish.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByPlotFinish.TabIndex = 33;
             this.btnFilterByPlotFinish.Text = "Append";
             this.btnFilterByPlotFinish.Click += new System.EventHandler(this.btnFilterByPlotFinish_Click);
             // 
             // btnFilterByPlotUnselect
             // 
-            this.btnFilterByPlotUnselect.Location = new System.Drawing.Point(560, 180);
+            this.btnFilterByPlotUnselect.Location = new System.Drawing.Point(700, 225);
+            this.btnFilterByPlotUnselect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotUnselect.Name = "btnFilterByPlotUnselect";
-            this.btnFilterByPlotUnselect.Size = new System.Drawing.Size(88, 48);
+            this.btnFilterByPlotUnselect.Size = new System.Drawing.Size(110, 60);
             this.btnFilterByPlotUnselect.TabIndex = 32;
             this.btnFilterByPlotUnselect.Text = "Clear All";
             this.btnFilterByPlotUnselect.Click += new System.EventHandler(this.btnFilterByPlotUnselect_Click);
             // 
             // btnFilterByPlotSelect
             // 
-            this.btnFilterByPlotSelect.Location = new System.Drawing.Point(560, 116);
+            this.btnFilterByPlotSelect.Location = new System.Drawing.Point(700, 145);
+            this.btnFilterByPlotSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotSelect.Name = "btnFilterByPlotSelect";
-            this.btnFilterByPlotSelect.Size = new System.Drawing.Size(88, 48);
+            this.btnFilterByPlotSelect.Size = new System.Drawing.Size(110, 60);
             this.btnFilterByPlotSelect.TabIndex = 31;
             this.btnFilterByPlotSelect.Text = "Select All";
             this.btnFilterByPlotSelect.Click += new System.EventHandler(this.btnFilterByPlotSelect_Click);
@@ -1186,10 +1281,11 @@ namespace FIA_Biosum_Manager
             this.lstFilterByPlot.GridLines = true;
             this.lstFilterByPlot.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lstFilterByPlot.HideSelection = false;
-            this.lstFilterByPlot.Location = new System.Drawing.Point(136, 32);
+            this.lstFilterByPlot.Location = new System.Drawing.Point(170, 40);
+            this.lstFilterByPlot.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.lstFilterByPlot.MultiSelect = false;
             this.lstFilterByPlot.Name = "lstFilterByPlot";
-            this.lstFilterByPlot.Size = new System.Drawing.Size(400, 280);
+            this.lstFilterByPlot.Size = new System.Drawing.Size(499, 349);
             this.lstFilterByPlot.TabIndex = 30;
             this.lstFilterByPlot.UseCompatibleStateImageBehavior = false;
             this.lstFilterByPlot.View = System.Windows.Forms.View.Details;
@@ -1197,18 +1293,20 @@ namespace FIA_Biosum_Manager
             // btnFilterByPlotHelp
             // 
             this.btnFilterByPlotHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.btnFilterByPlotHelp.Location = new System.Drawing.Point(16, 325);
+            this.btnFilterByPlotHelp.Location = new System.Drawing.Point(20, 406);
+            this.btnFilterByPlotHelp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotHelp.Name = "btnFilterByPlotHelp";
-            this.btnFilterByPlotHelp.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterByPlotHelp.Size = new System.Drawing.Size(80, 30);
             this.btnFilterByPlotHelp.TabIndex = 23;
             this.btnFilterByPlotHelp.Text = "Help";
             this.btnFilterByPlotHelp.Click += new System.EventHandler(this.btnFilterByPlotHelp_Click);
             // 
             // btnFilterByPlotPrevious
             // 
-            this.btnFilterByPlotPrevious.Location = new System.Drawing.Point(424, 325);
+            this.btnFilterByPlotPrevious.Location = new System.Drawing.Point(530, 406);
+            this.btnFilterByPlotPrevious.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotPrevious.Name = "btnFilterByPlotPrevious";
-            this.btnFilterByPlotPrevious.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByPlotPrevious.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByPlotPrevious.TabIndex = 22;
             this.btnFilterByPlotPrevious.Text = "< Previous";
             this.btnFilterByPlotPrevious.Click += new System.EventHandler(this.btnFilterByPlotPrevious_Click);
@@ -1216,17 +1314,19 @@ namespace FIA_Biosum_Manager
             // btnFilterByPlotNext
             // 
             this.btnFilterByPlotNext.Enabled = false;
-            this.btnFilterByPlotNext.Location = new System.Drawing.Point(496, 325);
+            this.btnFilterByPlotNext.Location = new System.Drawing.Point(620, 406);
+            this.btnFilterByPlotNext.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotNext.Name = "btnFilterByPlotNext";
-            this.btnFilterByPlotNext.Size = new System.Drawing.Size(72, 24);
+            this.btnFilterByPlotNext.Size = new System.Drawing.Size(90, 30);
             this.btnFilterByPlotNext.TabIndex = 21;
             this.btnFilterByPlotNext.Text = "Next >";
             // 
             // btnFilterByPlotCancel
             // 
-            this.btnFilterByPlotCancel.Location = new System.Drawing.Point(336, 325);
+            this.btnFilterByPlotCancel.Location = new System.Drawing.Point(420, 406);
+            this.btnFilterByPlotCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnFilterByPlotCancel.Name = "btnFilterByPlotCancel";
-            this.btnFilterByPlotCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnFilterByPlotCancel.Size = new System.Drawing.Size(80, 30);
             this.btnFilterByPlotCancel.TabIndex = 20;
             this.btnFilterByPlotCancel.Text = "Cancel";
             this.btnFilterByPlotCancel.Click += new System.EventHandler(this.btnFilterByPlotCancel_Click);
@@ -1248,7 +1348,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBSiteTreeTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBSiteTreeTable.Location = new System.Drawing.Point(408, 27);
             this.txtMDBSiteTreeTable.Name = "txtMDBSiteTreeTable";
-            this.txtMDBSiteTreeTable.Size = new System.Drawing.Size(152, 26);
+            this.txtMDBSiteTreeTable.Size = new System.Drawing.Size(152, 30);
             this.txtMDBSiteTreeTable.TabIndex = 1;
             // 
             // btnMDBSiteTreeBrowse
@@ -1265,7 +1365,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBSiteTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBSiteTree.Location = new System.Drawing.Point(17, 27);
             this.txtMDBSiteTree.Name = "txtMDBSiteTree";
-            this.txtMDBSiteTree.Size = new System.Drawing.Size(383, 26);
+            this.txtMDBSiteTree.Size = new System.Drawing.Size(383, 30);
             this.txtMDBSiteTree.TabIndex = 0;
             // 
             // groupBox8
@@ -1285,7 +1385,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBTreeTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBTreeTable.Location = new System.Drawing.Point(408, 27);
             this.txtMDBTreeTable.Name = "txtMDBTreeTable";
-            this.txtMDBTreeTable.Size = new System.Drawing.Size(152, 26);
+            this.txtMDBTreeTable.Size = new System.Drawing.Size(152, 30);
             this.txtMDBTreeTable.TabIndex = 1;
             // 
             // btnMDBTreeBrowse
@@ -1302,7 +1402,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBTree.Location = new System.Drawing.Point(17, 27);
             this.txtMDBTree.Name = "txtMDBTree";
-            this.txtMDBTree.Size = new System.Drawing.Size(383, 26);
+            this.txtMDBTree.Size = new System.Drawing.Size(383, 30);
             this.txtMDBTree.TabIndex = 0;
             // 
             // groupBox9
@@ -1322,7 +1422,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBCondTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBCondTable.Location = new System.Drawing.Point(408, 24);
             this.txtMDBCondTable.Name = "txtMDBCondTable";
-            this.txtMDBCondTable.Size = new System.Drawing.Size(152, 26);
+            this.txtMDBCondTable.Size = new System.Drawing.Size(152, 30);
             this.txtMDBCondTable.TabIndex = 1;
             // 
             // btnMDBCondBrowse
@@ -1339,7 +1439,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBCond.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBCond.Location = new System.Drawing.Point(17, 24);
             this.txtMDBCond.Name = "txtMDBCond";
-            this.txtMDBCond.Size = new System.Drawing.Size(383, 26);
+            this.txtMDBCond.Size = new System.Drawing.Size(383, 30);
             this.txtMDBCond.TabIndex = 0;
             // 
             // groupBox10
@@ -1359,7 +1459,7 @@ namespace FIA_Biosum_Manager
             this.txtMDBPlotTable.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBPlotTable.Location = new System.Drawing.Point(408, 26);
             this.txtMDBPlotTable.Name = "txtMDBPlotTable";
-            this.txtMDBPlotTable.Size = new System.Drawing.Size(152, 26);
+            this.txtMDBPlotTable.Size = new System.Drawing.Size(152, 30);
             this.txtMDBPlotTable.TabIndex = 1;
             // 
             // btnMDBPlotBrowse
@@ -1376,16 +1476,17 @@ namespace FIA_Biosum_Manager
             this.txtMDBPlot.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMDBPlot.Location = new System.Drawing.Point(17, 26);
             this.txtMDBPlot.Name = "txtMDBPlot";
-            this.txtMDBPlot.Size = new System.Drawing.Size(383, 26);
+            this.txtMDBPlot.Size = new System.Drawing.Size(383, 30);
             this.txtMDBPlot.TabIndex = 0;
             // 
             // uc_plot_input
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "uc_plot_input";
-            this.Size = new System.Drawing.Size(704, 2700);
+            this.Size = new System.Drawing.Size(880, 3375);
             this.groupBox1.ResumeLayout(false);
             this.grpboxMDBFiadbInput.ResumeLayout(false);
             this.groupBox24.ResumeLayout(false);
@@ -2074,7 +2175,7 @@ namespace FIA_Biosum_Manager
                 
 
                 //open the FIADB ACCESS DbFile
-                m_ado.OpenConnection(m_ado.getMDBConnString(txtMDBFiadbInputFile.Text.Trim(), "", ""),ref oConn);
+                m_ado.OpenConnection(m_ado.getMDBConnString(txtFiadbInputFile.Text.Trim(), "", ""),ref oConn);
 
                 
                 m_intError = m_ado.m_intError;
@@ -2155,7 +2256,7 @@ namespace FIA_Biosum_Manager
                     SetThermValue(m_frmTherm.progressBar1, "Value", 10);
                     //create links to the fiadb input tables in the temp mdb file
                     //plot table
-                    strFIADBDbFile = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox)txtMDBFiadbInputFile, "Text", false);
+                    strFIADBDbFile = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox)txtFiadbInputFile, "Text", false);
                     strFIADBDbFile = strFIADBDbFile.Trim();
                     strSourceTableName = "BIOSUM_PLOT";
                     strDestTableLinkName = "fiadb_plot_input";
@@ -2369,7 +2470,7 @@ namespace FIA_Biosum_Manager
                 //str2 = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.ComboBox)cmbFiadbCondTable, "Text", false);
                 //p_dao1.CreateTableLink(this.m_strTempMDBFile, "fiadb_cond_input", str.Trim(), str2.Trim());
                 //plot table
-                strFIADBDbFile = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox)txtMDBFiadbInputFile, "Text", false);
+                strFIADBDbFile = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox)txtFiadbInputFile, "Text", false);
                 strFIADBDbFile = strFIADBDbFile.Trim();
                 strSourceTableName = "BIOSUM_PLOT";
                 strDestTableLinkName = "fiadb_plot_input";
@@ -2890,7 +2991,7 @@ namespace FIA_Biosum_Manager
                         this.m_strLoadedFIADBRsCd = this.m_strCurrFIADBRsCd;
                         this.m_strLoadedFiadbInputFile =
                             (string) frmMain.g_oDelegate.GetControlPropertyValue(
-                                (System.Windows.Forms.TextBox) txtMDBFiadbInputFile, "Text", false);
+                                (System.Windows.Forms.TextBox) txtFiadbInputFile, "Text", false);
                         System.Threading.Thread.Sleep(1000);
                     }
 
@@ -4828,7 +4929,7 @@ namespace FIA_Biosum_Manager
             SetThermValue(m_frmTherm.progressBar1, "Value", 0);
 
 		    string strFIADBDbFile = "";
-		    strFIADBDbFile = (string) frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox) txtMDBFiadbInputFile, "Text", false);
+		    strFIADBDbFile = (string) frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox) txtFiadbInputFile, "Text", false);
 		    strFIADBDbFile = strFIADBDbFile.Trim();
 		    String strFiaCWD = "fiadb_dwm_cwd_input";
 		    String strFiaFWD = "fiadb_dwm_fwd_input";
@@ -5001,7 +5102,7 @@ namespace FIA_Biosum_Manager
 	    private int ImportGrowthRemovalMortality(ado_data_access p_ado)
 	    {
 		    string strFIADBDbFile = "";
-		    strFIADBDbFile = (string) frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox) txtMDBFiadbInputFile, "Text", false);
+		    strFIADBDbFile = (string) frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.TextBox) txtFiadbInputFile, "Text", false);
 		    strFIADBDbFile = strFIADBDbFile.Trim();
 	        string strMasterAuxDb = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\db\\master_aux.accdb";
             m_strGRMComponentTable = (string) frmMain.g_oDelegate.GetControlPropertyValue(cmbGrmComponentTable, "Text", false);
@@ -5283,7 +5384,7 @@ namespace FIA_Biosum_Manager
 
 			FIA_Biosum_Manager.ado_data_access p_ado = new ado_data_access();
 
-            string strMDBFile = this.txtMDBFiadbInputFile.Text.Trim();
+            string strMDBFile = this.txtFiadbInputFile.Text.Trim();
             string strTable = this.cmbFiadbPpsaTable.Text.Trim();
             string strConn = p_ado.getMDBConnString(strMDBFile, "", "");
 
@@ -5405,7 +5506,7 @@ namespace FIA_Biosum_Manager
 
 			FIA_Biosum_Manager.ado_data_access p_ado = new ado_data_access();
 
-            string strMDBFile = this.txtMDBFiadbInputFile.Text.Trim();
+            string strMDBFile = this.txtFiadbInputFile.Text.Trim();
             string strTable = this.cmbFiadbPpsaTable.Text.Trim();
             string strConn = p_ado.getMDBConnString(strMDBFile, "", "");
 
@@ -7557,7 +7658,7 @@ namespace FIA_Biosum_Manager
 					this.m_strLoadedFIADBRsCd.Trim() !=
 					this.m_strCurrFIADBRsCd.Trim() ||
 					this.m_strLoadedFiadbInputFile.Trim().ToUpper() != 
-					this.txtMDBFiadbInputFile.Text.Trim().ToUpper())
+					this.txtFiadbInputFile.Text.Trim().ToUpper())
 				{
 					this.LoadMDBFiadbPopFiles();
 				}
@@ -7684,10 +7785,10 @@ namespace FIA_Biosum_Manager
 		{
 			
 				OpenFileDialog OpenFileDialog1 = new OpenFileDialog();
-				OpenFileDialog1.Title = "MS Access Database File Containing FIADB Tables";
-				OpenFileDialog1.Filter = "Microsoft Access Database File (*.MDB,*.MDE,*.ACCDB) |*.mdb;*.mde;*.accdb";
-			
-				DialogResult result =  OpenFileDialog1.ShowDialog();
+				OpenFileDialog1.Title = "SQLite Database File Containing FIADB Tables";
+				OpenFileDialog1.Filter = "SQLite Database File (*.db;*.db3)|*.db;*.db3";
+
+                DialogResult result =  OpenFileDialog1.ShowDialog();
 				if (result == DialogResult.OK) 
 				{
 					if (OpenFileDialog1.FileName.Trim().Length > 0) 
@@ -7695,95 +7796,84 @@ namespace FIA_Biosum_Manager
 						string strFullPath = OpenFileDialog1.FileName.Trim();
 						if (strFullPath.Length > 0) 
 						{
-							this.txtMDBFiadbInputFile.Text = strFullPath;
-							dao_data_access tempDao = new dao_data_access();
-							tempDao.OpenDb(strFullPath);
-							if (tempDao.m_intError == 0) 
-							{
-								this.cmbFiadbCondTable.Items.Clear();
-								this.cmbFiadbPlotTable.Items.Clear();
-								this.cmbFiadbPopEstUnitTable.Items.Clear();
-								this.cmbFiadbPopEvalTable.Items.Clear();
-								this.cmbFiadbPopStratumTable.Items.Clear();
-								this.cmbFiadbPpsaTable.Items.Clear();
-								this.cmbFiadbTreeRegionalBiomassTable.Items.Clear();
-								this.cmbFiadbTreeTable.Items.Clear();
-								this.cmbFiadbSiteTreeTable.Items.Clear();
-							    this.cmbGrmComponentTable.Items.Clear();
+							this.txtFiadbInputFile.Text = strFullPath;
+                        DataMgr oDataMgr = new DataMgr();
+                        string strConn = oDataMgr.GetConnectionString(strFullPath);
+                        using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConn))
+                        {
+                            con.Open();
+                            string[] arrTables = oDataMgr.getTableNames(con);
+                            if (arrTables.Length > 0)
+                            {
+                                this.cmbFiadbCondTable.Items.Clear();
+                                this.cmbFiadbPlotTable.Items.Clear();
+                                this.cmbFiadbPopEstUnitTable.Items.Clear();
+                                this.cmbFiadbPopEvalTable.Items.Clear();
+                                this.cmbFiadbPopStratumTable.Items.Clear();
+                                this.cmbFiadbPpsaTable.Items.Clear();
+                                this.cmbFiadbTreeRegionalBiomassTable.Items.Clear();
+                                this.cmbFiadbTreeTable.Items.Clear();
+                                this.cmbFiadbSiteTreeTable.Items.Clear();
+                                this.cmbGrmComponentTable.Items.Clear();
 
                                 cmbFiadbTreeRegionalBiomassTable.Items.Add("<Optional Table>");
                                 cmbFiadbTreeRegionalBiomassTable.Text = "<Optional Table>";
 
-								for (int x=0; x <= tempDao.m_DaoDatabase.TableDefs.Count - 1; x++)
-								{
-									
-									
-									if (tempDao.m_DaoDatabase.TableDefs[x].Name.IndexOf("MSys",0) < 0) 		
-									{
-										this.cmbFiadbCondTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbPlotTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbPopEstUnitTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbPopEvalTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbPopStratumTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbPpsaTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbTreeRegionalBiomassTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbTreeTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbFiadbSiteTreeTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-										this.cmbGrmComponentTable.Items.Add(tempDao.m_DaoDatabase.TableDefs[x].Name);
-									    if (tempDao.m_DaoDatabase.TableDefs[x].Name.ToString().Trim().ToUpper().Contains("GRM_COMPONENT"))
-									    {
-									        this.cmbGrmComponentTable.Text = tempDao.m_DaoDatabase.TableDefs[x].Name
-									            .ToString().Trim();
-									    }
-										switch (tempDao.m_DaoDatabase.TableDefs[x].Name.ToString().Trim().ToUpper())
-										{
-											case "COND":
-												this.cmbFiadbCondTable.Text = "COND";
-												break;
-											case "TREE":
-												this.cmbFiadbTreeTable.Text = "TREE";
-												break;
-											case "PLOT":
-												this.cmbFiadbPlotTable.Text = "PLOT";
-												break;
-											case "POP_EVAL":
-												this.cmbFiadbPopEvalTable.Text = "POP_EVAL";
-												break;
-											case "POP_ESTN_UNIT":
-												this.cmbFiadbPopEstUnitTable.Text = "POP_ESTN_UNIT";
-												break;
-											case "POP_PLOT_STRATUM_ASSGN":
-												this.cmbFiadbPpsaTable.Text = "POP_PLOT_STRATUM_ASSGN";
-												break;
-											case "POP_STRATUM":
-												this.cmbFiadbPopStratumTable.Text = "POP_STRATUM";
-												break;
-											case "TREE_REGIONAL_BIOMASS":
-												this.cmbFiadbTreeRegionalBiomassTable.Text = "TREE_REGIONAL_BIOMASS";
-												break;
-											case "SITETREE":
-												this.cmbFiadbSiteTreeTable.Text = "SITETREE";
-												break;
+                                for (int x = 0; x <= arrTables.Length-1; x++)
+                                {
+                                    this.cmbFiadbCondTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbPlotTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbPopEstUnitTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbPopEvalTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbPopStratumTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbPpsaTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbTreeRegionalBiomassTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbTreeTable.Items.Add(arrTables[x]);
+                                    this.cmbFiadbSiteTreeTable.Items.Add(arrTables[x]);
+                                    this.cmbGrmComponentTable.Items.Add(arrTables[x]);
+                                    if (arrTables[x].Trim().ToUpper().Contains("GRM_COMPONENT"))
+                                    {
+                                        this.cmbGrmComponentTable.Text = arrTables[x]
+                                            .ToString().Trim();
+                                    }
+                                    switch (arrTables[x].Trim().ToUpper())
+                                    {
+                                        case "COND":
+                                            this.cmbFiadbCondTable.Text = "COND";
+                                            break;
+                                        case "TREE":
+                                            this.cmbFiadbTreeTable.Text = "TREE";
+                                            break;
+                                        case "PLOT":
+                                            this.cmbFiadbPlotTable.Text = "PLOT";
+                                            break;
+                                        case "POP_EVAL":
+                                            this.cmbFiadbPopEvalTable.Text = "POP_EVAL";
+                                            break;
+                                        case "POP_ESTN_UNIT":
+                                            this.cmbFiadbPopEstUnitTable.Text = "POP_ESTN_UNIT";
+                                            break;
+                                        case "POP_PLOT_STRATUM_ASSGN":
+                                            this.cmbFiadbPpsaTable.Text = "POP_PLOT_STRATUM_ASSGN";
+                                            break;
+                                        case "POP_STRATUM":
+                                            this.cmbFiadbPopStratumTable.Text = "POP_STRATUM";
+                                            break;
+                                        case "TREE_REGIONAL_BIOMASS":
+                                            this.cmbFiadbTreeRegionalBiomassTable.Text = "TREE_REGIONAL_BIOMASS";
+                                            break;
+                                        case "SITETREE":
+                                            this.cmbFiadbSiteTreeTable.Text = "SITETREE";
+                                            break;
+                                    }
+                                }
 
-										}
-									}
-
-								}
-                        
-						
-								tempDao.m_DaoDatabase.Close();
-								tempDao.m_DaoDatabase = null;
-							}
-							tempDao = null;
-						}
+                            }
+					    }
 					}
 				}
-				else 
-				{
-				}
-				OpenFileDialog1 = null;
-
-			
+			}
+			OpenFileDialog1 = null;			
 		}
 
 		private void btnMDBFiadbInputNext_Click(object sender, System.EventArgs e)
@@ -7853,7 +7943,7 @@ namespace FIA_Biosum_Manager
 					bLoad=true;
 				}
 				//see if the same values in the list as the table
-				m_ado.SqlQueryReader(m_ado.getMDBConnString(this.txtMDBFiadbInputFile.Text.Trim(),"",""),"SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim());
+				m_ado.SqlQueryReader(m_ado.getMDBConnString(this.txtFiadbInputFile.Text.Trim(),"",""),"SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim());
 				if (m_ado.m_intError==0)
 				{
 					if (m_ado.m_OleDbDataReader.HasRows)
@@ -8056,7 +8146,7 @@ namespace FIA_Biosum_Manager
 					bLoad=true;
 				}
 				//see if the same values in the list as the table
-				m_ado.SqlQueryReader(m_ado.getMDBConnString(this.txtMDBFiadbInputFile.Text.Trim(),"",""),"SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim());
+				m_ado.SqlQueryReader(m_ado.getMDBConnString(this.txtFiadbInputFile.Text.Trim(),"",""),"SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim());
 				if (m_ado.m_intError==0)
 				{
 					if (m_ado.m_OleDbDataReader.HasRows)
@@ -8239,7 +8329,7 @@ namespace FIA_Biosum_Manager
 				this.m_strTableType="POPULATION STRATUM";
 			    
 				this.m_strCurrentFiadbTable = this.cmbFiadbPopStratumTable.Text;
-			    this.m_strCurrentFiadbInputFile = this.txtMDBFiadbInputFile.Text;
+			    this.m_strCurrentFiadbInputFile = this.txtFiadbInputFile.Text;
 			    this.m_strCurrentBiosumTable=this.m_strPopStratumTable;
 
 			
@@ -8261,7 +8351,7 @@ namespace FIA_Biosum_Manager
 					this.m_strTableType="POPULATION ESTIMATION UNIT";
 					this.m_frmTherm.lblMsg.Text = "pop estimation unit table";
 					this.m_strCurrentFiadbTable = this.cmbFiadbPopEstUnitTable.Text;
-					this.m_strCurrentFiadbInputFile = this.txtMDBFiadbInputFile.Text;
+					this.m_strCurrentFiadbInputFile = this.txtFiadbInputFile.Text;
 					this.m_strCurrentBiosumTable = this.m_strPopEstUnitTable;
 					this.thdProcessRecords = new Thread(new ThreadStart(mdbFiadbInputPopTables));
 					this.thdProcessRecords.IsBackground = true;
