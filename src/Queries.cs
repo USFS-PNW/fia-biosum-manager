@@ -3952,8 +3952,8 @@ namespace FIA_Biosum_Manager
                 //CREATE THE BIOSUM PLOT TABLE WITH 
                 //ONLY THE CURRENTLY SELECTED EVALUATION
                 //
-                strSQL[0] = "SELECT p.* " + 
-                            "INTO BIOSUM_PLOT " + 
+                strSQL[0] = "CREATE TABLE BIOSUM_PLOT AS " +
+                            "SELECT p.* " + 
                             "FROM " + p_strFIADBPlotTable + " p, " + 
                                 "(SELECT DISTINCT PLT_CN " + 
                                  "FROM " + p_strPpsaTable + " " + 
@@ -3962,8 +3962,8 @@ namespace FIA_Biosum_Manager
                 //
                 //CREATE BIOSUM_PPSA
                 //
-                strSQL[1] = "SELECT ppsa.*,p.CYCLE,p.SUBCYCLE " + 
-                            "INTO BIOSUM_PPSA " + 
+                strSQL[1] = "CREATE TABLE BIOSUM_PPSA AS " +
+                            "SELECT ppsa.*,p.CYCLE,p.SUBCYCLE " + 
                             "FROM " + p_strPpsaTable + " ppsa " + 
                             "INNER JOIN BIOSUM_PLOT p " + 
                             "ON ppsa.PLT_CN=p.CN " + 
@@ -3971,7 +3971,8 @@ namespace FIA_Biosum_Manager
                 //
                 //CREATE BIOSUM COND TABLE
                 //
-                strSQL[2] = "SELECT c.* INTO BIOSUM_COND FROM " + p_strFIADBCondTable + " c," + 
+                strSQL[2] = "CREATE TABLE BIOSUM_COND AS " +
+                            "SELECT c.* FROM " + p_strFIADBCondTable + " c," + 
                             "(SELECT CN FROM BIOSUM_PLOT) p " + 
                             "WHERE c.PLT_CN = p.CN";
 
@@ -3984,13 +3985,13 @@ namespace FIA_Biosum_Manager
                             "WHERE cond_status_cd = 1 AND condprop_unadj < ." + p_strCondProp;
 
                 //join pop_estn_unit,pop_stratum,pop_eval tables into biosum_eus_temp
-                strSQL[5] = "SELECT pe.rscd, pe.evalid,ps.estn_unit,ps.stratumcd," +
+                strSQL[5] = "CREATE TABLE BIOSUM_EUS_TEMP AS " +
+                            "SELECT pe.rscd, pe.evalid,ps.estn_unit,ps.stratumcd," +
                                    "pe.eval_descr,peu.estn_unit_descr,peu.arealand_eu," +
                                    "peu.areatot_eu , ps.p1pointcnt, ps.p2pointcnt," +
                                    "peu.p1pntcnt_eu as p1pointcnt_eu,peu.area_used," +
                                    "ps.adj_factor_macr,ps.adj_factor_subp," +
                                    "ps.adj_factor_micr,ps.expns,pe.LAND_ONLY " +
-                            "INTO BIOSUM_EUS_TEMP " +
                             "FROM " + p_strPopEstUnitTable + " peu," +
                                       p_strPopEvalTable + " pe," + p_strPopStratumTable + " ps " +
                                       "WHERE  ((pe.rscd=" + p_strRsCd + " AND pe.EVALID=" + p_strEvalId + ")) AND " +
@@ -4001,7 +4002,8 @@ namespace FIA_Biosum_Manager
                 //
                 //SUM UP UNADJUSTED FACTORS FOR DENIED ACCESS
                 //
-                strSQL[6] = "SELECT DISTINCT ppsa.evalid, ppsa.estn_unit, ppsa.statecd, ppsa.stratumcd, ppsa.plot," +
+                strSQL[6] = "CREATE TABLE BIOSUM_PPSA_DENIED_ACCESS AS " +
+                            "SELECT DISTINCT ppsa.evalid, ppsa.estn_unit, ppsa.statecd, ppsa.stratumcd, ppsa.plot," +
                                             "ppsa.countycd, ppsa.subcycle, ppsa.cycle, ppsa.unitcd," +
                                             "SUM(IIF(eus.LAND_ONLY='N'," +
                                                     "IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.MACRPROP_UNADJ)," +
@@ -4013,7 +4015,6 @@ namespace FIA_Biosum_Manager
                                                     "IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.SUBPPROP_UNADJ)," +
                                                     "IIF(c.COND_STATUS_CD IN (1,2,3),0,c.SUBPPROP_UNADJ))) as denied_subp," +
                                             "SUM(IIF(eus.LAND_ONLY='N',IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.CONDPROP_UNADJ),IIF(c.COND_STATUS_CD IN (1,2,3),0,c.CONDPROP_UNADJ))) as denied_cond " +
-                            "INTO BIOSUM_PPSA_DENIED_ACCESS " +
                             "FROM BIOSUM_PPSA ppsa," +
                                  "BIOSUM_COND c," +
                                  "BIOSUM_EUS_TEMP eus " +
@@ -4028,12 +4029,12 @@ namespace FIA_Biosum_Manager
                 //DELETE DENIED_COND=1
                 strSQL[7] = "DELETE FROM BIOSUM_PPSA_DENIED_ACCESS WHERE DENIED_COND =  1";
                 //JOIN THE 2 TABLES
-                strSQL[8] = "SELECT ppsa.*," +
+                strSQL[8] = "CREATE TABLE BIOSUM_PPSA_TEMP AS " +
+                            "SELECT ppsa.*," +
                                    "denied.denied_macr," +
                                    "denied.denied_micr," +
                                    "denied.denied_subp," +
                                    "denied.denied_cond " +
-                            "INTO BIOSUM_PPSA_TEMP " +
                             "FROM BIOSUM_PPSA_DENIED_ACCESS denied," +
                                  "BIOSUM_PPSA ppsa " +
                            "WHERE ppsa.evalid = denied.evalid AND " +

@@ -193,6 +193,7 @@ namespace FIA_Biosum_Manager
             }
             static public string Fia2FvsInputDsnName { get { return "FIABIOSUM_FIA2FVS_INPUT"; } }
             static public string Fia2FvsOutputDsnName { get { return "FIABIOSUM_FIA2FVS_OUTPUT"; } }
+            static public string PlotInputDsnName { get { return "FIABIOSUM_PLOT_INPUT"; } }
         }
 
     }

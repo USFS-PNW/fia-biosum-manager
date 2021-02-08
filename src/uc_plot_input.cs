@@ -2129,19 +2129,11 @@ namespace FIA_Biosum_Manager
             }
 
             frmMain.g_oDelegate.CurrentThreadProcessStarted = true;
-           
-            string strFields = "";
-
+          
             int x = 0;
-            int y = 0;
-            string strCol = "";
-            string str = "";
-            string str2 = "";
-
             string strSourceTableName = "";
             string strDestTableLinkName = "";
             string strFIADBDbFile = "";
-            //string strMsg="";
 
             m_intAddedPlotRows = 0;
             m_intAddedCondRows = 0;
@@ -2172,76 +2164,76 @@ namespace FIA_Biosum_Manager
                 this.SetLabelValue(m_frmTherm.lblMsg2, "Text", "Overall Progress");
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Form)m_frmTherm, "Visible", true);
 
-                
+
 
                 //open the FIADB ACCESS DbFile
-                m_ado.OpenConnection(m_ado.getMDBConnString(txtFiadbInputFile.Text.Trim(), "", ""),ref oConn);
-
-                
-                m_intError = m_ado.m_intError;
-
-                if (this.m_intError == 0 && !GetBooleanValue((System.Windows.Forms.Control)m_frmTherm, "AbortProcess"))
+                DataMgr oDataMgr = new DataMgr();
+                string strConnection = oDataMgr.GetConnectionString(txtFiadbInputFile.Text.Trim());
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConnection))
                 {
-                    this.SetLabelValue(m_frmTherm.lblMsg, "Text", "Drop Work Tables");
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 10);
-                    if (m_ado.TableExist(oConn, "BIOSUM_PLOT"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_PLOT");
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 20);
-                    if (m_ado.TableExist(oConn, "BIOSUM_COND"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_COND");
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 30);
-                    if (m_ado.TableExist(oConn, frmMain.g_oTables.m_oFIAPlot.DefaultBiosumPopStratumAdjustmentFactorsTableName))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE " + frmMain.g_oTables.m_oFIAPlot.DefaultBiosumPopStratumAdjustmentFactorsTableName);
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 40);
-                    if (m_ado.TableExist(oConn, "BIOSUM_PPSA"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_PPSA");
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 50);
-                    if (m_ado.TableExist(oConn, "BIOSUM_EUS_TEMP"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_EUS_TEMP");
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 60);
-                    if (m_ado.TableExist(oConn, "BIOSUM_PPSA_DENIED_ACCESS"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_PPSA_DENIED_ACCESS");
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 70);
-                    if (m_ado.TableExist(oConn, "BIOSUM_PPSA_TEMP"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_PPSA_TEMP");
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 80);
-                    if (m_ado.TableExist(oConn, "BIOSUM_EUS_TEMP"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_EUS_TEMP");
-                     SetThermValue(m_frmTherm.progressBar1, "Value", 90);
-                    if (m_ado.TableExist(oConn, "BIOSUM_EUS_ACCESS"))
-                        m_ado.SqlNonQuery(oConn, "DROP TABLE BIOSUM_EUS_ACCESS");
-
-                
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 100);
-                    System.Threading.Thread.Sleep(2000);
-                    SetThermValue(m_frmTherm.progressBar2, "Value", 30);
-                    string[] strSql = Queries.FIAPlot.FIADBPlotInput_CalculateAdjustmentFactorsSQL(
-                        "POP_PLOT_STRATUM_ASSGN",
-                        "POP_ESTN_UNIT",
-                        "POP_STRATUM",
-                        "POP_EVAL",
-                        "PLOT",
-                        "COND",
-                         m_strCurrFIADBRsCd,
-                         m_strCurrFIADBEvalId,
-                         frmMain.g_oDelegate.GetControlPropertyValue(cmbCondPropPercent,"Text",false).ToString().Trim());
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 0);
-                    this.SetLabelValue(m_frmTherm.lblMsg, "Text", "Calculate Adjustment Factors For RsCd=" + m_strCurrFIADBRsCd + " and EvalId=" + m_strCurrFIADBEvalId);
-                    for (x = 0; x <= strSql.Length - 1; x++)
+                    con.Open();
+                    if (!GetBooleanValue((Control)m_frmTherm, "AbortProcess"))
                     {
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, strSql[x] +  "\r\n");
-                        m_ado.SqlNonQuery(oConn, strSql[x]);
-                        frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 20 + x + 5);
-                        if (m_ado.m_intError != 0) break;
-                    }
-                    m_ado.CloseConnection(oConn);    
+                        this.SetLabelValue(m_frmTherm.lblMsg, "Text", "Drop Work Tables");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 10);
+                        if (oDataMgr.TableExist(con, "BIOSUM_PLOT"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_PLOT");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 20);
+                        if (oDataMgr.TableExist(con, "BIOSUM_COND"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_COND");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 30);
+                        if (oDataMgr.TableExist(con, frmMain.g_oTables.m_oFIAPlot.DefaultBiosumPopStratumAdjustmentFactorsTableName))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE " + frmMain.g_oTables.m_oFIAPlot.DefaultBiosumPopStratumAdjustmentFactorsTableName);
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 40);
+                        if (oDataMgr.TableExist(con, "BIOSUM_PPSA"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_PPSA");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 50);
+                        if (oDataMgr.TableExist(con, "BIOSUM_EUS_TEMP"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_EUS_TEMP");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 60);
+                        if (oDataMgr.TableExist(con, "BIOSUM_PPSA_DENIED_ACCESS"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_PPSA_DENIED_ACCESS");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 70);
+                        if (oDataMgr.TableExist(con, "BIOSUM_PPSA_TEMP"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_PPSA_TEMP");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 80);
+                        if (oDataMgr.TableExist(con, "BIOSUM_EUS_TEMP"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_EUS_TEMP");
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 90);
+                        if (oDataMgr.TableExist(con, "BIOSUM_EUS_ACCESS"))
+                            oDataMgr.SqlNonQuery(con, "DROP TABLE BIOSUM_EUS_ACCESS");
 
-                    m_intError = m_ado.m_intError;
-                    SetThermValue(m_frmTherm.progressBar1, "Value", 100);
-                    System.Threading.Thread.Sleep(2000);
-                    SetThermValue(m_frmTherm.progressBar2, "Value", 60);
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 100);
+                        System.Threading.Thread.Sleep(2000);
+                        SetThermValue(m_frmTherm.progressBar2, "Value", 30);
+                        string[] strSql = Queries.FIAPlot.FIADBPlotInput_CalculateAdjustmentFactorsSQL(
+                            "POP_PLOT_STRATUM_ASSGN",
+                            "POP_ESTN_UNIT",
+                            "POP_STRATUM",
+                            "POP_EVAL",
+                            "PLOT",
+                            "COND",
+                             m_strCurrFIADBRsCd,
+                             m_strCurrFIADBEvalId,
+                             frmMain.g_oDelegate.GetControlPropertyValue(cmbCondPropPercent, "Text", false).ToString().Trim());
+                        SetThermValue(m_frmTherm.progressBar1, "Value", 0);
+                        this.SetLabelValue(m_frmTherm.lblMsg, "Text", "Calculate Adjustment Factors For RsCd=" + m_strCurrFIADBRsCd + " and EvalId=" + m_strCurrFIADBEvalId);
+
+                        for (x = 0; x <= strSql.Length - 1; x++)
+                        {
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, strSql[x] + "\r\n");
+                            oDataMgr.SqlNonQuery(con, strSql[x]);
+                            frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 20 + x + 5);
+                            if (oDataMgr.m_intError != 0) break;
+                        }
+                    }
                 }
+
+                m_intError = oDataMgr.m_intError;
+                SetThermValue(m_frmTherm.progressBar1, "Value", 100);
+                System.Threading.Thread.Sleep(2000);
+                SetThermValue(m_frmTherm.progressBar2, "Value", 60);
                 
                 //create tablelinks to the projects main folder
                 if (this.m_intError == 0 && !GetBooleanValue((System.Windows.Forms.Control)m_frmTherm, "AbortProcess"))
@@ -2260,7 +2252,9 @@ namespace FIA_Biosum_Manager
                     strFIADBDbFile = strFIADBDbFile.Trim();
                     strSourceTableName = "BIOSUM_PLOT";
                     strDestTableLinkName = "fiadb_plot_input";
-                    oDao.CreateTableLink(this.m_strTempMDBFile,strDestTableLinkName,strFIADBDbFile,strSourceTableName,true);
+                    //oDao.CreateTableLink(this.m_strTempMDBFile,strDestTableLinkName,strFIADBDbFile,strSourceTableName,true);
+                    oDao.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTableName, strDestTableLinkName,
+                        ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
                     SetThermValue(m_frmTherm.progressBar1, "Value", 40);
                     //cond table
                     strSourceTableName = "BIOSUM_COND";
@@ -5382,16 +5376,16 @@ namespace FIA_Biosum_Manager
 			this.m_strStateCountySQL="";
 			this.m_intError=0;
 
-			FIA_Biosum_Manager.ado_data_access p_ado = new ado_data_access();
-
-            string strMDBFile = this.txtFiadbInputFile.Text.Trim();
+            string strSqliteFile = this.txtFiadbInputFile.Text.Trim();
+            DataMgr oDataMgr = new DataMgr();
             string strTable = this.cmbFiadbPpsaTable.Text.Trim();
-            string strConn = p_ado.getMDBConnString(strMDBFile, "", "");
+            string strConn = oDataMgr.GetConnectionString(strSqliteFile);
+            string strSQL = "";
 
 			if (this.chkNonForested.Checked == true && this.chkForested.Checked==true)
 			{
 
-					p_ado.m_strSQL = "SELECT statecd,countycd " + 
+					strSQL = "SELECT statecd,countycd " + 
 						"FROM " + strTable +  " " + 
 						"WHERE RSCD = " + this.m_strCurrFIADBRsCd + " AND " + 
 						"EVALID = " + this.m_strCurrFIADBEvalId + " " +  
@@ -5400,7 +5394,7 @@ namespace FIA_Biosum_Manager
 			else if (this.chkForested.Checked==true)
 			{
 
-					p_ado.m_strSQL = "SELECT ppsa.statecd,ppsa.countycd " + 
+                strSQL = "SELECT ppsa.statecd,ppsa.countycd " + 
 						"FROM " + strTable +  " ppsa " + 
 						"INNER JOIN " + this.cmbFiadbPlotTable.Text.Trim() + " p " + 
 						"ON ppsa.plt_cn = p.cn " + 
@@ -5413,7 +5407,7 @@ namespace FIA_Biosum_Manager
 			else if (this.chkNonForested.Checked==true)
 			{
 
-					p_ado.m_strSQL = "SELECT ppsa.statecd,ppsa.countycd " + 
+                strSQL = "SELECT ppsa.statecd,ppsa.countycd " + 
 						"FROM " + strTable +  " ppsa " + 
 						"INNER JOIN " + this.cmbFiadbPlotTable.Text.Trim() + " p " + 
 						"ON ppsa.plt_cn = p.cn " + 
@@ -5428,67 +5422,54 @@ namespace FIA_Biosum_Manager
 
 			}
 
+            try
+            {
 
-			
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConn))
+                {
+                    con.Open();
+                    oDataMgr.SqlQueryReader(con, strSQL);
+                    if (oDataMgr.m_DataReader.HasRows)
+                    {
+                        //load up each row in the FIADB plot input table
+                        while (oDataMgr.m_DataReader.Read())
+                        {
+                            strState = "";
+                            strCounty = "";
 
-           
-			if (p_ado.m_intError==0 && this.m_intError==0)
-			{
-				p_ado.SqlQueryReader(strConn,p_ado.m_strSQL);
-				if (p_ado.m_intError==0)
-				{
-					try
-					{
-						//load up each row in the FIADB plot input table
+                            //make sure the row is not null values
+                            if (oDataMgr.m_DataReader[0] != DBNull.Value &&
+                                oDataMgr.m_DataReader[0].ToString().Trim().Length > 0)
+                            { 
+                                strState = oDataMgr.m_DataReader["statecd"].ToString();
+                                strCounty = oDataMgr.m_DataReader["countycd"].ToString();
+                                this.lstFilterByState.BeginUpdate();
+                                System.Windows.Forms.ListViewItem listItem = new ListViewItem();
+                                listItem.Checked = false;
+                                listItem.SubItems.Add(strState);
+                                listItem.SubItems.Add(strCounty);
+                                this.lstFilterByState.Items.Add(listItem);
+                                this.lstFilterByState.EndUpdate();
+                                intAddedPlotRows++;
+                            }
+                        }
+                    }
+                    if (intAddedPlotRows == 0)
+                    {
+                        this.m_intError = -1;
+                        MessageBox.Show("!!No Plots Loaded To Get State, County, Plot Information!!", "Load State, County, Plot Menus");
+                    }
+                    ((frmDialog)this.ParentForm).Enabled = true;
+                }
+            }
+            catch (Exception caught)
+            {
+                this.m_intError = -1;
+                MessageBox.Show(caught.Message);
+            }
+        }
 
-						while (p_ado.m_OleDbDataReader.Read())
-						{
-							strState="";
-							strCounty="";
-							
-							//make sure the row is not null values
-							if (p_ado.m_OleDbDataReader[0] != System.DBNull.Value &&
-								p_ado.m_OleDbDataReader[0].ToString().Trim().Length > 0)
-							{
-								strState= p_ado.m_OleDbDataReader["statecd"].ToString();
-								strCounty = p_ado.m_OleDbDataReader["countycd"].ToString();
-								this.lstFilterByState.BeginUpdate();
-								System.Windows.Forms.ListViewItem listItem = new ListViewItem();
-								listItem.Checked=false;
-								listItem.SubItems.Add(strState);
-								listItem.SubItems.Add(strCounty);
-								this.lstFilterByState.Items.Add(listItem);
-								this.lstFilterByState.EndUpdate();
-								intAddedPlotRows++;
-							}
-
-						}
-						p_ado.m_OleDbDataReader.Close();
-						if (intAddedPlotRows == 0 )
-						{
-							this.m_intError=-1;
-							MessageBox.Show("!!No Plots Loaded To Get State, County, Plot Information!!","Load State, County, Plot Menus");
-						}
-						((frmDialog)this.ParentForm).Enabled=true;
-					}
-					catch (Exception caught)
-					{
-						this.m_intError=-1;
-						MessageBox.Show(caught.Message);
-					}
-					p_ado.m_OleDbConnection.Close();
-				}
-				else
-				{
-					this.m_intError=p_ado.m_intError;
-				}
-			}
-			
-			
-			p_ado=null;
-		}
-
-		private void mdbInputPlot()
+        private void mdbInputPlot()
 		{
 			this.m_intError=0;
 			int intAddedPlotRows=0;
@@ -5501,20 +5482,28 @@ namespace FIA_Biosum_Manager
 			this.lstFilterByPlot.Columns.Add("County", 75, HorizontalAlignment.Left);
 			this.lstFilterByPlot.Columns.Add("Plot", 100, HorizontalAlignment.Left);
 
+            DataMgr oDataMgr = new DataMgr();
 
-			
-
-			FIA_Biosum_Manager.ado_data_access p_ado = new ado_data_access();
-
-            string strMDBFile = this.txtFiadbInputFile.Text.Trim();
+            string strSQLiteFile = this.txtFiadbInputFile.Text.Trim();
             string strTable = this.cmbFiadbPpsaTable.Text.Trim();
-            string strConn = p_ado.getMDBConnString(strMDBFile, "", "");
+            string strConn = oDataMgr.GetConnectionString(strSQLiteFile);
 
-			if (this.chkNonForested.Checked == true && this.chkForested.Checked==true)
+            ListView oLv = (ListView)frmMain.g_oDelegate.GetListView(lstFilterByState, false);
+            int intCheckedCount = (int)frmMain.g_oDelegate.GetListViewCheckedItemsCount(oLv, false);
+            if (intCheckedCount == 0)
+            {
+                this.m_intError = -1;
+                MessageBox.Show("!!No checkboxes selected. Plots cannot be loaded!!", "Load State, County, Plot Menus");
+                ((frmDialog)this.ParentForm).Enabled = true;
+                return;
+            }
+
+            string strSQL = "";
+            if (this.chkNonForested.Checked == true && this.chkForested.Checked==true)
 			{
 				this.BuildFilterByStateCountyString("statecd","countycd",false);
 
-					p_ado.m_strSQL = "SELECT statecd,countycd,plot " + 
+                strSQL = "SELECT statecd,countycd,plot " + 
 						"FROM " + strTable +  " " + 
 						"WHERE RSCD = " + this.m_strCurrFIADBRsCd + " AND " + 
 						"EVALID = " + this.m_strCurrFIADBEvalId + " AND " + this.m_strStateCountySQL.Trim() + " " + 
@@ -5523,8 +5512,8 @@ namespace FIA_Biosum_Manager
 			else if (this.chkForested.Checked==true)
 			{
 
-					this.BuildFilterByStateCountyString("ppsa.statecd","ppsa.countycd",false);
-					p_ado.m_strSQL = "SELECT ppsa.statecd,ppsa.countycd,ppsa.plot " + 
+				this.BuildFilterByStateCountyString("ppsa.statecd","ppsa.countycd",false);
+                strSQL = "SELECT ppsa.statecd,ppsa.countycd,ppsa.plot " + 
 						"FROM " + strTable +  " ppsa " + 
 						"INNER JOIN " + this.cmbFiadbPlotTable.Text.Trim() + " p " + 
 						"ON ppsa.plt_cn = p.cn " + 
@@ -5536,8 +5525,8 @@ namespace FIA_Biosum_Manager
 			else if (this.chkNonForested.Checked==true)
 			{
 
-					this.BuildFilterByStateCountyString("ppsa.statecd","ppsa.countycd",false);
-					p_ado.m_strSQL = "SELECT ppsa.statecd,ppsa.countycd,ppsa.plot " + 
+				this.BuildFilterByStateCountyString("ppsa.statecd","ppsa.countycd",false);
+                strSQL = "SELECT ppsa.statecd,ppsa.countycd,ppsa.plot " + 
 						"FROM " + strTable +  " ppsa " + 
 						"INNER JOIN " + this.cmbFiadbPlotTable.Text.Trim() + " p " + 
 						"ON ppsa.plt_cn = p.cn " + 
@@ -5551,64 +5540,57 @@ namespace FIA_Biosum_Manager
 				this.m_intError=-1;
 			}
 
-            
-			if (p_ado.m_intError==0 && this.m_intError==0)
+            if (this.m_intError==0)
 			{
-				p_ado.SqlQueryReader(strConn,p_ado.m_strSQL);
-				if (p_ado.m_intError==0)
-				{
-					try
-					{
-						//load up each row in the FIADB plot input table
+                try
+                {
+                    using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConn))
+                    {
+                    con.Open();
+                    oDataMgr.SqlQueryReader(con, strSQL);
+                    if (oDataMgr.m_DataReader.HasRows)
+                    {
+                        //load up each row in the FIADB plot input table
+                        while (oDataMgr.m_DataReader.Read())
+                        {
+                            strState = "";
+                            strCounty = "";
+                            strPlot = "";
 
-						while (p_ado.m_OleDbDataReader.Read())
-						{
-							strState="";
-							strCounty="";
-							strPlot="";
-							
-							//make sure the row is not null values
-							if (p_ado.m_OleDbDataReader[0] != System.DBNull.Value &&
-								p_ado.m_OleDbDataReader[0].ToString().Trim().Length > 0)
-							{
-								strState= p_ado.m_OleDbDataReader["statecd"].ToString();
-								strCounty = p_ado.m_OleDbDataReader["countycd"].ToString();
-								strPlot = p_ado.m_OleDbDataReader["plot"].ToString();
-								this.lstFilterByPlot.BeginUpdate();
-								System.Windows.Forms.ListViewItem listItem = new ListViewItem();
-								listItem.Checked=false;
-								listItem.SubItems.Add(strState);
-								listItem.SubItems.Add(strCounty);
-								listItem.SubItems.Add(strPlot);
-								this.lstFilterByPlot.Items.Add(listItem);
-								this.lstFilterByPlot.EndUpdate();
-								intAddedPlotRows++;
-							}
-
-						}
-						p_ado.m_OleDbDataReader.Close();
-						if (intAddedPlotRows == 0 )
-						{
-							this.m_intError=-1;
-							MessageBox.Show("!!No Plots Loaded To Get State, County, Plot Information!!","Load State, County, Plot Menus");
-						}
-						((frmDialog)this.ParentForm).Enabled=true;
-					}
-					catch (Exception caught)
-					{
-						this.m_intError=-1;
-						MessageBox.Show(caught.Message);
-					}
-					p_ado.m_OleDbConnection.Close();
-				}
-				else
-				{
-					this.m_intError=p_ado.m_intError;
-				}
-				
-			}
-			p_ado=null;
-		}
+                            //make sure the row is not null values
+                            if (oDataMgr.m_DataReader[0] != System.DBNull.Value &&
+                                oDataMgr.m_DataReader[0].ToString().Trim().Length > 0)
+                            {
+                                strState = oDataMgr.m_DataReader["statecd"].ToString();
+                                strCounty = oDataMgr.m_DataReader["countycd"].ToString();
+                                strPlot = oDataMgr.m_DataReader["plot"].ToString();
+                                this.lstFilterByPlot.BeginUpdate();
+                                System.Windows.Forms.ListViewItem listItem = new ListViewItem();
+                                listItem.Checked = false;
+                                listItem.SubItems.Add(strState);
+                                listItem.SubItems.Add(strCounty);
+                                listItem.SubItems.Add(strPlot);
+                                this.lstFilterByPlot.Items.Add(listItem);
+                                this.lstFilterByPlot.EndUpdate();
+                                intAddedPlotRows++;
+                            }
+                        }
+                    }
+                if (intAddedPlotRows == 0)
+                {
+                    this.m_intError = -1;
+                    MessageBox.Show("!!No Plots Loaded To Get State, County, Plot Information!!", "Load State, County, Plot Menus");
+                }
+                ((frmDialog)this.ParentForm).Enabled = true;
+            }
+        }
+        catch (Exception caught)
+        {
+            this.m_intError = -1;
+            MessageBox.Show(caught.Message);
+        }				
+    }
+    }
 
 
 		private void btnFilterByStatePrevious_Click(object sender, System.EventArgs e)
@@ -7871,8 +7853,15 @@ namespace FIA_Biosum_Manager
                             }
 					    }
 					}
-				}
-			}
+                    // Check to see if the input SQLite DSN exists and if so, delete so we can add
+                    ODBCMgr odbcmgr = new ODBCMgr();
+                    if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.PlotInputDsnName))
+                    {
+                        odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.PlotInputDsnName);
+                    }
+                    odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.PlotInputDsnName, strFullPath);
+                }
+            }
 			OpenFileDialog1 = null;			
 		}
 
@@ -7931,8 +7920,7 @@ namespace FIA_Biosum_Manager
 			int x=0;
 			m_intError=0;
 			bool bLoad=false;
-			if (this.m_ado==null)
-				this.m_ado = new ado_data_access();
+            DataMgr oDataMgr = new DataMgr();
 			if (m_oDatasource==null) this.InitializeDatasource();
 				
 			try
@@ -7942,163 +7930,164 @@ namespace FIA_Biosum_Manager
 				{
 					bLoad=true;
 				}
-				//see if the same values in the list as the table
-				m_ado.SqlQueryReader(m_ado.getMDBConnString(this.txtFiadbInputFile.Text.Trim(),"",""),"SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim());
-				if (m_ado.m_intError==0)
-				{
-					if (m_ado.m_OleDbDataReader.HasRows)
-					{
-						while (m_ado.m_OleDbDataReader.Read())
-						{
-							//initialize eval values
-							strCN="";
-							strEvalId="";
-							strRsCd="";
-							strStateCd="";
-							strLocNm="";
-							strEvalDesc="";
-							strRptYr="";
-							strNotes="";
-							strCN =m_ado.m_OleDbDataReader["cn"].ToString();
-							strEvalId =m_ado.m_OleDbDataReader["evalid"].ToString();
-							strRsCd= m_ado.m_OleDbDataReader["RsCd"].ToString();
-							strStateCd = m_ado.m_OleDbDataReader["statecd"].ToString();
-							if (m_ado.m_OleDbDataReader["location_nm"] != System.DBNull.Value)
-								strLocNm = m_ado.m_OleDbDataReader["location_nm"].ToString();
-							if (m_ado.m_OleDbDataReader["eval_descr"] != System.DBNull.Value)
-								strEvalDesc = m_ado.m_OleDbDataReader["eval_descr"].ToString();
-							if (m_ado.m_OleDbDataReader["report_year_nm"] != System.DBNull.Value)
-								strRptYr = m_ado.m_OleDbDataReader["report_year_nm"].ToString();
-							if (m_ado.m_OleDbDataReader["notes"] != System.DBNull.Value)
-								strNotes = m_ado.m_OleDbDataReader["notes"].ToString();	
-							//string all the eval records
-							strCNDelimited=strCNDelimited + strCN + " " + "#";
-							strEvalIdDelimited=strEvalIdDelimited + strEvalId + " " + "#";
-							strRsCdDelimited = strRsCdDelimited + strRsCd + " " + "#";
-							strStateCdDelimited = strStateCdDelimited + strStateCd + " " + "#";
-							strLocNmDelimited = strLocNmDelimited + strLocNm + " " + "#";
-							strEvalDescDelimited = strEvalDescDelimited + strEvalDesc + " " + "#";
-							strRptYrDelimited = strRptYrDelimited + strRptYr + " " + "#";
-							strNotesDelimited = strNotesDelimited + strNotes + " " + "#";
-							if (!bLoad)
-							{
-								//see if the tables eval row is found in the list box
-								for (x=0;x<=this.lstFIADBInv.Items.Count-1;x++)
-								{
-									if (strEvalId.Trim() == this.lstFIADBInv.Items[x].SubItems[0].Text.Trim() && 
-										strRsCd.Trim() == this.lstFIADBInv.Items[x].SubItems[1].Text.Trim() && 
-										strStateCd.Trim() == this.lstFIADBInv.Items[x].SubItems[2].Text.Trim() &&
-										strLocNm.Trim() == this.lstFIADBInv.Items[x].SubItems[3].Text.Trim() &&
-										strEvalDesc.Trim() == this.lstFIADBInv.Items[x].SubItems[4].Text.Trim() &&
-										strRptYr.Trim() == this.lstFIADBInv.Items[x].SubItems[5].Text.Trim() && 
-										strNotes.Trim() == this.lstFIADBInv.Items[x].SubItems[6].Text.Trim())
-										break;
-								}
-								if (x > this.lstFIADBInv.Items.Count-1) 
-								{
-									//the eval table record is not found in the list box
-									bLoad=true;
-								}
-							}
-						}
-						m_ado.m_OleDbDataReader.Close();
-						while (m_ado.m_OleDbDataReader.IsClosed==false)
-							System.Threading.Thread.Sleep(1000);
-						
-						if (bLoad)
-						{
-							//remove the delimiter from the end of the string list
-							if (strCNDelimited.Trim().Length > 0) strCNDelimited = strCNDelimited.Substring(0,strCNDelimited.Length - 1);
-							if (strEvalIdDelimited.Trim().Length > 0) strEvalIdDelimited = strEvalIdDelimited.Substring(0,strEvalIdDelimited.Length - 1);
-							if (strRsCdDelimited.Trim().Length > 0) strRsCdDelimited = strRsCdDelimited.Substring(0,strRsCdDelimited.Length - 1);
-							if (strStateCdDelimited.Trim().Length > 0) strStateCdDelimited=strStateCdDelimited.Substring(0,strStateCdDelimited.Length - 1);
-							if (strLocNmDelimited.Trim().Length > 0) strLocNmDelimited=strLocNmDelimited.Substring(0,strLocNmDelimited.Length - 1);
-							if (strEvalDescDelimited.Trim().Length > 0) strEvalDescDelimited=strEvalDescDelimited.Substring(0,strEvalDescDelimited.Length - 1);
-							if (strRptYrDelimited.Trim().Length > 0) strRptYrDelimited=strRptYrDelimited.Substring(0,strRptYrDelimited.Length - 1);
-							if (strNotesDelimited.Trim().Length > 0) strNotesDelimited=strNotesDelimited.Substring(0,strNotesDelimited.Length - 1);
+                //see if the same values in the list as the table
+                string strConnection = oDataMgr.GetConnectionString(this.txtFiadbInputFile.Text.Trim());
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConnection))
+                {
+                    con.Open();
+                    string strSQL = "SELECT * FROM " + this.cmbFiadbPopEvalTable.Text.Trim();
+                    oDataMgr.SqlQueryReader(con, strSQL);
+                    if (oDataMgr.m_DataReader.HasRows)
+                    {
+                        while (oDataMgr.m_DataReader.Read())
+                        {
+                            //initialize eval values
+                            strCN = "";
+                            strEvalId = "";
+                            strRsCd = "";
+                            strStateCd = "";
+                            strLocNm = "";
+                            strEvalDesc = "";
+                            strRptYr = "";
+                            strNotes = "";
+                            strCN = Convert.ToString(oDataMgr.m_DataReader["cn"]).Trim();
+                            strEvalId = Convert.ToString(oDataMgr.m_DataReader["evalid"]).Trim();
+                            strRsCd = Convert.ToString(oDataMgr.m_DataReader["RsCd"]).Trim();
+                            strStateCd = Convert.ToString(oDataMgr.m_DataReader["statecd"]).Trim();
 
-							//create a temporary mdb file with links to all the project tables
-							this.m_strTempMDBFile = m_oDatasource.CreateMDBAndTableDataSourceLinks();
+                            if (oDataMgr.m_DataReader["location_nm"] != DBNull.Value)
+                                strLocNm = oDataMgr.m_DataReader["location_nm"].ToString();
+                            if (oDataMgr.m_DataReader["eval_descr"] != DBNull.Value)
+                                strEvalDesc = oDataMgr.m_DataReader["eval_descr"].ToString();
+                            if (oDataMgr.m_DataReader["report_year_nm"] != DBNull.Value)
+                                strRptYr = oDataMgr.m_DataReader["report_year_nm"].ToString();
+                            if (oDataMgr.m_DataReader["notes"] != DBNull.Value)
+                                strNotes = oDataMgr.m_DataReader["notes"].ToString();
+                            //string all the eval records
+                            strCNDelimited = strCNDelimited + strCN + " " + "#";
+                            strEvalIdDelimited = strEvalIdDelimited + strEvalId + " " + "#";
+                            strRsCdDelimited = strRsCdDelimited + strRsCd + " " + "#";
+                            strStateCdDelimited = strStateCdDelimited + strStateCd + " " + "#";
+                            strLocNmDelimited = strLocNmDelimited + strLocNm + " " + "#";
+                            strEvalDescDelimited = strEvalDescDelimited + strEvalDesc + " " + "#";
+                            strRptYrDelimited = strRptYrDelimited + strRptYr + " " + "#";
+                            strNotesDelimited = strNotesDelimited + strNotes + " " + "#";
+                            if (!bLoad)
+                            {
+                                //see if the tables eval row is found in the list box
+                                for (x = 0; x <= this.lstFIADBInv.Items.Count - 1; x++)
+                                {
+                                    if (strEvalId.Trim() == this.lstFIADBInv.Items[x].SubItems[0].Text.Trim() &&
+                                        strRsCd.Trim() == this.lstFIADBInv.Items[x].SubItems[1].Text.Trim() &&
+                                        strStateCd.Trim() == this.lstFIADBInv.Items[x].SubItems[2].Text.Trim() &&
+                                        strLocNm.Trim() == this.lstFIADBInv.Items[x].SubItems[3].Text.Trim() &&
+                                        strEvalDesc.Trim() == this.lstFIADBInv.Items[x].SubItems[4].Text.Trim() &&
+                                        strRptYr.Trim() == this.lstFIADBInv.Items[x].SubItems[5].Text.Trim() &&
+                                        strNotes.Trim() == this.lstFIADBInv.Items[x].SubItems[6].Text.Trim())
+                                        break;
+                                }
+                                if (x > this.lstFIADBInv.Items.Count - 1)
+                                {
+                                    //the eval table record is not found in the list box
+                                    bLoad = true;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("There are no Population Evaluations in the " + this.cmbFiadbPopEvalTable.Text + " table ",
+                            "FIA Biosum", System.Windows.Forms.MessageBoxButtons.OK,
+                            System.Windows.Forms.MessageBoxIcon.Exclamation);
+                        m_intError = -1;
+                        bLoad = false;
+                    }
+                } // Closing connection
 
-							//get a connection string for the temp mdb file
-							this.m_strTempMDBFileConn = this.m_ado.getMDBConnString(this.m_strTempMDBFile,"","");
-							this.m_ado.OpenConnection(m_strTempMDBFileConn);
-							if (m_ado.m_intError==0)
-							{
+                if (bLoad)
+                {
+                    //remove the delimiter from the end of the string list
+                    if (strCNDelimited.Trim().Length > 0) strCNDelimited = strCNDelimited.Substring(0, strCNDelimited.Length - 1);
+                    if (strEvalIdDelimited.Trim().Length > 0) strEvalIdDelimited = strEvalIdDelimited.Substring(0, strEvalIdDelimited.Length - 1);
+                    if (strRsCdDelimited.Trim().Length > 0) strRsCdDelimited = strRsCdDelimited.Substring(0, strRsCdDelimited.Length - 1);
+                    if (strStateCdDelimited.Trim().Length > 0) strStateCdDelimited = strStateCdDelimited.Substring(0, strStateCdDelimited.Length - 1);
+                    if (strLocNmDelimited.Trim().Length > 0) strLocNmDelimited = strLocNmDelimited.Substring(0, strLocNmDelimited.Length - 1);
+                    if (strEvalDescDelimited.Trim().Length > 0) strEvalDescDelimited = strEvalDescDelimited.Substring(0, strEvalDescDelimited.Length - 1);
+                    if (strRptYrDelimited.Trim().Length > 0) strRptYrDelimited = strRptYrDelimited.Substring(0, strRptYrDelimited.Length - 1);
+                    if (strNotesDelimited.Trim().Length > 0) strNotesDelimited = strNotesDelimited.Substring(0, strNotesDelimited.Length - 1);
 
-								//delete the current eval records that have a value of 9
-								m_ado.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " WHERE biosum_status_cd=9";
-								m_ado.SqlNonQuery(m_ado.m_OleDbConnection,m_ado.m_strSQL);
-								if (m_ado.m_intError==0)
-								{
-									//covert the string lists to arrays
-									FIA_Biosum_Manager.utils oUtils = new FIA_Biosum_Manager.utils();
-									string[] strCNArray = oUtils.ConvertListToArray(strCNDelimited,"#");
-									string[] strEvalIdArray = oUtils.ConvertListToArray(strEvalIdDelimited,"#");
-									string[] strRsCdArray = oUtils.ConvertListToArray(strRsCdDelimited,"#");
-									string[] strStateCdArray = oUtils.ConvertListToArray(strStateCdDelimited,"#");
-									string[] strLocNmArray = oUtils.ConvertListToArray(strLocNmDelimited,"#");
-									string[] strEvalDescArray = oUtils.ConvertListToArray(strEvalDescDelimited,"#");
-									string[] strRptYrArray = oUtils.ConvertListToArray(strRptYrDelimited,"#");
-									string[] strNotesArray = oUtils.ConvertListToArray(strNotesDelimited,"#");
-									oUtils=null;
-									//insert the evaluation records into the biosum evaluation table
-									for (x=0;x<=strEvalIdArray.Length-1;x++)
-									{
-										m_ado.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " " + 
-											             "WHERE TRIM(cn)='" +  strCNArray[x].Trim() + "' AND " + 
-																"rscd=" + strRsCdArray[x].Trim() + " AND " + 
-											                    "evalid=" + strEvalIdArray[x].Trim();
-										m_ado.SqlNonQuery(m_ado.m_OleDbConnection,m_ado.m_strSQL);	
-										if (m_ado.m_intError!=0)
-										{
-											this.m_intError=m_ado.m_intError;
-											break;
-										}
-										m_ado.m_strSQL="INSERT INTO " + this.m_strPopEvalTable + " " + 
-											"(CN,RSCD,EVALID,EVAL_DESCR,STATECD," + 
-											"LOCATION_NM,REPORT_YEAR_NM,NOTES," + 
-											"START_INVYR,END_INVYR,BIOSUM_STATUS_CD) VALUES " + 
-											"('" + strCNArray[x].Trim() + "'," + 
-											strRsCdArray[x].Trim() + "," + 
-											strEvalIdArray[x].Trim() + ",'" + 
-											strEvalDescArray[x] + "'," + 
-											strStateCdArray[x] + ",'" + 
-											strLocNmArray[x] + "','" + 
-											strRptYrArray[x] + "','" + 
-											strNotesArray[x] + "',null,null,9)";
-										m_ado.SqlNonQuery(m_ado.m_OleDbConnection,m_ado.m_strSQL);	
-										if (m_ado.m_intError!=0)
-										{
-											this.m_intError=m_ado.m_intError;
-											break;
-										}
-									}
-								}          							
-								else m_intError=m_ado.m_intError;
-								m_ado.m_OleDbConnection.Close();
-								while (this.m_ado.m_OleDbConnection.State != System.Data.ConnectionState.Closed)
-									System.Threading.Thread.Sleep(1000);
-							}
-							else m_intError=m_ado.m_intError;
-						}
-					}
-					else
-					{
-						MessageBox.Show("There are no Population Evaluations in the " + this.cmbFiadbPopEvalTable.Text + " table ",
-							"FIA Biosum",
-							System.Windows.Forms.MessageBoxButtons.OK,
-							System.Windows.Forms.MessageBoxIcon.Exclamation);
-						m_intError=-1;
-						m_ado.m_OleDbDataReader.Close();
-						while (m_ado.m_OleDbDataReader.IsClosed==false)
-							System.Threading.Thread.Sleep(1000);
-						bLoad=false;
-						
-					}
-				}
+                    //create a temporary mdb file with links to all the project tables
+                    this.m_strTempMDBFile = m_oDatasource.CreateMDBAndTableDataSourceLinks();
 
-			}
+                    //get a connection string for the temp mdb file
+                    if (this.m_ado == null)
+                    {
+                        this.m_ado = new ado_data_access();
+                    }
+                    this.m_strTempMDBFileConn = this.m_ado.getMDBConnString(this.m_strTempMDBFile, "", "");
+                    this.m_ado.OpenConnection(m_strTempMDBFileConn);
+                    if (m_ado.m_intError == 0)
+                    {
+
+                        //delete the current eval records that have a value of 9
+                        m_ado.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " WHERE biosum_status_cd=9";
+                        m_ado.SqlNonQuery(m_ado.m_OleDbConnection, m_ado.m_strSQL);
+                        if (m_ado.m_intError == 0)
+                        {
+                            //covert the string lists to arrays
+                            FIA_Biosum_Manager.utils oUtils = new FIA_Biosum_Manager.utils();
+                            string[] strCNArray = oUtils.ConvertListToArray(strCNDelimited, "#");
+                            string[] strEvalIdArray = oUtils.ConvertListToArray(strEvalIdDelimited, "#");
+                            string[] strRsCdArray = oUtils.ConvertListToArray(strRsCdDelimited, "#");
+                            string[] strStateCdArray = oUtils.ConvertListToArray(strStateCdDelimited, "#");
+                            string[] strLocNmArray = oUtils.ConvertListToArray(strLocNmDelimited, "#");
+                            string[] strEvalDescArray = oUtils.ConvertListToArray(strEvalDescDelimited, "#");
+                            string[] strRptYrArray = oUtils.ConvertListToArray(strRptYrDelimited, "#");
+                            string[] strNotesArray = oUtils.ConvertListToArray(strNotesDelimited, "#");
+                            oUtils = null;
+                            //insert the evaluation records into the biosum evaluation table
+                            for (x = 0; x <= strEvalIdArray.Length - 1; x++)
+                            {
+                                m_ado.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " " +
+                                                 "WHERE TRIM(cn)='" + strCNArray[x].Trim() + "' AND " +
+                                                        "rscd=" + strRsCdArray[x].Trim() + " AND " +
+                                                        "evalid=" + strEvalIdArray[x].Trim();
+                                m_ado.SqlNonQuery(m_ado.m_OleDbConnection, m_ado.m_strSQL);
+                                if (m_ado.m_intError != 0)
+                                {
+                                    this.m_intError = m_ado.m_intError;
+                                    break;
+                                }
+                                m_ado.m_strSQL = "INSERT INTO " + this.m_strPopEvalTable + " " +
+                                    "(CN,RSCD,EVALID,EVAL_DESCR,STATECD," +
+                                    "LOCATION_NM,REPORT_YEAR_NM,NOTES," +
+                                    "START_INVYR,END_INVYR,BIOSUM_STATUS_CD) VALUES " +
+                                    "('" + strCNArray[x].Trim() + "'," +
+                                    strRsCdArray[x].Trim() + "," +
+                                    strEvalIdArray[x].Trim() + ",'" +
+                                    strEvalDescArray[x] + "'," +
+                                    strStateCdArray[x] + ",'" +
+                                    strLocNmArray[x] + "','" +
+                                    strRptYrArray[x] + "','" +
+                                    strNotesArray[x] + "',null,null,9)";
+                                m_ado.SqlNonQuery(m_ado.m_OleDbConnection, m_ado.m_strSQL);
+                                if (m_ado.m_intError != 0)
+                                {
+                                    this.m_intError = m_ado.m_intError;
+                                    break;
+                                }
+                            }
+                        }
+                        else m_intError = m_ado.m_intError;
+                        m_ado.m_OleDbConnection.Close();
+                        while (this.m_ado.m_OleDbConnection.State != System.Data.ConnectionState.Closed)
+                            System.Threading.Thread.Sleep(1000);
+                    }
+                    else m_intError = m_ado.m_intError;
+                }
+
+
+            }
 			catch (Exception e)
 			{
 				this.m_intError=-1;
@@ -8427,15 +8416,11 @@ namespace FIA_Biosum_Manager
 				//instatiate dao for creating links in the temp table
 				//to the fiadb plot, cond, and tree input tables
 				dao_data_access p_dao1 = new dao_data_access();
-
-				//create links to the fiadb input tables in the temp mdb file
-				p_dao1.CreateTableLink(this.m_strTempMDBFile,
-					strSourceTableLink,
-					strSourceFile.Trim(),
-					strSourceTable.Trim());
-		    
-				//destroy the object and release it from memory
-				p_dao1 = null;
+                //add link to SQLite input
+                p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTable.Trim(), strSourceTableLink,
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strSourceFile.Trim());
+                //destroy the object and release it from memory
+                p_dao1 = null;
 
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 1);
 
@@ -8459,33 +8444,38 @@ namespace FIA_Biosum_Manager
 				 ****************************************************************/
 				//get the fiabiosum table structures
 				System.Data.DataTable dtDestSchema = this.m_ado.getTableSchema(this.m_connTempMDBFile, "select * from " + strDestTable);
-				//get the fiadb table structures
-				System.Data.DataTable dtSourceSchema = this.m_ado.getTableSchema(this.m_connTempMDBFile, "select * from " + strSourceTableLink);
+                //get the fiadb table structures
+                DataMgr oDataMgr = new DataMgr();
+                string strConnection = oDataMgr.GetConnectionString(strSourceFile.Trim());
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConnection))
+                {
+                    con.Open();
+                    DataTable dtSourceSchema = oDataMgr.getTableSchema(con, "select * from " + strSourceTable.Trim());
 
-				
-				//build field list string to insert sql by matching 
-				//up the column names in the biosum plot table and the fiadb plot table
-				strFields = "";
-				for (x=0; x<=dtDestSchema.Rows.Count-1;x++)
-				{
-					strCol = dtDestSchema.Rows[x]["columnname"].ToString().Trim();
-					//see if there is an equivalent FIADB column
-					for (y=0; y<=dtSourceSchema.Rows.Count-1;y++)
-					{
-						if (strCol.Trim().ToUpper() == dtSourceSchema.Rows[y]["columnname"].ToString().ToUpper())
-						{
-							if (strFields.Trim().Length == 0)
-							{
-								strFields = strCol;
-							}
-							else
-							{	
-								strFields += "," + strCol;
-							}
-							break;
-						}
-					}
-				}
+                    //build field list string to insert sql by matching 
+                    //up the column names in the biosum plot table and the fiadb plot table
+                    strFields = "";
+                    for (x = 0; x <= dtDestSchema.Rows.Count - 1; x++)
+                    {
+                        strCol = dtDestSchema.Rows[x]["columnname"].ToString().Trim();
+                        //see if there is an equivalent FIADB column
+                        for (y = 0; y <= dtSourceSchema.Rows.Count - 1; y++)
+                        {
+                            if (strCol.Trim().ToUpper() == dtSourceSchema.Rows[y]["columnname"].ToString().ToUpper())
+                            {
+                                if (strFields.Trim().Length == 0)
+                                {
+                                    strFields = strCol;
+                                }
+                                else
+                                {
+                                    strFields += "," + strCol;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
 
 				this.m_ado.m_strSQL = "INSERT INTO " + strDestTable + " (" + strFields + ")" + 
 					" SELECT " + strFields + " FROM " + strSourceTableLink + "   " + 
