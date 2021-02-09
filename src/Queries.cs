@@ -4005,17 +4005,23 @@ namespace FIA_Biosum_Manager
                 strSQL[6] = "CREATE TABLE BIOSUM_PPSA_DENIED_ACCESS AS " +
                             "SELECT DISTINCT ppsa.evalid, ppsa.estn_unit, ppsa.statecd, ppsa.stratumcd, ppsa.plot," +
                                             "ppsa.countycd, ppsa.subcycle, ppsa.cycle, ppsa.unitcd," +
-                                            "SUM(IIF(eus.LAND_ONLY='N'," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.MACRPROP_UNADJ)," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3),0,c.MACRPROP_UNADJ))) as denied_macr," +
-                                            "SUM(IIF(eus.LAND_ONLY='N'," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.MICRPROP_UNADJ)," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3),0,c.MICRPROP_UNADJ))) as denied_micr," +
-                                            "SUM(IIF(eus.LAND_ONLY='N'," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.SUBPPROP_UNADJ)," +
-                                                    "IIF(c.COND_STATUS_CD IN (1,2,3),0,c.SUBPPROP_UNADJ))) as denied_subp," +
-                                            "SUM(IIF(eus.LAND_ONLY='N',IIF(c.COND_STATUS_CD IN (1,2,3,4),0,c.CONDPROP_UNADJ),IIF(c.COND_STATUS_CD IN (1,2,3),0,c.CONDPROP_UNADJ))) as denied_cond " +
-                            "FROM BIOSUM_PPSA ppsa," +
+                            " SUM(CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 0" +
+                            " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN c.MACRPROP_UNADJ" +
+                            " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 0" +
+                            " ELSE c.MACRPROP_UNADJ END) AS denied_macr," +
+                            " SUM(CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 0" +
+                            " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN c.MICRPROP_UNADJ" +
+                            " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 0" +
+                            " ELSE c.MICRPROP_UNADJ END) AS denied_micr," +
+                            " SUM(CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 0" +
+                            " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN c.SUBPPROP_UNADJ" +
+                            " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 0" +
+                            " ELSE c.SUBPPROP_UNADJ END) AS denied_subp," +
+                            " SUM(CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 0" +
+                            " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN c.CONDPROP_UNADJ" +
+                            " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 0" +
+                            " ELSE c.CONDPROP_UNADJ END) AS denied_cond" +
+                            " FROM BIOSUM_PPSA ppsa," +
                                  "BIOSUM_COND c," +
                                  "BIOSUM_EUS_TEMP eus " +
                             "WHERE (ppsa.plt_cn = c.plt_cn) AND " +
