@@ -2259,16 +2259,14 @@ namespace FIA_Biosum_Manager
                     //cond table
                     strSourceTableName = "BIOSUM_COND";
                     strDestTableLinkName = "fiadb_cond_input";
-                    if (oDao.m_intError==0) oDao.CreateTableLink(this.m_strTempMDBFile, strDestTableLinkName, strFIADBDbFile, strSourceTableName, true);
+                    if (oDao.m_intError==0) oDao.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTableName, strDestTableLinkName,
+                                                ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
                     SetThermValue(m_frmTherm.progressBar1, "Value", 70);
                     //biosum adjustment factors table
                     strSourceTableName = frmMain.g_oTables.m_oFIAPlot.DefaultBiosumPopStratumAdjustmentFactorsTableName;
                     strDestTableLinkName = "fiadb_biosum_adjustment_factors_input";
-                    if (oDao.m_intError==0) oDao.CreateTableLink(this.m_strTempMDBFile, strDestTableLinkName, strFIADBDbFile, strSourceTableName, true);
-
-
-
-
+                    if (oDao.m_intError==0) oDao.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTableName, strDestTableLinkName,
+                                                ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
                     m_intError = oDao.m_intError;
                     
                     //destroy the object and release it from memory
@@ -2279,9 +2277,7 @@ namespace FIA_Biosum_Manager
                      m_intError = m_ado.m_intError;
                     SetThermValue(m_frmTherm.progressBar1, "Value", 100);
                     System.Threading.Thread.Sleep(2000);
-                    SetThermValue(m_frmTherm.progressBar2, "Value", 70);
-
-                  
+                    SetThermValue(m_frmTherm.progressBar2, "Value", 70);                  
                     
                 }
                 //delete any records from the production biosum adjustment factor table that did not previously complete processing (error or user cancelled)

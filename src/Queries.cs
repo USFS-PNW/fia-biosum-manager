@@ -4055,32 +4055,32 @@ namespace FIA_Biosum_Manager
                 //
                 //CALCULATE ADJUSTMENTS
                 //
-                strSQL[9] = "SELECT DISTINCT " +
-                                   "eus.rscd, eus.evalid, eus.estn_unit, eus.stratumcd," +
-                                   "eus.arealand_eu, eus.areatot_eu," +
-                                   "eus.area_used, rowcount.p2pointcnt_man as p2pointcnt_man," +
-                                   "eus.p1pointcnt, eus.p1pointcnt_eu, eus.p2pointcnt," +
-                                   "SUM(c.MACRPROP_UNADJ * " +
-                                        "IIF(eus.LAND_ONLY='N'," +
-                                        "IIF(c.COND_STATUS_CD IN (1,2,3,4),1,0)," +
-                                        "IIF(c.COND_STATUS_CD IN (1,2,3),1,0))) / " +
-                                            "SUM(c.macrprop_unadj) as pmh_macr," +
-                                   "SUM(c.MICRPROP_UNADJ * " +
-                                       "IIF(eus.LAND_ONLY='N'," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3,4),1,0)," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3),1,0))) / " +
-                                           "SUM(c.micrprop_unadj) as pmh_micr," +
-                                   "SUM(c.SUBPPROP_UNADJ * " +
-                                       "IIF(eus.LAND_ONLY='N'," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3,4),1,0)," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3),1,0))) / " +
-                                           "SUM(c.subpprop_unadj) as pmh_sub," +
-                                   "SUM(c.CONDPROP_UNADJ * " +
-                                       "IIF(eus.LAND_ONLY='N'," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3,4),1,0)," +
-                                       "IIF(c.COND_STATUS_CD IN (1,2,3),1,0))) / " +
-                                           "SUM(c.condprop_unadj) as pmh_cond " +
-                            "INTO BIOSUM_EUS_ACCESS " +
+                strSQL[9] = "CREATE TABLE BIOSUM_EUS_ACCESS AS" +
+                                " SELECT DISTINCT " +
+                                "eus.rscd, eus.evalid, eus.estn_unit, eus.stratumcd," +
+                                "eus.arealand_eu, eus.areatot_eu," +
+                                "eus.area_used, rowcount.p2pointcnt_man as p2pointcnt_man," +
+                                "eus.p1pointcnt, eus.p1pointcnt_eu, eus.p2pointcnt," +
+                                " SUM(c.MACRPROP_UNADJ *" +
+                                " CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 1" +
+                                " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN 0" +
+                                " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 1" +
+                                " ELSE 0 END) / SUM(c.macrprop_unadj) as pmh_macr," +
+                                " SUM(c.MICRPROP_UNADJ *" +
+                                " CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 1" +
+                                " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN 0" +
+                                " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 1 " +
+                                " ELSE 0 END) / SUM(c.MICRPROP_unadj) as pmh_micr," +
+                                " SUM(c.SUBPPROP_UNADJ *" +
+                                " CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 1" +
+                                " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN 0" +
+                                " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 1" +
+                                " ELSE 0 END) / SUM(c.SUBPPROP_unadj) as pmh_sub," +
+                                " SUM(c.CONDPROP_UNADJ *" +
+                                " CASE WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD IN(1, 2, 3, 4) THEN 1" +
+                                " WHEN eus.LAND_ONLY = 'N' AND c.COND_STATUS_CD NOT IN(1, 2, 3, 4) THEN 0" +
+                                " WHEN eus.LAND_ONLY <> 'N' AND c.COND_STATUS_CD IN(1, 2, 3) THEN 1" +
+                                " ELSE 0 END) / SUM(c.CONDPROP_unadj) as pmh_cond " +
                             "FROM BIOSUM_COND c," +
                                  "BIOSUM_PPSA_TEMP ppsa," +
                                  "BIOSUM_EUS_TEMP  eus," +
@@ -4127,19 +4127,19 @@ namespace FIA_Biosum_Manager
                 //CALCULATE STRATUM AREA
                 //
                 strSQL[12] = "UPDATE BIOSUM_EUS_ACCESS " +
-                             "SET double_sampling = " +
-                                 "IIF(p1pointcnt_eu is null OR " +
-                                     "p1pointcnt is null OR " +
-                                     "p1pointcnt=p1pointcnt_eu," +
-                                     "0,1)," +
-                            "stratum_area = " +
-                                "IIF(p1pointcnt_eu is NOT null AND " +
-                                    "p1pointcnt_eu > 0," +
-                                    "area_used*p1pointcnt/p1pointcnt_eu,0)";
+                                "SET double_sampling = " +
+                                "CASE WHEN p1pointcnt_eu is null OR p1pointcnt is null OR p1pointcnt = p1pointcnt_eu THEN 0 " +
+                                "ELSE 1 " +
+                                "END, " +
+                                "stratum_area = " +
+                                "CASE WHEN p1pointcnt_eu is NOT null AND p1pointcnt_eu > 0 THEN area_used*p1pointcnt / p1pointcnt_eu " +
+                                "ELSE 0 " +
+                                "END";
                 //
                 //MERGE BIOSUM_EUS_ACCESS WITH BIOSUM_EUS_TEMP INTO  biosum_pop_stratum_adjustment_factors
                 //
-                strSQL[13] = "SELECT a.rscd,a.evalid," +
+                strSQL[13] = "CREATE TABLE biosum_pop_stratum_adjustment_factors AS " +
+                            "SELECT a.rscd,a.evalid," +
                                   "a.estn_unit,a.stratumcd," +
                                   "a.p2pointcnt_man,a.stratum_area," +
                                   "a.double_sampling," +
@@ -4148,7 +4148,6 @@ namespace FIA_Biosum_Manager
                                   "b.eval_descr,b.estn_unit_descr," +
                                   "b.adj_factor_macr, b.adj_factor_subp," +
                                   "b.adj_factor_micr, b.expns " +
-                          "INTO biosum_pop_stratum_adjustment_factors " +
                           "FROM BIOSUM_EUS_ACCESS a " +
                           "INNER JOIN BIOSUM_EUS_TEMP b " +
                           "ON a.rscd = b.rscd AND " +
@@ -4161,12 +4160,24 @@ namespace FIA_Biosum_Manager
                 //UPDATE THE  biosum_pop_stratum_adjustment_factors TABLE 
                 //WITH THE KEY COLUMN FROM THE POP_STRATUM TABLE
                 //
-                strSQL[15] = "UPDATE biosum_pop_stratum_adjustment_factors b  " + 
-                             "INNER JOIN " + p_strPopStratumTable + " ps " + 
-                             "ON ps.RSCD = b.RSCD AND ps.EVALID=b.EVALID AND " + 
-                                "ps.ESTN_UNIT=b.ESTN_UNIT AND ps.STRATUMCD = b.STRATUMCD " + 
-                             "SET b.STRATUM_CN=ps.CN " + 
-                             "WHERE b.RSCD=" + p_strRsCd + " AND b.EVALID=" + p_strEvalId;
+                strSQL[15] = "UPDATE biosum_pop_stratum_adjustment_factors" +
+                    " SET (STRATUM_CN) =" +
+                    " (SELECT POP_STRATUM.cn FROM " + p_strPopStratumTable +
+                    " WHERE " + p_strPopStratumTable + ".RSCD = biosum_pop_stratum_adjustment_factors.RSCD" +
+                    " AND " + p_strPopStratumTable + ".EVALID = biosum_pop_stratum_adjustment_factors.EVALID" +
+                    " AND " + p_strPopStratumTable + ".ESTN_UNIT = biosum_pop_stratum_adjustment_factors.ESTN_UNIT" +
+                    " AND " + p_strPopStratumTable + ".STRATUMCD = biosum_pop_stratum_adjustment_factors.STRATUMCD" +
+                    " AND biosum_pop_stratum_adjustment_factors.RSCD = " + p_strRsCd +
+                    " AND biosum_pop_stratum_adjustment_factors.EVALID = " + p_strEvalId + ")" +
+                    " WHERE EXISTS( " +
+                    " SELECT * FROM POP_STRATUM" +
+                    " WHERE " + p_strPopStratumTable + ".RSCD = biosum_pop_stratum_adjustment_factors.RSCD" +
+                    " AND " + p_strPopStratumTable + ".EVALID = biosum_pop_stratum_adjustment_factors.EVALID" +
+                    " AND " + p_strPopStratumTable + ".ESTN_UNIT = biosum_pop_stratum_adjustment_factors.ESTN_UNIT" +
+                    " AND " + p_strPopStratumTable + ".STRATUMCD = biosum_pop_stratum_adjustment_factors.STRATUMCD" +
+                    " AND biosum_pop_stratum_adjustment_factors.RSCD = " + p_strRsCd +
+                    " AND biosum_pop_stratum_adjustment_factors.EVALID = " + p_strEvalId + ")";
+
                 //
                 //CLEAN UP
                 //
