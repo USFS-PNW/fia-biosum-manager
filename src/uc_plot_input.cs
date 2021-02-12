@@ -2464,21 +2464,29 @@ namespace FIA_Biosum_Manager
                 strFIADBDbFile = strFIADBDbFile.Trim();
                 strSourceTableName = "BIOSUM_PLOT";
                 strDestTableLinkName = "fiadb_plot_input";
-                p_dao1.CreateTableLink(this.m_strTempMDBFile, strDestTableLinkName, strFIADBDbFile, strSourceTableName, true);
+                p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTableName, strDestTableLinkName,
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
                 
                 //cond table
                 strSourceTableName = "BIOSUM_COND";
                 strDestTableLinkName = "fiadb_cond_input";
-                if (p_dao1.m_intError == 0) p_dao1.CreateTableLink(this.m_strTempMDBFile, strDestTableLinkName, strFIADBDbFile, strSourceTableName, true);
+                if (p_dao1.m_intError == 0) p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTableName, strDestTableLinkName,
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+
                 //tree table
                 str2 = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.ComboBox)cmbFiadbTreeTable, "Text", false);
-                if (p_dao1.m_intError == 0) p_dao1.CreateTableLink(this.m_strTempMDBFile, "fiadb_tree_input", strFIADBDbFile, str2.Trim());
+                if (p_dao1.m_intError == 0) p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, str2.Trim(), "fiadb_tree_input",
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
                 //tree regional biomass
                 str2 = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.ComboBox)cmbFiadbTreeRegionalBiomassTable, "Text", false);
-                if (p_dao1.m_intError == 0 && str2.Trim().Length > 0 && str2.Trim() != "<Optional Table>") p_dao1.CreateTableLink(this.m_strTempMDBFile, "fiadb_treeRegionalBiomass_input", strFIADBDbFile, str2.Trim());
+                if (p_dao1.m_intError == 0 && str2.Trim().Length > 0 && str2.Trim() != "<Optional Table>") p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, str2.Trim(), "fiadb_treeRegionalBiomass_input",
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+
                 //site tree
                 str2 = (string)frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.ComboBox)cmbFiadbSiteTreeTable, "Text", false);
-                if (p_dao1.m_intError == 0) p_dao1.CreateTableLink(this.m_strTempMDBFile, "fiadb_site_tree_input", strFIADBDbFile, str2.Trim());
+                if (p_dao1.m_intError == 0) p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, str2.Trim(), "fiadb_site_tree_input",
+                    ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+
                 //biosum_volume table
                 //ORACLE FCS Tree Volume Table
                 //create a temporary link to the ORACLE FCS BIOSUM_VOLUME table
@@ -2672,6 +2680,8 @@ namespace FIA_Biosum_Manager
                     }
 
                     //insert new plot records
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
