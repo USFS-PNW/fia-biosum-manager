@@ -2620,9 +2620,10 @@ namespace FIA_Biosum_Manager
                          **create plot input insert command
                          ********************************************************/
                         //check the user defined filters
-                        this.m_ado.m_strSQL = "SELECT '999999999999999999999999' AS biosum_plot_id,9 AS biosum_status_cd,p.* INTO tempplot FROM " + strSourceTableLink + " p " +
-                            " INNER JOIN " + this.m_strPpsaTable + " ppsa ON p.cn=ppsa.plt_cn " +
-                            " WHERE ppsa.rscd = " + this.m_strCurrFIADBRsCd + " AND " +
+                        this.m_ado.m_strSQL = "SELECT '999999999999999999999999' AS biosum_plot_id,9 AS biosum_status_cd,p.* INTO tempplot " +
+                            "FROM " + strSourceTableLink + " p, " + this.m_strPpsaTable + " ppsa" +
+                            " WHERE p.cn=ppsa.plt_cn " +
+                            " AND ppsa.rscd = " + this.m_strCurrFIADBRsCd + " AND " +
                             "ppsa.evalid = " + this.m_strCurrFIADBEvalId;
                     }
 
@@ -2757,9 +2758,13 @@ namespace FIA_Biosum_Manager
                      ********************************************************/
                     //check the user defined filters
                     SetLabelValue(m_frmTherm.lblMsg,"Text","Condition Table: Insert New  Records");
-                    this.m_ado.m_strSQL = "SELECT p.biosum_plot_id, TRIM(p.biosum_plot_id) + TRIM(CSTR(c.condid)) AS biosum_cond_id,9 AS biosum_status_cd,c.* INTO tempcond FROM " + strSourceTableLink + " c " +
-                        " INNER JOIN " + this.m_strPlotTable + " p ON c.plt_cn=p.cn WHERE " +
+                    this.m_ado.m_strSQL = "SELECT p.biosum_plot_id, TRIM(p.biosum_plot_id) + TRIM(CSTR(c.condid)) AS biosum_cond_id,9 AS biosum_status_cd,c.*" +
+                        " INTO tempcond FROM " + strSourceTableLink + " c, " +
+                        this.m_strPlotTable +  " p" +
+                        " WHERE c.plt_cn=p.cn AND" +
                         " p.biosum_status_cd=9";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
@@ -2772,10 +2777,24 @@ namespace FIA_Biosum_Manager
                         "SELECT TRIM(biosum_plot_id),TRIM(biosum_cond_id),biosum_status_cd," + strFields + " FROM tempcond";
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
 
+
+                    //@tOdO: DELETE THIS
                     m_ado.m_strSQL = "UPDATE " + this.m_strCondTable + " d " +
                         "INNER JOIN " + strSourceTableLink + " s " +
                         "ON d.cn = s.cn " +
                         "SET d.landclcd = s.cond_status_cd";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
+
+                    m_ado.m_strSQL = "UPDATE " + this.m_strCondTable +
+                            " SET (landclcd) = (" + strSourceTableLink + ".cond_status_cd" +
+                            " FROM " + strSourceTableLink +
+                            " WHERE " + this.m_strCondTable + ".CN = " + strSourceTableLink + ".CN)" +
+                            " WHERE EXISTS( SELECT * FROM " + strSourceTableLink +
+                            " WHERE " + this.m_strCondTable + ".CN = " + strSourceTableLink + ".CN)";
+
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     if (m_ado.m_intError == 0)
                         this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
 
@@ -6226,7 +6245,7 @@ namespace FIA_Biosum_Manager
 
 		private void btnMDBPlotBrowse_Click(object sender, System.EventArgs e)
 		{
-			this.GetMDBFileAndTable("MS Access Data File Containing Plot Table Data",
+			this.GetMDBFileAndTable("SQLite Data File Containing Plot Table Data",
 				"Select Plot Table",
 				ref this.txtMDBPlot,
 				ref this.txtMDBPlotTable);
@@ -6234,7 +6253,7 @@ namespace FIA_Biosum_Manager
 
 		private void btnMDBCondBrowse_Click(object sender, System.EventArgs e)
 		{
-			this.GetMDBFileAndTable("MS Access Data File Containing Condition Table Data",
+			this.GetMDBFileAndTable("SQLite Data File Containing Condition Table Data",
 				"Select Condition Table",
 				ref this.txtMDBCond,
 				ref this.txtMDBCondTable);
@@ -6242,7 +6261,7 @@ namespace FIA_Biosum_Manager
 
 		private void btnMDBTreeBrowse_Click(object sender, System.EventArgs e)
 		{
-			this.GetMDBFileAndTable("MS Access Data File Containing Tree Table Data",
+			this.GetMDBFileAndTable("SQLite Data File Containing Tree Table Data",
 				"Select Tree Table",
 				ref this.txtMDBTree,
 				ref this.txtMDBTreeTable);
@@ -7698,7 +7717,7 @@ namespace FIA_Biosum_Manager
             frmMain.g_oDelegate.CurrentThreadProcessDone = false;
             frmMain.g_oDelegate.CurrentThreadProcessStarted = false;
             this.m_strCurrentProcess = "mdbFIADBFileInput";
-            this.StartTherm("2", "Add MS Access Plot,Cond,Site Tree, & Tree Table Data");
+            this.StartTherm("2", "Add SQLite Plot,Cond,Site Tree, & Tree Table Data");
             frmMain.g_oDelegate.m_oThread = new Thread(new ThreadStart(LoadMDBPlotCondTreeData_Process));
             frmMain.g_oDelegate.m_oThread.IsBackground = true;
             frmMain.g_oDelegate.CurrentThreadProcessIdle = false;
@@ -8316,7 +8335,7 @@ namespace FIA_Biosum_Manager
 				this.m_bLoadStateCountyList=true;
 				this.m_bLoadStateCountyPlotList=true;
 
-				this.StartTherm("2","Add MS Access Pop Table Data");
+				this.StartTherm("2", "Add SQLite Pop Table Data");
 				this.m_frmTherm.progressBar2.Maximum=3;
 				this.m_frmTherm.progressBar2.Minimum=0;
 				this.m_frmTherm.progressBar2.Value=0;
@@ -8552,7 +8571,7 @@ namespace FIA_Biosum_Manager
 
 		private void btnMDBSiteTreeBrowse_Click(object sender, System.EventArgs e)
 		{
-			this.GetMDBFileAndTable("MS Access Data File Containing Site Tree Table Data",
+			this.GetMDBFileAndTable("SQLite Data File Containing Site Tree Table Data",
 									"Select Site Tree Table",
 									ref this.txtMDBSiteTree,
 									ref this.txtMDBSiteTreeTable);
