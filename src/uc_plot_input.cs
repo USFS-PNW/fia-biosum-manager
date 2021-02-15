@@ -2777,22 +2777,23 @@ namespace FIA_Biosum_Manager
                         "SELECT TRIM(biosum_plot_id),TRIM(biosum_cond_id),biosum_status_cd," + strFields + " FROM tempcond";
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
 
+                    //@ Trying this since I couldn't update from SQLite strSourceTableLink
+                    // Seems to work vs creating a new temp table with this field
+                    // Add new column with varchar datatype to link to cond table
+                    m_ado.AddColumn(this.m_connTempMDBFile, "tempcond", "CN_JOIN", "VARCHAR", "34");
+                    // Populate new column
+                    if (m_ado.m_intError == 0)
+                    {
+                        m_ado.m_strSQL = "UPDATE tempcond SET CN_JOIN = TRIM(CN)";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
+                        this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
+                    }
 
-                    //@tOdO: DELETE THIS
                     m_ado.m_strSQL = "UPDATE " + this.m_strCondTable + " d " +
-                        "INNER JOIN " + strSourceTableLink + " s " +
-                        "ON d.cn = s.cn " +
+                        "INNER JOIN tempcond s " +
+                        "ON d.cn = s.CN_JOIN " +
                         "SET d.landclcd = s.cond_status_cd";
-                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
-
-                    m_ado.m_strSQL = "UPDATE " + this.m_strCondTable +
-                            " SET (landclcd) = (" + strSourceTableLink + ".cond_status_cd" +
-                            " FROM " + strSourceTableLink +
-                            " WHERE " + this.m_strCondTable + ".CN = " + strSourceTableLink + ".CN)" +
-                            " WHERE EXISTS( SELECT * FROM " + strSourceTableLink +
-                            " WHERE " + this.m_strCondTable + ".CN = " + strSourceTableLink + ".CN)";
-
                     if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     if (m_ado.m_intError == 0)
