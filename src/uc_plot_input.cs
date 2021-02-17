@@ -2827,9 +2827,12 @@ namespace FIA_Biosum_Manager
                     //check the user defined filters
                     SetLabelValue(m_frmTherm.lblMsg,"Text","Tree Table: Insert New  Records");
                     this.m_ado.m_strSQL = "SELECT TRIM(p.biosum_plot_id) + TRIM(CSTR(t.condid)) AS biosum_cond_id,9 AS biosum_status_cd,t.* INTO temptree FROM " + strSourceTableLink + " t " +
-                        " INNER JOIN " + this.m_strPlotTable + " p ON t.plt_cn=p.cn " +
+                        " INNER JOIN " + this.m_strPlotTable + " p ON TRIM(t.plt_cn)=TRIM(p.cn) " +
                         " WHERE p.biosum_status_cd=9 AND t.statuscd<>0;";
-                    this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
+                    if (m_ado.m_intError == 0)
+                        this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
 
@@ -3453,9 +3456,10 @@ namespace FIA_Biosum_Manager
                     //check if records exist in the tree_regional_drybio table
                     SetLabelValue(m_frmTherm.lblMsg, "Text", "Updating Tree drybiom,drybiot,voltsgrs Columns...Stand By");
                     frmMain.g_oDelegate.ExecuteControlMethod((System.Windows.Forms.Control)this.m_frmTherm, "Refresh");
+            int intCount = (int)p_ado.getRecordCount(m_connTempMDBFile, "SELECT COUNT(*) FROM (SELECT TOP 1 * FROM " + m_strTreeRegionalBiomassTable + ")", m_strTreeRegionalBiomassTable);
                     if (this.m_strTreeRegionalBiomassTable.Trim().Length > 0 &&
                        p_ado.TableExist(m_connTempMDBFile, this.m_strTreeRegionalBiomassTable.Trim()) &&
-                       (int)p_ado.getRecordCount(m_connTempMDBFile, "SELECT COUNT(*) FROM (SELECT TOP 1 * FROM " + m_strTreeRegionalBiomassTable + ")", m_strTreeRegionalBiomassTable) > 0)
+                       intCount > 0)
                     {
 
 
