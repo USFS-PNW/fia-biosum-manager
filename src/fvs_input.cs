@@ -3857,32 +3857,32 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
                 oDataMgr.SqlNonQuery(con, strSql);
 
-                // Query schema from original table
-                strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
-                         "AND name = '" + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName + "'";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
+                //// Query schema from original table
+                //strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
+                //         "AND name = '" + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName + "'";
+                //if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                //    frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                //strSql = oDataMgr.getSingleStringValueFromSQLQuery(con, strSql, "sqlite_master");
 
-                // Execute the create table statement
-                if (!String.IsNullOrEmpty(strSql))
-                {
-                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                        frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                    oDataMgr.SqlNonQuery(con, strSql);
+                //// Execute the create table statement
+                //if (!String.IsNullOrEmpty(strSql))
+                //{
+                //    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                //        frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                //    oDataMgr.SqlNonQuery(con, strSql);
 
-                    // Populate the table from the source
-                    if (oDataMgr.m_intError == 0)
-                    {
-                        strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName +
-                                 " SELECT * FROM source." + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName;
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                            frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
-                        oDataMgr.SqlNonQuery(con, strSql);
-                    }
-                }
+                //    // Populate the table from the source
+                //    if (oDataMgr.m_intError == 0)
+                //    {
+                //        strSql = "INSERT INTO " + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName +
+                //                 " SELECT * FROM source." + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName;
+                //        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                //            frmMain.g_oUtils.WriteText(strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                //        oDataMgr.SqlNonQuery(con, strSql);
+                //    }
+                //}
 
-                // Create empty stand table
+                // Query schema from original stand table
                 strSql = "SELECT sql FROM source.sqlite_master WHERE type = 'table' " +
                     "AND name = '" + Tables.FIA2FVS.DefaultFvsInputStandTableName + "'";
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
