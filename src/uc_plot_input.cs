@@ -2777,9 +2777,10 @@ namespace FIA_Biosum_Manager
                         "SELECT TRIM(biosum_plot_id),TRIM(biosum_cond_id),biosum_status_cd," + strFields + " FROM tempcond";
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
 
-                    //@ Trying this since I couldn't update from SQLite strSourceTableLink
+                    // Trying this since I couldn't update from SQLite strSourceTableLink
+                    // Get ODBC error 'Operation Must Use an updateable query'
                     // Seems to work vs creating a new temp table with this field
-                    // Add new column with varchar datatype to link to cond table
+                    // Added new column to tempcond with varchar datatype to link to cond table
                     m_ado.AddColumn(this.m_connTempMDBFile, "tempcond", "CN_JOIN", "VARCHAR", "34");
                     // Populate new column
                     if (m_ado.m_intError == 0)
@@ -2827,7 +2828,7 @@ namespace FIA_Biosum_Manager
                     //check the user defined filters
                     SetLabelValue(m_frmTherm.lblMsg,"Text","Tree Table: Insert New  Records");
                     this.m_ado.m_strSQL = "SELECT TRIM(p.biosum_plot_id) + TRIM(CSTR(t.condid)) AS biosum_cond_id,9 AS biosum_status_cd,t.* INTO temptree FROM " + strSourceTableLink + " t " +
-                        " INNER JOIN " + this.m_strPlotTable + " p ON TRIM(t.plt_cn)=TRIM(p.cn) " +
+                        " INNER JOIN " + this.m_strPlotTable + " p ON t.plt_cn=TRIM(p.cn) " +
                         " WHERE p.biosum_status_cd=9 AND t.statuscd<>0;";
                     if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
@@ -2852,7 +2853,9 @@ namespace FIA_Biosum_Manager
                             "s.regional_drybiot,s.regional_drybiom," +
                             "9 AS biosum_status_cd FROM fiadb_treeRegionalBiomass_input s " +
                             "INNER JOIN " + this.m_strTreeTable + " t " +
-                            "ON t.cn = s.tre_cn WHERE t.biosum_status_cd=9";
+                            "ON trim(t.cn) = s.tre_cn WHERE t.biosum_status_cd=9";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                         if (m_ado.m_intError == 0)
                             this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                         m_intError = m_ado.m_intError;
@@ -2869,6 +2872,8 @@ namespace FIA_Biosum_Manager
                         "cull + roughcull," +
                         "IIF(cull IS NOT NULL,cull," +
                         "IIF(roughcull IS NOT NULL,roughcull,0))),cullbf)";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
@@ -2885,8 +2890,10 @@ namespace FIA_Biosum_Manager
                     //check the user defined filters
                     SetLabelValue(m_frmTherm.lblMsg,"Text","Site Tree Table: Insert New  Records");
                     this.m_ado.m_strSQL = "SELECT TRIM(p.biosum_plot_id) AS biosum_plot_id,9 AS biosum_status_cd,t.* INTO tempsitetree FROM " + strSourceTableLink + " t " +
-                        " INNER JOIN " + this.m_strPlotTable + " p ON t.plt_cn=p.cn " +
+                        " INNER JOIN " + this.m_strPlotTable + " p ON t.plt_cn=TRIM(p.cn) " +
                         " WHERE p.biosum_status_cd=9";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, this.m_ado.m_strSQL + "\r\n");
                     this.m_ado.SqlNonQuery(this.m_connTempMDBFile, this.m_ado.m_strSQL);
                     m_intError = m_ado.m_intError;
                 }
@@ -4965,16 +4972,17 @@ namespace FIA_Biosum_Manager
 	        m_connTempMDBFile = null;
 
 
-	        //If any of the FIADB source DWM tables do not exist,
-	        //show message, uncheck the DWM checkbox, return early
-	        using (var conn = new OleDbConnection(p_ado.getMDBConnString(strFIADBDbFile, "", "")))
+            //If any of the FIADB source DWM tables do not exist,
+            //show message, uncheck the DWM checkbox, return early
+            DataMgr oDataMgr = new DataMgr();
+            using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(strFIADBDbFile)))
 	        {
 	            conn.Open();
-	            if (!p_ado.TableExist(conn, m_strDwmCwdTable) ||
-	                !p_ado.TableExist(conn, m_strDwmFwdTable) ||
-	                !p_ado.TableExist(conn, m_strDwmDuffLitterTable) ||
-	                !p_ado.TableExist(conn, m_strDwmTransectSegmentTable))
-	            {
+                if (!oDataMgr.TableExist(conn, m_strDwmCwdTable) ||
+                    !oDataMgr.TableExist(conn, m_strDwmFwdTable) ||
+                    !oDataMgr.TableExist(conn, m_strDwmDuffLitterTable) ||
+                    !oDataMgr.TableExist(conn, m_strDwmTransectSegmentTable))
+                {
 	                Func<bool, string, string> result = (boolTableExists, tableName) =>
 	                {
 	                    if (!boolTableExists) return "\r\n - " + tableName;
@@ -4983,10 +4991,10 @@ namespace FIA_Biosum_Manager
 	                DialogResult dlgResult = MessageBox.Show(String.Format(
 	                        "!!Error!!\nModule - uc_plot_input:ImportDownWoodyMaterials\n" + "Err Msg - " +
 	                        "At least one FIADB Source DWM table was not found:{0}{1}{2}{3}\r\nDo you wish to continue plot data input without DWM?",
-	                        result(p_ado.TableExist(conn, m_strDwmCwdTable), m_strDwmCwdTable),
-	                        result(p_ado.TableExist(conn, m_strDwmFwdTable), m_strDwmFwdTable),
-	                        result(p_ado.TableExist(conn, m_strDwmDuffLitterTable), m_strDwmDuffLitterTable),
-	                        result(p_ado.TableExist(conn, m_strDwmTransectSegmentTable), m_strDwmTransectSegmentTable)),
+	                        result(oDataMgr.TableExist(conn, m_strDwmCwdTable), m_strDwmCwdTable),
+	                        result(oDataMgr.TableExist(conn, m_strDwmFwdTable), m_strDwmFwdTable),
+	                        result(oDataMgr.TableExist(conn, m_strDwmDuffLitterTable), m_strDwmDuffLitterTable),
+	                        result(oDataMgr.TableExist(conn, m_strDwmTransectSegmentTable), m_strDwmTransectSegmentTable)),
 	                    "FIA Biosum",
 	                    MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Exclamation);
 	                //Disable functionality related to DWM option down the pipeline
@@ -5007,13 +5015,13 @@ namespace FIA_Biosum_Manager
 
 		    dao_data_access p_dao = new dao_data_access();
             //Link to FIADB source tables in temporary database
-		    p_dao.CreateTableLink(m_strTempMDBFile, strFiaCWD, strFIADBDbFile, m_strDwmCwdTable);
-		    p_dao.CreateTableLink(m_strTempMDBFile, strFiaFWD, strFIADBDbFile, m_strDwmFwdTable);
-		    p_dao.CreateTableLink(m_strTempMDBFile, strFiaDL, strFIADBDbFile, m_strDwmDuffLitterTable);
-		    p_dao.CreateTableLink(m_strTempMDBFile, strFiaTS, strFIADBDbFile, m_strDwmTransectSegmentTable);
+            p_dao.CreateSQLiteTableLink(m_strTempMDBFile, m_strDwmCwdTable, strFiaCWD,  ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+            p_dao.CreateSQLiteTableLink(m_strTempMDBFile, m_strDwmFwdTable, strFiaFWD,  ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+            p_dao.CreateSQLiteTableLink(m_strTempMDBFile, m_strDwmDuffLitterTable, strFiaDL,  ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
+            p_dao.CreateSQLiteTableLink(m_strTempMDBFile, m_strDwmTransectSegmentTable, strFiaTS,  ODBCMgr.DSN_KEYS.PlotInputDsnName, strFIADBDbFile);
 
             //Link to Master_AUX.accdb DWM source tables in temporary database
-	        string strMasterAuxDb = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\db\\master_aux.accdb"; 
+            string strMasterAuxDb = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\db\\master_aux.accdb"; 
 		    p_dao.CreateTableLink(m_strTempMDBFile, m_strDwmCwdTable, strMasterAuxDb, m_strDwmCwdTable);
 		    p_dao.CreateTableLink(m_strTempMDBFile, m_strDwmFwdTable, strMasterAuxDb, m_strDwmFwdTable);
 		    p_dao.CreateTableLink(m_strTempMDBFile, m_strDwmDuffLitterTable, strMasterAuxDb, m_strDwmDuffLitterTable);
@@ -5032,7 +5040,6 @@ namespace FIA_Biosum_Manager
 
 		    String strSourceFields = "";
 		    String strDestFields = "";
-		    String strSourceTableLink = "";
 		    System.Data.DataTable dtDwmCwd = p_ado.getTableSchema(m_connTempMDBFile, "select * from " + m_strDwmCwdTable);
 		    System.Data.DataTable dtDwmFwd = p_ado.getTableSchema(m_connTempMDBFile, "select * from " + m_strDwmFwdTable);
 		    System.Data.DataTable dtDwmDuffLitter = p_ado.getTableSchema(m_connTempMDBFile, "select * from " + m_strDwmDuffLitterTable);
