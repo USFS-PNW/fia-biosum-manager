@@ -229,6 +229,7 @@ namespace FIA_Biosum_Manager
             static public string DefaultScenarioResultsValidCombosTableName { get { return "validcombos"; } }
             static public string DefaultScenarioResultsTreeVolValSumTableName { get { return "tree_vol_val_sum_by_rx_cycle_work"; } }
             static public string DefaultCalculatedPrePostFVSVariableTableDbFile { get { return @"optimizer\db\prepost_fvs_weighted.accdb"; } }
+            static public string DefaultCalculatedPrePostFVSVariableTableSqliteDbFile { get { return @"optimizer\db\prepost_fvs_weighted.db"; } }
             static public string DefaultScenarioResultsPostEconomicWeightedTableName { get { return @"post_economic_weighted"; } }
             static public string DefaultScenarioResultsDbFile { get { return @"db\optimizer_results.accdb"; } }
             static public string DefaultScenarioResultsEconByRxCycleTableName { get { return @"econ_by_rx_cycle"; } }
@@ -2325,6 +2326,20 @@ namespace FIA_Biosum_Manager
                     "weight DOUBLE)";
             }
 
+            public void CreateSqliteScenarioFvsVariableWeightsReferenceTable(SQLite.ADO.DataMgr oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn, string p_strTableName)
+            {
+                oDataMgr.SqlNonQuery(p_oConn, CreateSqliteScenarioFvsVariableWeightsReferenceTableSQL(p_strTableName));
+            }
+            static public string CreateSqliteScenarioFvsVariableWeightsReferenceTableSQL(string p_strTableName)
+            {
+                return "CREATE TABLE " + p_strTableName + " (" +
+                    "rxcycle TEXT," +
+                    "pre_or_post TEXT," +
+                    "rxyear INTEGER," +
+                    "weight REAL," +
+                    "PRIMARY KEY (rxcycle, pre_or_post, rxyear))";
+            }
+
         }
 
         public class OptimizerDefinitions
@@ -2333,6 +2348,7 @@ namespace FIA_Biosum_Manager
             static public string DefaultCalculatedOptimizerVariablesTableName { get { return "calculated_optimizer_variables"; } }
             static public string DefaultCalculatedEconVariablesTableName { get { return "calculated_econ_variables_definition"; } }
             static public string DefaultCalculatedFVSVariablesTableName { get { return "calculated_fvs_variables_definition"; } }
+            static public string DefaultSqliteDbFile { get { return @"optimizer\db\optimizer_definitions.db"; } }
 
 
             public void CreateCalculatedOptimizerVariableTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)

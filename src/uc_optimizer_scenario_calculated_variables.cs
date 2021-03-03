@@ -6,6 +6,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using System.Threading;
+using SQLite.ADO;
 
 namespace FIA_Biosum_Manager
 {
@@ -43,7 +44,10 @@ namespace FIA_Biosum_Manager
         public bool m_bSave = false;
         private ado_data_access m_oAdo;
         private ado_data_access m_oAdoFvs;
+        private DataMgr m_oDataMgr;
+        private DataMgr m_oDataMgrFvs;
         private string m_strTempMDB;
+        private string m_strTempDb;
 
         const int COLUMN_CHECKBOX = 0;
         const int COLUMN_OPTIMIZE_VARIABLE = 1;
@@ -70,6 +74,9 @@ namespace FIA_Biosum_Manager
         private string m_strFvsViewTableName = "view_weights";
         string m_strCalculatedVariablesAccdb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
             "\\" + Tables.OptimizerDefinitions.DefaultDbFile;
+        string m_strCalculatedVariablesDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
+            "\\" + Tables.OptimizerDefinitions.DefaultSqliteDbFile;
+
 
 
 
@@ -200,7 +207,9 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oFrmMain.Height,
                 frmMain.g_oFrmMain.Width,
                 frmMain.g_oFrmMain.Top);
-            this.loadvalues();
+            //this.loadvalues();
+            //@ToDo
+            this.loadvalues_sqlite();
             frmMain.g_oFrmMain.DeactivateStandByAnimation();
         }
 
@@ -358,7 +367,7 @@ namespace FIA_Biosum_Manager
             this.BtnEconImport.Enabled = false;
             this.BtnEconImport.Location = new System.Drawing.Point(380, 171);
             this.BtnEconImport.Name = "BtnEconImport";
-            this.BtnEconImport.Size = new System.Drawing.Size(121, 24);
+            this.BtnEconImport.Size = new System.Drawing.Size(140, 30);
             this.BtnEconImport.TabIndex = 97;
             this.BtnEconImport.Text = "Import weights";
             this.BtnEconImport.Click += new System.EventHandler(this.BtnEconImport_Click);
@@ -366,9 +375,10 @@ namespace FIA_Biosum_Manager
             // BtnDeleteEconVariable
             // 
             this.BtnDeleteEconVariable.Enabled = false;
-            this.BtnDeleteEconVariable.Location = new System.Drawing.Point(565, 402);
+            this.BtnDeleteEconVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnDeleteEconVariable.Location = new System.Drawing.Point(568, 402);
             this.BtnDeleteEconVariable.Name = "BtnDeleteEconVariable";
-            this.BtnDeleteEconVariable.Size = new System.Drawing.Size(64, 24);
+            this.BtnDeleteEconVariable.Size = new System.Drawing.Size(64, 30);
             this.BtnDeleteEconVariable.TabIndex = 96;
             this.BtnDeleteEconVariable.Text = "Delete";
             this.BtnDeleteEconVariable.Click += new System.EventHandler(this.BtnDeleteEconVariable_Click);
@@ -387,7 +397,7 @@ namespace FIA_Biosum_Manager
             // lblEconVariableName
             // 
             this.lblEconVariableName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEconVariableName.Location = new System.Drawing.Point(172, 360);
+            this.lblEconVariableName.Location = new System.Drawing.Point(210, 360);
             this.lblEconVariableName.Name = "lblEconVariableName";
             this.lblEconVariableName.Size = new System.Drawing.Size(302, 24);
             this.lblEconVariableName.TabIndex = 94;
@@ -395,10 +405,10 @@ namespace FIA_Biosum_Manager
             // 
             // btnEconVariableType
             // 
-            this.btnEconVariableType.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEconVariableType.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEconVariableType.Location = new System.Drawing.Point(240, 26);
             this.btnEconVariableType.Name = "btnEconVariableType";
-            this.btnEconVariableType.Size = new System.Drawing.Size(139, 98);
+            this.btnEconVariableType.Size = new System.Drawing.Size(100, 80);
             this.btnEconVariableType.TabIndex = 93;
             this.btnEconVariableType.Text = "Select";
             this.btnEconVariableType.Click += new System.EventHandler(this.btnEconVariableType_Click);
@@ -419,16 +429,17 @@ namespace FIA_Biosum_Manager
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(387, 279);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(139, 24);
+            this.label6.Size = new System.Drawing.Size(160, 24);
             this.label6.TabIndex = 91;
             this.label6.Text = "TOTAL WEIGHTS";
             // 
             // BtnHelpEconVariable
             // 
+            this.BtnHelpEconVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnHelpEconVariable.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.BtnHelpEconVariable.Location = new System.Drawing.Point(495, 402);
             this.BtnHelpEconVariable.Name = "BtnHelpEconVariable";
-            this.BtnHelpEconVariable.Size = new System.Drawing.Size(64, 24);
+            this.BtnHelpEconVariable.Size = new System.Drawing.Size(64, 30);
             this.BtnHelpEconVariable.TabIndex = 87;
             this.BtnHelpEconVariable.Text = "Help";
             this.BtnHelpEconVariable.Click += new System.EventHandler(this.BtnHelpEconVariable_Click);
@@ -460,18 +471,20 @@ namespace FIA_Biosum_Manager
             // 
             // BtnSaveEcon
             // 
-            this.BtnSaveEcon.Location = new System.Drawing.Point(634, 402);
+            this.BtnSaveEcon.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnSaveEcon.Location = new System.Drawing.Point(641, 402);
             this.BtnSaveEcon.Name = "BtnSaveEcon";
-            this.BtnSaveEcon.Size = new System.Drawing.Size(76, 24);
+            this.BtnSaveEcon.Size = new System.Drawing.Size(76, 30);
             this.BtnSaveEcon.TabIndex = 77;
             this.BtnSaveEcon.Text = "Save";
             this.BtnSaveEcon.Click += new System.EventHandler(this.BtnSaveEcon_Click);
             // 
             // btnEconDetailsCancel
             // 
-            this.btnEconDetailsCancel.Location = new System.Drawing.Point(716, 402);
+            this.btnEconDetailsCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEconDetailsCancel.Location = new System.Drawing.Point(726, 402);
             this.btnEconDetailsCancel.Name = "btnEconDetailsCancel";
-            this.btnEconDetailsCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnEconDetailsCancel.Size = new System.Drawing.Size(64, 30);
             this.btnEconDetailsCancel.TabIndex = 75;
             this.btnEconDetailsCancel.Text = "Cancel";
             this.btnEconDetailsCancel.Click += new System.EventHandler(this.btnEconDetailsCancel_Click);
@@ -498,7 +511,7 @@ namespace FIA_Biosum_Manager
             // lblSelectedEconType
             // 
             this.lblSelectedEconType.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSelectedEconType.Location = new System.Drawing.Point(224, 145);
+            this.lblSelectedEconType.Location = new System.Drawing.Point(236, 145);
             this.lblSelectedEconType.Name = "lblSelectedEconType";
             this.lblSelectedEconType.Size = new System.Drawing.Size(302, 24);
             this.lblSelectedEconType.TabIndex = 69;
@@ -543,15 +556,17 @@ namespace FIA_Biosum_Manager
             // BtnRecalculateAll
             // 
             this.BtnRecalculateAll.Enabled = false;
+            this.BtnRecalculateAll.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnRecalculateAll.Location = new System.Drawing.Point(87, 360);
             this.BtnRecalculateAll.Name = "BtnRecalculateAll";
-            this.BtnRecalculateAll.Size = new System.Drawing.Size(105, 32);
+            this.BtnRecalculateAll.Size = new System.Drawing.Size(115, 32);
             this.BtnRecalculateAll.TabIndex = 89;
             this.BtnRecalculateAll.Text = "Recalculate All";
             this.BtnRecalculateAll.Click += new System.EventHandler(this.BtnRecalculateAll_Click);
             // 
             // BtnHelpCalculatedMenu
             // 
+            this.BtnHelpCalculatedMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnHelpCalculatedMenu.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.BtnHelpCalculatedMenu.Location = new System.Drawing.Point(17, 360);
             this.BtnHelpCalculatedMenu.Name = "BtnHelpCalculatedMenu";
@@ -562,7 +577,8 @@ namespace FIA_Biosum_Manager
             // 
             // btnNewEcon
             // 
-            this.btnNewEcon.Location = new System.Drawing.Point(198, 360);
+            this.btnNewEcon.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewEcon.Location = new System.Drawing.Point(207, 360);
             this.btnNewEcon.Name = "btnNewEcon";
             this.btnNewEcon.Size = new System.Drawing.Size(148, 32);
             this.btnNewEcon.TabIndex = 14;
@@ -571,7 +587,8 @@ namespace FIA_Biosum_Manager
             // 
             // btnCancelSummary
             // 
-            this.btnCancelSummary.Location = new System.Drawing.Point(581, 360);
+            this.btnCancelSummary.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelSummary.Location = new System.Drawing.Point(608, 360);
             this.btnCancelSummary.Name = "btnCancelSummary";
             this.btnCancelSummary.Size = new System.Drawing.Size(90, 32);
             this.btnCancelSummary.TabIndex = 13;
@@ -580,18 +597,20 @@ namespace FIA_Biosum_Manager
             // 
             // btnProperties
             // 
-            this.btnProperties.Location = new System.Drawing.Point(485, 360);
+            this.btnProperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnProperties.Location = new System.Drawing.Point(502, 360);
             this.btnProperties.Name = "btnProperties";
-            this.btnProperties.Size = new System.Drawing.Size(90, 32);
+            this.btnProperties.Size = new System.Drawing.Size(100, 32);
             this.btnProperties.TabIndex = 12;
             this.btnProperties.Text = "Properties";
             this.btnProperties.Click += new System.EventHandler(this.btnProperties_Click);
             // 
             // btnNewFvs
             // 
-            this.btnNewFvs.Location = new System.Drawing.Point(352, 360);
+            this.btnNewFvs.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNewFvs.Location = new System.Drawing.Point(361, 360);
             this.btnNewFvs.Name = "btnNewFvs";
-            this.btnNewFvs.Size = new System.Drawing.Size(126, 32);
+            this.btnNewFvs.Size = new System.Drawing.Size(135, 32);
             this.btnNewFvs.TabIndex = 4;
             this.btnNewFvs.Text = "New FVS Variable";
             this.btnNewFvs.Click += new System.EventHandler(this.btnNewFvs_Click);
@@ -696,7 +715,7 @@ namespace FIA_Biosum_Manager
             this.BtnFvsImport.Enabled = false;
             this.BtnFvsImport.Location = new System.Drawing.Point(463, 165);
             this.BtnFvsImport.Name = "BtnFvsImport";
-            this.BtnFvsImport.Size = new System.Drawing.Size(121, 24);
+            this.BtnFvsImport.Size = new System.Drawing.Size(140, 30);
             this.BtnFvsImport.TabIndex = 94;
             this.BtnFvsImport.Text = "Import weights";
             this.BtnFvsImport.Click += new System.EventHandler(this.BtnFvsImport_Click);
@@ -704,7 +723,7 @@ namespace FIA_Biosum_Manager
             // lblFvsVariableName
             // 
             this.lblFvsVariableName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFvsVariableName.Location = new System.Drawing.Point(170, 361);
+            this.lblFvsVariableName.Location = new System.Drawing.Point(206, 361);
             this.lblFvsVariableName.Name = "lblFvsVariableName";
             this.lblFvsVariableName.Size = new System.Drawing.Size(264, 24);
             this.lblFvsVariableName.TabIndex = 93;
@@ -712,10 +731,10 @@ namespace FIA_Biosum_Manager
             // 
             // btnFVSVariableValue
             // 
-            this.btnFVSVariableValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFVSVariableValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFVSVariableValue.Location = new System.Drawing.Point(646, 28);
             this.btnFVSVariableValue.Name = "btnFVSVariableValue";
-            this.btnFVSVariableValue.Size = new System.Drawing.Size(139, 98);
+            this.btnFVSVariableValue.Size = new System.Drawing.Size(100, 80);
             this.btnFVSVariableValue.TabIndex = 92;
             this.btnFVSVariableValue.Text = "Select";
             this.btnFVSVariableValue.Click += new System.EventHandler(this.btnFVSVariableValue_Click);
@@ -734,9 +753,10 @@ namespace FIA_Biosum_Manager
             // btnDeleteFvsVariable
             // 
             this.btnDeleteFvsVariable.Enabled = false;
+            this.btnDeleteFvsVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDeleteFvsVariable.Location = new System.Drawing.Point(564, 402);
             this.btnDeleteFvsVariable.Name = "btnDeleteFvsVariable";
-            this.btnDeleteFvsVariable.Size = new System.Drawing.Size(64, 24);
+            this.btnDeleteFvsVariable.Size = new System.Drawing.Size(64, 30);
             this.btnDeleteFvsVariable.TabIndex = 11;
             this.btnDeleteFvsVariable.Text = "Delete";
             this.btnDeleteFvsVariable.Click += new System.EventHandler(this.btnDeleteFvsVariable_Click);
@@ -764,10 +784,11 @@ namespace FIA_Biosum_Manager
             // 
             // BtnHelp
             // 
+            this.BtnHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnHelp.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.BtnHelp.Location = new System.Drawing.Point(494, 402);
             this.BtnHelp.Name = "BtnHelp";
-            this.BtnHelp.Size = new System.Drawing.Size(64, 24);
+            this.BtnHelp.Size = new System.Drawing.Size(64, 30);
             this.BtnHelp.TabIndex = 87;
             this.BtnHelp.Text = "Help";
             this.BtnHelp.Click += new System.EventHandler(this.BtnHelp_Click);
@@ -785,7 +806,7 @@ namespace FIA_Biosum_Manager
             // 
             this.label8.Location = new System.Drawing.Point(13, 389);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(87, 24);
+            this.label8.Size = new System.Drawing.Size(100, 24);
             this.label8.TabIndex = 85;
             this.label8.Text = "Description:";
             // 
@@ -799,18 +820,20 @@ namespace FIA_Biosum_Manager
             // 
             // btnFvsCalculate
             // 
+            this.btnFvsCalculate.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFvsCalculate.Location = new System.Drawing.Point(634, 402);
             this.btnFvsCalculate.Name = "btnFvsCalculate";
-            this.btnFvsCalculate.Size = new System.Drawing.Size(76, 24);
+            this.btnFvsCalculate.Size = new System.Drawing.Size(76, 30);
             this.btnFvsCalculate.TabIndex = 77;
             this.btnFvsCalculate.Text = "Calculate";
             this.btnFvsCalculate.Click += new System.EventHandler(this.btnFvsCalculate_Click);
             // 
             // btnFvsDetailsCancel
             // 
+            this.btnFvsDetailsCancel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFvsDetailsCancel.Location = new System.Drawing.Point(716, 402);
             this.btnFvsDetailsCancel.Name = "btnFvsDetailsCancel";
-            this.btnFvsDetailsCancel.Size = new System.Drawing.Size(64, 24);
+            this.btnFvsDetailsCancel.Size = new System.Drawing.Size(64, 30);
             this.btnFvsDetailsCancel.TabIndex = 75;
             this.btnFvsDetailsCancel.Text = "Cancel";
             this.btnFvsDetailsCancel.Click += new System.EventHandler(this.btnFvsDetailsCancel_Click);
@@ -820,7 +843,7 @@ namespace FIA_Biosum_Manager
             this.grpBoxFvsBaseline.Controls.Add(this.cboFvsVariableBaselinePkg);
             this.grpBoxFvsBaseline.Location = new System.Drawing.Point(8, 7);
             this.grpBoxFvsBaseline.Name = "grpBoxFvsBaseline";
-            this.grpBoxFvsBaseline.Size = new System.Drawing.Size(154, 48);
+            this.grpBoxFvsBaseline.Size = new System.Drawing.Size(194, 68);
             this.grpBoxFvsBaseline.TabIndex = 74;
             this.grpBoxFvsBaseline.TabStop = false;
             this.grpBoxFvsBaseline.Text = "Baseline RxPackage";
@@ -828,7 +851,7 @@ namespace FIA_Biosum_Manager
             // cboFvsVariableBaselinePkg
             // 
             this.cboFvsVariableBaselinePkg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFvsVariableBaselinePkg.Location = new System.Drawing.Point(8, 18);
+            this.cboFvsVariableBaselinePkg.Location = new System.Drawing.Point(8, 27);
             this.cboFvsVariableBaselinePkg.Name = "cboFvsVariableBaselinePkg";
             this.cboFvsVariableBaselinePkg.Size = new System.Drawing.Size(72, 28);
             this.cboFvsVariableBaselinePkg.TabIndex = 77;
@@ -879,7 +902,7 @@ namespace FIA_Biosum_Manager
             // LblSelectedVariable
             // 
             this.LblSelectedVariable.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LblSelectedVariable.Location = new System.Drawing.Point(157, 145);
+            this.LblSelectedVariable.Location = new System.Drawing.Point(195, 143);
             this.LblSelectedVariable.Name = "LblSelectedVariable";
             this.LblSelectedVariable.Size = new System.Drawing.Size(264, 24);
             this.LblSelectedVariable.TabIndex = 69;
@@ -889,7 +912,7 @@ namespace FIA_Biosum_Manager
             // 
             this.lblSelectedFVSVariable.Location = new System.Drawing.Point(11, 144);
             this.lblSelectedFVSVariable.Name = "lblSelectedFVSVariable";
-            this.lblSelectedFVSVariable.Size = new System.Drawing.Size(151, 24);
+            this.lblSelectedFVSVariable.Size = new System.Drawing.Size(200, 24);
             this.lblSelectedFVSVariable.TabIndex = 68;
             this.lblSelectedFVSVariable.Text = "Selected FVS Variable:";
             // 
@@ -928,6 +951,84 @@ namespace FIA_Biosum_Manager
 
         }
         #endregion
+
+        protected void loadvalues_sqlite()
+        {
+            this.m_intError = 0;
+            this.m_strError = "";
+
+            if (System.IO.File.Exists(m_strDebugFile)) System.IO.File.Delete(m_strDebugFile);
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "START: Optimizer Calculated Variables Log "
+                    + System.DateTime.Now.ToString() + "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Form name: " + this.Name + "\r\n\r\n");
+            }
+
+            // Check for SQLite configuration database 
+            if (!System.IO.File.Exists(this.m_strCalculatedVariablesDb))
+            {
+                this.migrate_access_data();
+            }
+
+            this.loadLstVariablesSqlite();
+
+            //get temporary db file
+            utils oUtils = new utils();
+            m_strTempDb = oUtils.getRandomFile(this.m_oEnv.strTempDir, "db");
+            m_oDataMgrFvs = new DataMgr();
+            m_oDataMgrFvs.CreateDbFile(m_strTempDb);
+            m_oDataMgrFvs.OpenConnection(m_oDataMgrFvs.GetConnectionString(m_strTempDb));
+            if (m_oDataMgrFvs.m_intError == 0)
+            {
+                frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgrFvs,
+                    m_oDataMgrFvs.m_Connection, m_strFvsViewTableName);
+                init_sqlite_m_dg();
+            }
+
+            //load datagrid for economic variables
+            loadEconVariablesGridSqlite();
+
+            // load listbox for economic variables
+            lstEconVariablesList.Items.Clear();
+            foreach (string strName in PREFIX_ECON_NAME_ARRAY)
+            {
+                lstEconVariablesList.Items.Add(strName);
+            }
+
+            //@ToDo: Rework this when FVS out is in Sqlite
+            if (m_oAdo == null)
+            {
+                m_oAdo = new ado_data_access();
+            }
+            m_dictFVSTables = m_oOptimizerScenarioTools.LoadFvsTablesAndVariables(m_oAdo);
+
+            foreach (string strKey in m_dictFVSTables.Keys)
+            {
+                // 
+                if (strKey.IndexOf("_WEIGHTED") < 0)
+                {
+                    lstFVSTablesList.Items.Add(strKey);
+                }
+            }
+
+            // Enable the refresh button if we have calculated weighted variables
+            string strPrePostWeightedDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
+                "\\" + Tables.OptimizerScenarioResults.DefaultCalculatedPrePostFVSVariableTableSqliteDbFile;
+            if (System.IO.File.Exists(strPrePostWeightedDb))
+            {
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(m_oDataMgr.GetConnectionString(strPrePostWeightedDb)))
+                {
+                    con.Open();
+                    string[] arrTableNames = m_oDataMgr.getTableNames(con);
+                    if (arrTableNames.Length > 0)
+                        BtnRecalculateAll.Enabled = true;
+                }
+            }
+
+            if (m_oAdo != null)
+                m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
+        }
 
         protected void loadvalues()
         {
@@ -1309,6 +1410,138 @@ namespace FIA_Biosum_Manager
             }
         }
 
+        private void init_sqlite_m_dg()
+        {
+
+            m_oDataMgrFvs.m_DataSet = new DataSet(m_strFvsViewTableName);
+            m_oDataMgrFvs.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
+            m_oDataMgrFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
+            this.m_dtTableSchema = m_oDataMgrFvs.getTableSchema(m_oDataMgrFvs.m_Connection,
+                                           m_oDataMgrFvs.m_Transaction,
+                                           m_oDataMgrFvs.m_strSQL);
+
+            if (m_oDataMgrFvs.m_intError == 0)
+            {
+                m_oDataMgrFvs.m_Command = m_oDataMgrFvs.m_Connection.CreateCommand();
+                m_oDataMgrFvs.m_Command.CommandText = m_oDataMgrFvs.m_strSQL;
+                m_oDataMgrFvs.m_DataAdapter.SelectCommand = m_oDataMgrFvs.m_Command;
+                m_oDataMgrFvs.m_DataAdapter.SelectCommand.Transaction = m_oDataMgrFvs.m_Transaction;
+            }
+
+            try
+            {
+
+                m_oDataMgrFvs.m_DataAdapter.Fill(m_oDataMgrFvs.m_DataSet, "view_weights");
+                this.m_dv = new DataView(m_oDataMgrFvs.m_DataSet.Tables["view_weights"]);
+
+                this.m_dv.AllowNew = false;       //cannot append new records
+                this.m_dv.AllowDelete = false;    //cannot delete records
+                this.m_dv.AllowEdit = true;
+                this.m_dg.CaptionText = "view_weights";
+                m_dg.BackgroundColor = frmMain.g_oGridViewBackgroundColor;
+                /***********************************************************************************
+                 **assign the aColumnTextColumn as type DataGridColoredTextBoxColumn object class
+                 ***********************************************************************************/
+                WeightedAverage_DataGridColoredTextBoxColumn aColumnTextColumn;
+
+
+                /***************************************************************
+                 **custom define the grid style
+                 ***************************************************************/
+                DataGridTableStyle tableStyle = new DataGridTableStyle();
+
+                /***********************************************************************
+                 **map the data grid table style to the scenario rx intensity dataset
+                 ***********************************************************************/
+                tableStyle.MappingName = "view_weights";
+                tableStyle.AlternatingBackColor = frmMain.g_oGridViewAlternateRowBackgroundColor;
+                tableStyle.BackColor = frmMain.g_oGridViewRowBackgroundColor;
+                tableStyle.ForeColor = frmMain.g_oGridViewRowForegroundColor;
+                tableStyle.SelectionBackColor = frmMain.g_oGridViewSelectedRowBackgroundColor;
+
+
+
+                /******************************************************************************
+                 **since the dataset has things like field name and number of columns,
+                 **we will use those to create new columnstyles for the columns in our grid
+                 ******************************************************************************/
+                //get the number of columns from the view_weights data set
+                int numCols = m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Columns.Count;
+
+                /************************************************
+                 **loop through all the columns in the dataset	
+                 ************************************************/
+                string strColumnName;
+                for (int i = 0; i < numCols; ++i)
+                {
+                    strColumnName = m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Columns[i].ColumnName;
+
+                    /***********************************
+                    **all columns are read-only except weight
+                    ***********************************/
+                    if (strColumnName.Trim().ToUpper() == "WEIGHT")
+                    {
+                        /******************************************************************
+                        **create a new instance of the DataGridColoredTextBoxColumn class
+                        ******************************************************************/
+                        aColumnTextColumn = new WeightedAverage_DataGridColoredTextBoxColumn(true, true, this);
+                        aColumnTextColumn.Format = "#0.000";
+                        aColumnTextColumn.ReadOnly = false;
+                    }
+                    else
+                    {
+                        /******************************************************************
+                        **create a new instance of the DataGridColoredTextBoxColumn class
+                        ******************************************************************/
+                        aColumnTextColumn = new WeightedAverage_DataGridColoredTextBoxColumn(false, false, this);
+                        aColumnTextColumn.ReadOnly = true;
+                    }
+                    aColumnTextColumn.HeaderText = strColumnName;
+
+                    /********************************************************************
+                     **assign the mappingname property the data sets column name
+                     ********************************************************************/
+                    aColumnTextColumn.MappingName = strColumnName;
+
+                    /********************************************************************
+                     **add the datagridcoloredtextboxcolumn object to the data grid 
+                     **table style object
+                     ********************************************************************/
+                    tableStyle.GridColumnStyles.Add(aColumnTextColumn);
+
+                    /**********************************
+                     * Hide pre_or_post column
+                     * *******************************
+                     * if (strColumnName.Equals("pre_or_post"))
+                     *   tableStyle.GridColumnStyles.Remove(aColumnTextColumn); */
+                }
+                /*********************************************************************
+                 ** make the dataGrid use our new tablestyle and bind it to our table
+                 *********************************************************************/
+                if (frmMain.g_oGridViewFont != null) this.m_dg.Font = frmMain.g_oGridViewFont;
+                this.m_dg.TableStyles.Clear();
+                this.m_dg.TableStyles.Add(tableStyle);
+                //this.m_dg.CaptionText = strCaption;
+                this.m_dg.DataSource = this.m_dv;
+                this.m_dg.Expand(-1);
+                //sum up the weights after the grid loads
+                this.SumWeights(false);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message, "view_weights Table", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.m_intError = -1;
+                m_oDataMgrFvs.m_Connection.Close();
+                m_oDataMgrFvs.m_Connection = null;
+                m_oDataMgrFvs.m_DataSet.Clear();
+                m_oDataMgrFvs.m_DataSet = null;
+                m_oDataMgrFvs.m_DataAdapter.Dispose();
+                m_oDataMgrFvs.m_DataAdapter = null;
+                return;
+
+            }
+        }
+
         private void loadLstVariables()
         {
             //Loading the first (main) groupbox
@@ -1342,6 +1575,46 @@ namespace FIA_Biosum_Manager
                         }
                         lstVariables.Items[idxItems].SubItems.Add(strBaselineRxPkg);
                         lstVariables.Items[idxItems].SubItems.Add(m_oAdo.m_OleDbDataReader["VARIABLE_SOURCE"].ToString().Trim());
+
+                        m_oLvAlternateColors.AddRow();
+                        m_oLvAlternateColors.AddColumns(idxItems, lstVariables.Columns.Count);
+                        idxItems++;
+                    }
+                    this.m_oLvAlternateColors.ListView();
+                }
+            }
+        }
+
+        private void loadLstVariablesSqlite()
+        {
+            //Loading the first (main) groupbox
+            //Only instantiate the m_oAdo if it is null so we don't wipe everything out in subsequent refreshes
+            DataMgr oDataMgr = new DataMgr();
+            using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(this.m_strCalculatedVariablesDb)))
+            {
+                conn.Open();
+                oDataMgr.m_strSQL = "SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                                    " ORDER BY VARIABLE_NAME";
+                oDataMgr.SqlQueryReader(conn, oDataMgr.m_strSQL);
+                lstVariables.Items.Clear();
+                if (oDataMgr.m_intError == 0 && oDataMgr.m_DataReader.HasRows)
+                {
+                    this.m_oLvAlternateColors.InitializeRowCollection();
+                    int idxItems = 0;
+                    while (oDataMgr.m_DataReader.Read())
+                    {
+                        lstVariables.Items.Add(oDataMgr.m_DataReader["VARIABLE_NAME"].ToString().Trim());
+                        lstVariables.Items[idxItems].UseItemStyleForSubItems = false;
+                        lstVariables.Items[idxItems].SubItems.Add(oDataMgr.m_DataReader["VARIABLE_DESCRIPTION"].ToString().Trim());
+                        lstVariables.Items[idxItems].SubItems.Add(oDataMgr.m_DataReader["VARIABLE_TYPE"].ToString().Trim());
+                        lstVariables.Items[idxItems].SubItems.Add(oDataMgr.m_DataReader["ID"].ToString().Trim());
+                        string strBaselineRxPkg = "";
+                        if (oDataMgr.m_DataReader["BASELINE_RXPACKAGE"] != DBNull.Value)
+                        {
+                            strBaselineRxPkg = oDataMgr.m_DataReader["BASELINE_RXPACKAGE"].ToString().Trim();
+                        }
+                        lstVariables.Items[idxItems].SubItems.Add(strBaselineRxPkg);
+                        lstVariables.Items[idxItems].SubItems.Add(oDataMgr.m_DataReader["VARIABLE_SOURCE"].ToString().Trim());
 
                         m_oLvAlternateColors.AddRow();
                         m_oLvAlternateColors.AddColumns(idxItems, lstVariables.Columns.Count);
@@ -1802,6 +2075,142 @@ namespace FIA_Biosum_Manager
             }
         }
 
+        protected void loadEconVariablesGridSqlite()
+        {
+            string strCalculatedVariablesDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
+                "\\" + Tables.OptimizerDefinitions.DefaultSqliteDbFile;
+           m_oDataMgr = new DataMgr();
+
+            try
+            {
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(m_oDataMgr.GetConnectionString(strCalculatedVariablesDb)))
+                {
+                    con.Open();
+                    m_oDataMgr.m_DataSet = new DataSet("econ_variable");
+                    m_oDataMgr.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
+                    this.InitializeOleDbTransactionCommandsSqlite(con);
+
+                    m_oDataMgr.m_strSQL = "SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
+                        " WHERE CALCULATED_VARIABLES_ID = -1";
+                    this.m_dtTableSchema = m_oDataMgr.getTableSchema(con,
+                                                       m_oDataMgr.m_Transaction,
+                                                       m_oDataMgr.m_strSQL);
+                    if (m_oDataMgr.m_intError == 0)
+                    {
+                        m_oDataMgr.m_Command = con.CreateCommand();
+                        m_oDataMgr.m_Command.CommandText = m_oDataMgr.m_strSQL;
+                        m_oDataMgr.m_DataAdapter.SelectCommand = m_oDataMgr.m_Command;
+                        m_oDataMgr.m_DataAdapter.SelectCommand.Transaction = m_oDataMgr.m_Transaction;
+                        m_oDataMgr.m_DataAdapter.Fill(m_oDataMgr.m_DataSet, "econ_variable");
+                        this.m_econ_dv = new DataView(m_oDataMgr.m_DataSet.Tables["econ_variable"]);
+
+                        this.m_econ_dv.AllowNew = false;       //cannot append new records
+                        this.m_econ_dv.AllowDelete = false;    //cannot delete records
+                        this.m_econ_dv.AllowEdit = true;
+                        this.m_dgEcon.CaptionText = "econ_variable";
+                        m_dgEcon.BackgroundColor = frmMain.g_oGridViewBackgroundColor;
+
+                        /***********************************************************************************
+                        **assign the aColumnTextColumn as type DataGridColoredTextBoxColumn object class
+                        ***********************************************************************************/
+                        WeightedAverage_DataGridColoredTextBoxColumn aColumnTextColumn;
+
+
+                        /***************************************************************
+                         **custom define the grid style
+                         ***************************************************************/
+                        DataGridTableStyle tableStyle = new DataGridTableStyle();
+
+                        /***********************************************************************
+                         **map the data grid table style to the scenario rx intensity dataset
+                         ***********************************************************************/
+                        tableStyle.MappingName = "econ_variable";
+                        tableStyle.AlternatingBackColor = frmMain.g_oGridViewAlternateRowBackgroundColor;
+                        tableStyle.BackColor = frmMain.g_oGridViewRowBackgroundColor;
+                        tableStyle.ForeColor = frmMain.g_oGridViewRowForegroundColor;
+                        tableStyle.SelectionBackColor = frmMain.g_oGridViewSelectedRowBackgroundColor;
+
+
+                        /******************************************************************************
+                         **since the dataset has things like field name and number of columns,
+                         **we will use those to create new columnstyles for the columns in our grid
+                         ******************************************************************************/
+                        //get the number of columns from the view_weights data set
+                        int numCols = m_oDataMgr.m_DataSet.Tables["econ_variable"].Columns.Count;
+
+                        /************************************************
+                         **loop through all the columns in the dataset	
+                         ************************************************/
+                        string strColumnName = ""; ;
+                        for (int i = 0; i < numCols; ++i)
+                        {
+                            strColumnName = m_oDataMgr.m_DataSet.Tables["econ_variable"].Columns[i].ColumnName;
+
+                            /***********************************
+                            **all columns are read-only except weight
+                            ***********************************/
+                            if (strColumnName.Trim().ToUpper() == "WEIGHT")
+                            {
+                                /******************************************************************
+                                **create a new instance of the DataGridColoredTextBoxColumn class
+                                ******************************************************************/
+                                aColumnTextColumn = new WeightedAverage_DataGridColoredTextBoxColumn(true, true, this);
+                                aColumnTextColumn.Format = "#0.000";
+                                aColumnTextColumn.ReadOnly = false;
+                            }
+                            else
+                            {
+                                /******************************************************************
+                                **create a new instance of the DataGridColoredTextBoxColumn class
+                                ******************************************************************/
+                                aColumnTextColumn = new WeightedAverage_DataGridColoredTextBoxColumn(false, false, this);
+                                aColumnTextColumn.ReadOnly = true;
+                            }
+                            aColumnTextColumn.HeaderText = strColumnName;
+
+                            /********************************************************************
+                             **assign the mappingname property the data sets column name
+                             ********************************************************************/
+                            aColumnTextColumn.MappingName = strColumnName;
+
+                            /********************************************************************
+                             **add the datagridcoloredtextboxcolumn object to the data grid 
+                             **table style object
+                             ********************************************************************/
+                            tableStyle.GridColumnStyles.Add(aColumnTextColumn);
+
+                            /**********************************
+                             * Hide calculated_variables_id column
+                             * *******************************/
+                            if (strColumnName.Equals("calculated_variables_id"))
+                                tableStyle.GridColumnStyles.Remove(aColumnTextColumn);
+
+
+                        }
+                        /*********************************************************************
+                         ** make the dataGrid use our new tablestyle and bind it to our table
+                         *********************************************************************/
+                        if (frmMain.g_oGridViewFont != null) this.m_dgEcon.Font = frmMain.g_oGridViewFont;
+                        this.m_dgEcon.TableStyles.Clear();
+                        this.m_dgEcon.TableStyles.Add(tableStyle);
+                        this.m_dgEcon.DataSource = this.m_econ_dv;
+                        this.m_dgEcon.Expand(-1);
+                        this.SumWeights(true);
+                    }
+                }
+            }
+            catch (Exception e2)
+            {
+                MessageBox.Show(e2.Message, "Table", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.m_intError = -1;
+                m_oDataMgr.m_DataSet.Clear();
+                m_oDataMgr.m_DataSet = null;
+                m_oDataMgr.m_DataAdapter.Dispose();
+                m_oDataMgr.m_DataAdapter = null;
+                return;
+            }
+        }
+
         protected void SendKeyStrokes(System.Windows.Forms.TextBox p_oTextBox, string strKeyStrokes)
         {
             try
@@ -1970,6 +2379,11 @@ namespace FIA_Biosum_Manager
                 m_oAdoFvs.m_DataSet.Tables["view_weights"].Rows.Clear();
             }
 
+            if (m_oDataMgrFvs != null)
+            {
+                m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Rows.Clear();
+            }
+
             lblFvsVariableName.Text = "Not Defined";
             txtFVSVariableDescr.Text = "";
             txtFvsVariableTotalWeight.Text = "";
@@ -1989,17 +2403,34 @@ namespace FIA_Biosum_Manager
             BtnDeleteEconVariable.Enabled = false;
             lblSelectedEconType.Text = "Not Defined";
             int intNewId = GetNextId();
-
-            m_oAdo.m_DataSet.Clear();
             this.m_econ_dv.AllowNew = true;
-            for (int i = 1; i < 5; i++)
+
+            //@ToDo: Refine when we complete swap to Sqlite
+            if (this.m_oDataMgr == null)
             {
-                System.Data.DataRow p_row = this.m_oAdo.m_DataSet.Tables["econ_variable"].NewRow();
-                p_row["calculated_variables_id"] = intNewId;
-                p_row["rxcycle"] = Convert.ToString(i);
-                p_row["weight"] = 0;
-                this.m_oAdo.m_DataSet.Tables["econ_variable"].Rows.Add(p_row);
-                p_row = null;
+                this.m_oAdo.m_DataSet.Clear();
+                for (int i = 1; i < 5; i++)
+                {
+                    DataRow p_row = this.m_oAdo.m_DataSet.Tables["econ_variable"].NewRow();
+                    p_row["calculated_variables_id"] = intNewId;
+                    p_row["rxcycle"] = Convert.ToString(i);
+                    p_row["weight"] = 0;
+                    this.m_oAdo.m_DataSet.Tables["econ_variable"].Rows.Add(p_row);
+                    p_row = null;
+                }
+            }
+            else
+            {
+                this.m_oDataMgr.m_DataSet.Clear();
+                for (int i = 1; i < 5; i++)
+                {
+                    DataRow p_row = this.m_oDataMgr.m_DataSet.Tables["econ_variable"].NewRow();
+                    p_row["calculated_variables_id"] = intNewId;
+                    p_row["rxcycle"] = Convert.ToString(i);
+                    p_row["weight"] = 0;
+                    this.m_oDataMgr.m_DataSet.Tables["econ_variable"].Rows.Add(p_row);
+                    p_row = null;
+                }
             }
 
             this.m_econ_dv.AllowNew = false;
@@ -2918,6 +3349,30 @@ namespace FIA_Biosum_Manager
                 this.m_oAdo.m_OleDbDataAdapter,
                 this.m_oAdo.m_OleDbTransaction,
                 this.m_oAdo.m_strSQL, "select calculated_variables_id, rxcycle from " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName,
+                Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName);
+        }
+
+        private void InitializeOleDbTransactionCommandsSqlite(System.Data.SQLite.SQLiteConnection conn)
+        {
+            this.m_oDataMgr.m_strSQL = "SELECT calculated_variables_id, rxcycle, weight" +
+                                   " FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
+                                   " WHERE calculated_variables_id = " + m_intCurVar + " ;";
+
+            //initialize the transaction object with the connection
+            this.m_oDataMgr.m_Transaction = conn.BeginTransaction();
+
+            this.m_oDataMgr.ConfigureDataAdapterInsertCommand(conn,
+                this.m_oDataMgr.m_DataAdapter,
+                this.m_oDataMgr.m_Transaction,
+                this.m_oDataMgr.m_strSQL,
+                Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName);
+
+            //Do I need to do this again? It's the same SQL as above
+            //this.m_oAdo.m_strSQL = "select fvs_variant, spcd,fvs_input_spcd,common_name,genus,species,comments from " + m_oQueries.m_oFvs.m_strTreeSpcTable + " order by fvs_variant, spcd;";
+            this.m_oDataMgr.ConfigureDataAdapterUpdateCommand(conn,
+                this.m_oDataMgr.m_DataAdapter,
+                this.m_oDataMgr.m_Transaction,
+                this.m_oDataMgr.m_strSQL, "select calculated_variables_id, rxcycle from " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName,
                 Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName);
         }
 
@@ -3898,6 +4353,101 @@ namespace FIA_Biosum_Manager
         {
             frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Label)p_oLabel, p_strPropertyName,
                 p_strValue);
+        }
+
+        private void migrate_access_data()
+        {
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "migrate_access_data \r\n");
+            }
+
+            string sourceFile = this.m_oEnv.strAppDir + "\\db\\" + 
+                System.IO.Path.GetFileName(Tables.OptimizerDefinitions.DefaultSqliteDbFile);
+            System.IO.File.Copy(sourceFile, this.m_strCalculatedVariablesDb);
+
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Copied the database from the application directory \r\n");
+            }
+
+            // Check to see if the input SQLite DSN exists and if so, delete so we can add
+            ODBCMgr odbcmgr = new ODBCMgr();
+            if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName))
+            {
+                odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName);
+            }
+            odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName, this.m_strCalculatedVariablesDb);
+
+            // Create temporary database
+            utils oUtils = new utils();
+            string strTempAccdb = oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
+            dao_data_access oDao = new dao_data_access();
+            oDao.CreateMDB(strTempAccdb);
+
+            // Create table links for transferring data
+            string targetEcon = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName + "_1";
+            string targetFvs = Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + "_1";
+            string targetVariables = Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + "_1";
+            // Link to all tables in source database
+            oDao.CreateTableLinks(strTempAccdb, this.m_strCalculatedVariablesAccdb);
+            oDao.CreateSQLiteTableLink(strTempAccdb, Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName, targetEcon,
+                ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName, this.m_strCalculatedVariablesDb);
+            oDao.CreateSQLiteTableLink(strTempAccdb, Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName, targetFvs,
+                ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName, this.m_strCalculatedVariablesDb);
+            oDao.CreateSQLiteTableLink(strTempAccdb, Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName, targetVariables,
+                ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName, this.m_strCalculatedVariablesDb);
+
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Created table links in temporary database \r\n");
+            }
+
+            if (m_oAdo == null)
+            {
+                m_oAdo = new ado_data_access();
+            }
+
+            string strCopyConn = m_oAdo.getMDBConnString(strTempAccdb, "", "");
+            using (var copyConn = new OleDbConnection(strCopyConn))
+            {
+                copyConn.Open();
+                m_oAdo.m_strSQL = "INSERT INTO " + targetEcon +
+                                  " SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n");
+                }
+                m_oAdo.SqlNonQuery(copyConn, this.m_oAdo.m_strSQL);
+
+                m_oAdo.m_strSQL = "INSERT INTO " + targetFvs +
+                  " SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n");
+                }
+                m_oAdo.SqlNonQuery(copyConn, this.m_oAdo.m_strSQL);
+
+                m_oAdo.m_strSQL = "INSERT INTO " + targetVariables +
+                    " SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n");
+                }
+                m_oAdo.SqlNonQuery(copyConn, this.m_oAdo.m_strSQL);
+
+            }
+
+
+            if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName))
+            {
+                odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName);
+            }
+            if (oDao != null)
+            {
+                oDao.m_DaoWorkspace.Close();
+                oDao = null;
+            }
         }
     }
 
