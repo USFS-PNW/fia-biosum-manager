@@ -48,6 +48,7 @@ namespace FIA_Biosum_Manager
         private DataMgr m_oDataMgrFvs;
         private string m_strTempMDB;
         private string m_strTempDb;
+        private bool m_bUsingSqlite;
 
         const int COLUMN_CHECKBOX = 0;
         const int COLUMN_OPTIMIZE_VARIABLE = 1;
@@ -776,9 +777,9 @@ namespace FIA_Biosum_Manager
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(466, 275);
+            this.label5.Location = new System.Drawing.Point(459, 270);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(139, 24);
+            this.label5.Size = new System.Drawing.Size(164, 24);
             this.label5.TabIndex = 89;
             this.label5.Text = "TOTAL WEIGHTS";
             // 
@@ -974,8 +975,7 @@ namespace FIA_Biosum_Manager
             this.loadLstVariablesSqlite();
 
             //get temporary db file
-            utils oUtils = new utils();
-            m_strTempDb = oUtils.getRandomFile(this.m_oEnv.strTempDir, "db");
+            m_strTempDb = m_oUtils.getRandomFile(this.m_oEnv.strTempDir, "db");
             m_oDataMgrFvs = new DataMgr();
             m_oDataMgrFvs.CreateDbFile(m_strTempDb);
             m_oDataMgrFvs.OpenConnection(m_oDataMgrFvs.GetConnectionString(m_strTempDb));
@@ -1026,6 +1026,12 @@ namespace FIA_Biosum_Manager
                 }
             }
 
+            //@ToDo: Using MS Access to query FVS Out tables
+            if (String.IsNullOrEmpty(m_strTempMDB))
+            {
+                m_bUsingSqlite = true;
+            }
+
             if (m_oAdo != null)
                 m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
         }
@@ -1047,10 +1053,8 @@ namespace FIA_Biosum_Manager
 
             //create and set temporary mdb file
             string strDestinationLinkDir = this.m_oEnv.strTempDir;
-            //used to get the temporary random file name
-            utils objUtils = new utils();
             //get temporary mdb file
-            m_strTempMDB = objUtils.getRandomFile(strDestinationLinkDir, "accdb");
+            m_strTempMDB = m_oUtils.getRandomFile(strDestinationLinkDir, "accdb");
 
             dao_data_access oDao = new dao_data_access();
             oDao.CreateMDB(m_strTempMDB);
@@ -1104,12 +1108,21 @@ namespace FIA_Biosum_Manager
 
         private void loadm_dg()
         {
+            dao_data_access oDao = new dao_data_access();
+
+            //@ToDo: Using MS Access to query FVS Out tables
+            if (m_bUsingSqlite)
+            {
+                m_strTempMDB = m_oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
+                oDao.CreateMDB(m_strTempMDB);
+                m_oAdoFvs = new ado_data_access();
+            }
+
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
             {
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "loadm_dg: Starting to load FVS calculated variable datagrid \r\n");
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Temporary database path: " + m_strTempMDB + "\r\n\r\n");
             }
-            dao_data_access oDao = new dao_data_access();
 
             string strFvsPreTableName = "";
             string strFvsPostTableName = "";
@@ -1142,48 +1155,69 @@ namespace FIA_Biosum_Manager
                 }
 
                 //Sleep while table link is being built
-                while (!m_oAdoFvs.TableExist(m_oAdoFvs.m_OleDbConnection, strFvsPreTableName))
+                using (var calculateConn = new OleDbConnection(m_oAdoFvs.getMDBConnString(m_strTempMDB, "", "")))
                 {
-                    System.Threading.Thread.Sleep(1000);
-                }
-                frmMain.g_oFrmMain.DeactivateStandByAnimation();
-
-                //Populate baseline prescription list
-                cboFvsVariableBaselinePkg.Items.Clear();
-                string strSql = "SELECT distinct rxpackage" +
-                                " FROM " + strFvsPreTableName;
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                {
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Query rxPackage for baseline package list \r\n");
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, strSql + "\r\n\r\n");
-                }
-                m_oAdoFvs.SqlQueryReader(m_oAdoFvs.m_OleDbConnection, strSql);
-                while (m_oAdoFvs.m_OleDbDataReader.Read())
-                {
-                    if (m_oAdoFvs.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
+                    calculateConn.Open();
+                    while (!m_oAdoFvs.TableExist(calculateConn, strFvsPreTableName))
                     {
-                        cboFvsVariableBaselinePkg.Items.Add(Convert.ToString(m_oAdoFvs.m_OleDbDataReader["rxpackage"]));
+                        Thread.Sleep(1000);
                     }
-                }
+                    frmMain.g_oFrmMain.DeactivateStandByAnimation();
 
-                //Create temporary table to populate datagrid
-                if (oDao.TableExists(m_strTempMDB, m_strFvsViewTableName))
-                {
-                    oDao.DeleteTableFromMDB(m_strTempMDB, m_strFvsViewTableName);
-                }
-                frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateScenarioFvsVariableWeightsReferenceTable(m_oAdoFvs,
-                    m_oAdoFvs.m_OleDbConnection, m_strFvsViewTableName);
-                strSql = "SELECT rxcycle, MIN(Year) as MinYear, \"PRE\" as pre_or_post" +
-                                 " FROM " + strFvsPreTableName +
-                                 " GROUP BY rxcycle, Year";
+                    //Populate baseline prescription list
+                    cboFvsVariableBaselinePkg.Items.Clear();
+                    string strSql = "SELECT distinct rxpackage" +
+                                    " FROM " + strFvsPreTableName;
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Query rxPackage for baseline package list \r\n");
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, strSql + "\r\n\r\n");
+                    }
+                    m_oAdoFvs.SqlQueryReader(calculateConn, strSql);
+                    while (m_oAdoFvs.m_OleDbDataReader.Read())
+                    {
+                        if (m_oAdoFvs.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
+                        {
+                            cboFvsVariableBaselinePkg.Items.Add(Convert.ToString(m_oAdoFvs.m_OleDbDataReader["rxpackage"]));
+                        }
+                    }
 
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                {
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Query for year, and rxcycle from " + strFvsPreTableName + " \r\n");
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, strSql + "\r\n\r\n");
-                }
+                    //Create temporary table to populate datagrid
+                    if (! m_bUsingSqlite)
+                    {
+                        if (oDao.TableExists(m_strTempMDB, m_strFvsViewTableName))
+                        {
+                            oDao.DeleteTableFromMDB(m_strTempMDB, m_strFvsViewTableName);
+                        }
+                        frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateScenarioFvsVariableWeightsReferenceTable(m_oAdoFvs,
+                            calculateConn, m_strFvsViewTableName);
+                    }
+                    else
+                    {
+                        if (m_oDataMgrFvs.TableExist(m_oDataMgrFvs.m_Connection, m_strFvsViewTableName))
+                        {
+                            m_oDataMgrFvs.m_strSQL = "DROP TABLE " + m_strFvsViewTableName;
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            {
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgrFvs.m_strSQL + "\r\n");
+                            }
+                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, m_oDataMgrFvs.m_strSQL);
+                        }
+                        frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgrFvs,
+                           m_oDataMgrFvs.m_Connection, m_strFvsViewTableName);
+                    }
 
-                    m_oAdoFvs.SqlQueryReader(m_oAdoFvs.m_OleDbConnection, strSql);
+                    strSql = "SELECT rxcycle, MIN(Year) as MinYear, \"PRE\" as pre_or_post" +
+                                     " FROM " + strFvsPreTableName +
+                                     " GROUP BY rxcycle, Year";
+
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Query for year, and rxcycle from " + strFvsPreTableName + " \r\n");
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, strSql + "\r\n\r\n");
+                    }
+
+                    m_oAdoFvs.SqlQueryReader(calculateConn, strSql);
                     while (m_oAdoFvs.m_OleDbDataReader.Read())
                     {
                         string strRxCycle = "";
@@ -1208,7 +1242,7 @@ namespace FIA_Biosum_Manager
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Insert records into " + m_strFvsViewTableName + "\r\n");
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, insertSql + "\r\n\r\n");
                             }
-                            m_oAdoFvs.SqlNonQuery(m_oAdoFvs.m_OleDbConnection, insertSql);
+                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, insertSql);
                         }
                     }
 
@@ -1222,7 +1256,7 @@ namespace FIA_Biosum_Manager
                         frmMain.g_oUtils.WriteText(m_strDebugFile, strSql + "\r\n\r\n");
                     }
 
-                    m_oAdoFvs.SqlQueryReader(m_oAdoFvs.m_OleDbConnection, strSql);
+                    m_oAdoFvs.SqlQueryReader(calculateConn, strSql);
                     while (m_oAdoFvs.m_OleDbDataReader.Read())
                     {
                         string strRxCycle = "";
@@ -1247,17 +1281,18 @@ namespace FIA_Biosum_Manager
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Insert records into " + m_strFvsViewTableName + "\r\n");
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, insertSql + "\r\n\r\n");
                             }
-                            m_oAdoFvs.SqlNonQuery(m_oAdoFvs.m_OleDbConnection, insertSql);
+                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, insertSql);
                         }
                     }
-                m_oAdoFvs.m_DataSet.Clear();
-                m_oAdoFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
-                m_oAdoFvs.m_OleDbCommand = m_oAdoFvs.m_OleDbConnection.CreateCommand();
-                m_oAdoFvs.m_OleDbCommand.CommandText = m_oAdoFvs.m_strSQL;
-                m_oAdoFvs.m_OleDbDataAdapter = new OleDbDataAdapter();
-                m_oAdoFvs.m_OleDbDataAdapter.SelectCommand = m_oAdoFvs.m_OleDbCommand;
-                m_oAdoFvs.m_OleDbDataAdapter.SelectCommand.Transaction = m_oAdoFvs.m_OleDbTransaction;
-                m_oAdoFvs.m_OleDbDataAdapter.Fill(m_oAdoFvs.m_DataSet, m_strFvsViewTableName);
+                    m_oDataMgrFvs.m_DataSet.Clear();
+                    m_oDataMgrFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
+                    m_oDataMgrFvs.m_Command = m_oDataMgrFvs.m_Connection.CreateCommand();
+                    m_oDataMgrFvs.m_Command.CommandText = m_oDataMgrFvs.m_strSQL;
+                    m_oDataMgrFvs.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
+                    m_oDataMgrFvs.m_DataAdapter.SelectCommand = m_oDataMgrFvs.m_Command;
+                    m_oDataMgrFvs.m_DataAdapter.SelectCommand.Transaction = m_oDataMgrFvs.m_Transaction;
+                    m_oDataMgrFvs.m_DataAdapter.Fill(m_oDataMgrFvs.m_DataSet, m_strFvsViewTableName);
+                }
                 BtnFvsImport.Enabled = true;
             }
             else
@@ -1820,6 +1855,209 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "------------------------------------------------------------------------------------------------\r\n");
             }
             return oAdo.m_intError;
+        }
+
+        public int savevalues_sqlite(string strVariableType)
+        {
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "savevalues_sqlite BEGIN \r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "------------------------------------------------------------------------------------------------\r\n");
+            }
+
+            // Close module level connection
+            if (m_oDataMgrFvs.m_Connection != null)
+            {
+                m_oDataMgrFvs.m_Connection.Close();
+            }
+
+            DataMgr oDataMgr = new DataMgr();
+            string strScenarioMDB =
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                "\\" + Tables.OptimizerDefinitions.DefaultSqliteDbFile;
+            oDataMgr.OpenConnection(oDataMgr.GetConnectionString(strScenarioMDB));
+            if (oDataMgr.m_intError == 0)
+            {
+                int intId = -1;
+                string strSql = "";
+                string strBaselinePackage = "";
+                // DELETE EXISTING RECORD ON SHARED DEFINITIONS TABLE
+                if (m_intCurVar > 0)
+                {
+                    oDataMgr.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                                    " WHERE ID = " + m_intCurVar;
+                    oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                    string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName;
+                    if (strVariableType.Equals("ECON"))
+                    {
+                        strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                    }
+                    oDataMgr.m_strSQL = "DELETE FROM " + strTableName +
+                        " WHERE calculated_variables_id = " + m_intCurVar;
+                    oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                    intId = m_intCurVar;
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Deleted existing records for variable id: " + m_intCurVar + "\r\n\r\n");
+                    }
+
+                }
+                else
+                {
+                    if (strVariableType.Equals("ECON"))
+                    {
+                        // We already calculated the next id to add it to the grid
+                        DataRow oRow = this.m_econ_dv.Table.Rows[0];
+                        intId = Convert.ToInt32(oRow["calculated_variables_id"]);
+                    }
+                    else
+                    {
+                        intId = GetNextId();
+                    }
+                }
+
+                // SHARED BEGINNING OF INSERT STATEMENT
+                strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                    " (ID, VARIABLE_NAME, VARIABLE_DESCRIPTION, VARIABLE_TYPE, BASELINE_RXPACKAGE, VARIABLE_SOURCE)" +
+                    " VALUES ( " + intId + ", '";
+
+                if (strVariableType.Equals("FVS"))
+                {
+                    if (cboFvsVariableBaselinePkg.SelectedIndex > -1)
+                    {
+                        strBaselinePackage = cboFvsVariableBaselinePkg.SelectedItem.ToString();
+                    }
+                    string strDescription = "";
+                    if (!String.IsNullOrEmpty(txtFVSVariableDescr.Text))
+                        strDescription = txtFVSVariableDescr.Text.Trim();
+                    strSql = strSql + lblFvsVariableName.Text.Trim() + "','" + strDescription + "','" +
+                             strVariableType + "','" + strBaselinePackage + "','" + LblSelectedVariable.Text.Trim() + "')";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for FVS weighted variable \r\n");
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
+                    }
+                    oDataMgr.SqlNonQuery(oDataMgr.m_Connection, strSql);
+                    // ADD CHILD PERCENTAGE RECORD
+                    if (oDataMgr.m_intError == 0)
+                    {
+                        double[] arrPrePercents = new double[4];
+                        double[] arrPostPercents = new double[4];
+                        int intRxCycle;
+                        double dblWeight;
+                        string strPrePost = "";
+                        foreach (DataRow row in this.m_dv.Table.Rows)
+                        {
+                            intRxCycle = Convert.ToInt32(row["rxcycle"]);
+                            dblWeight = Convert.ToDouble(row["weight"]);
+                            strPrePost = row["pre_or_post"].ToString().Trim();
+                            if (strPrePost.Equals("PRE"))
+                            {
+                                arrPrePercents[intRxCycle - 1] = dblWeight;
+                            }
+                            else
+                            {
+                                arrPostPercents[intRxCycle - 1] = dblWeight;
+                            }
+                        }
+
+                        strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
+                            " (calculated_variables_id, weight_1_pre, weight_1_post, weight_2_pre, weight_2_post, " +
+                            "weight_3_pre, weight_3_post, weight_4_pre, weight_4_post)" +
+                            " VALUES ( " + intId + ", " + arrPrePercents[0] + ", " + arrPostPercents[0] +
+                            ", " + arrPrePercents[1] + ", " + arrPostPercents[1] + ", " + arrPrePercents[2] +
+                            ", " + arrPostPercents[2] + ", " + arrPrePercents[3] + ", " + arrPostPercents[3] + ")";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        {
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Add child weight values entry for FVS variable id: " + intId + " \r\n");
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
+                        }
+                        oDataMgr.SqlNonQuery(oDataMgr.m_Connection, strSql);
+                    }
+                }
+                else
+                {
+                    string strDescription = "";
+                    if (!String.IsNullOrEmpty(txtEconVariableDescr.Text))
+                        strDescription = txtEconVariableDescr.Text.Trim();
+                    string strVariableSource = Tables.OptimizerScenarioResults.DefaultScenarioResultsPostEconomicWeightedTableName +
+                        "." + lblEconVariableName.Text.Trim();
+                    strSql = strSql + lblEconVariableName.Text.Trim() + "','" + strDescription + "','" +
+                             strVariableType + "','" + strBaselinePackage + "','" + strVariableSource + "')";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for Economic weighted variable \r\n");
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
+                    }
+                    oDataMgr.SqlNonQuery(oDataMgr.m_Connection, strSql);
+                    // MODIFY CHILD PERCENTAGE RECORD
+                    if (oDataMgr.m_intError == 0 && this.m_oDataMgr.m_intError == 0)
+                    {
+                        this.m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(strScenarioMDB));
+                        int intCurrRow;
+                        this.m_intError = 0;
+
+                        /******************************************************
+                         **save the current row, move the current row to a
+                         **different row to enable getchanges() method, then
+                         **move back to current row
+                         ******************************************************/
+                        intCurrRow = this.m_dgEcon.CurrentRowIndex;
+                        if (intCurrRow == 0)
+                        {
+                            this.m_dgEcon.CurrentRowIndex++;
+                        }
+                        else
+                        {
+                            this.m_dgEcon.CurrentRowIndex = 0;
+                        }
+
+
+                        System.Data.DataTable p_dtChanges;
+
+                        try
+                        {
+
+                            p_dtChanges = this.m_oDataMgr.m_DataSet.Tables["econ_variable"].GetChanges();
+
+                            //check if any inserted rows
+                            if (p_dtChanges.HasErrors)
+                            {
+                                this.m_oDataMgr.m_DataSet.Tables["econ_variable"].RejectChanges();
+                                this.m_intError = -1;
+                            }
+                            else
+                            {
+                                this.m_oDataMgr.m_DataAdapter.Update(this.m_oDataMgr.m_DataSet.Tables["econ_variable"]);
+                                this.m_oDataMgr.m_Transaction.Commit();
+                                this.m_oDataMgr.m_DataSet.Tables["econ_variable"].AcceptChanges();
+                                this.InitializeOleDbTransactionCommands();
+                            }
+                        }
+                        catch (Exception caught)
+                        {
+                            this.m_intError = -1;
+                            MessageBox.Show(caught.Message);
+                            this.m_oDataMgr.m_DataSet.Tables["econ_variable"].RejectChanges();
+                            //rollback the transaction to the original records 
+                            this.m_oDataMgr.m_Transaction.Rollback();
+                        }
+
+                        p_dtChanges = null;
+                        this.m_dgEcon.CurrentRowIndex = intCurrRow;
+                    }
+                }
+            }
+            oDataMgr.CloseConnection(oDataMgr.m_Connection);
+
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "savevalues_sqlite END \r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "------------------------------------------------------------------------------------------------\r\n");
+            }
+            return oDataMgr.m_intError;
         }
 
         private void val_data_fvs(string strPrePostAccdb, string strPreTable, string strPostTable)
@@ -3396,12 +3634,23 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oFrmMain.Width,
                     frmMain.g_oFrmMain.Top);
 
-                //Save associated configuration records
                 frmMain.g_sbpInfo.Text = "Saving scenario rule definitions...Stand by";
-                savevalues("ECON");
+                if (! m_bUsingSqlite)
+                {
+                    //Save associated configuration records
+                    savevalues("ECON");
 
-                //Reload the main grid
-                this.loadLstVariables();
+                    //Reload the main grid
+                    this.loadLstVariables();
+                }
+                else
+                {
+                    //Save associated configuration records
+                    savevalues_sqlite("ECON");
+
+                    //Reload the main grid
+                    this.loadLstVariablesSqlite();
+                }
 
                 
                 frmMain.g_sbpInfo.Text = "Ready";
@@ -3829,11 +4078,9 @@ namespace FIA_Biosum_Manager
                 string strWeightsByRxPkgPreTable = "WEIGHTS_BY_RXPACKAGE_PRE";
                 string strWeightsByRxPkgPostTable = "WEIGHTS_BY_RXPACKAGE_POST";
 
-                //used to get the temporary random file name
-                utils objUtils = new utils();
                 //create and set temporary mdb file
                 string strDestinationLinkDir = this.m_oEnv.strTempDir;
-                string strRecalculateAccdb = objUtils.getRandomFile(strDestinationLinkDir, "accdb");
+                string strRecalculateAccdb = m_oUtils.getRandomFile(strDestinationLinkDir, "accdb");
                 oDao.CreateMDB(strRecalculateAccdb);
                 foreach (var keyId in dictFvsWeightedVariables.Keys)
                 {
@@ -4380,8 +4627,7 @@ namespace FIA_Biosum_Manager
             odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.OptimizerCalcVariableDsnName, this.m_strCalculatedVariablesDb);
 
             // Create temporary database
-            utils oUtils = new utils();
-            string strTempAccdb = oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
+            string strTempAccdb = m_oUtils.getRandomFile(this.m_oEnv.strTempDir, "accdb");
             dao_data_access oDao = new dao_data_access();
             oDao.CreateMDB(strTempAccdb);
 
