@@ -44,7 +44,7 @@ namespace FIA_Biosum_Manager
         public bool m_bSave = false;
         private ado_data_access m_oAdo;
         private ado_data_access m_oAdoFvs;
-        private DataMgr m_oDataMgr;
+        private DataMgr m_oDataMgr = new DataMgr();
         private DataMgr m_oDataMgrFvs;
         private string m_strTempMDB;
         private string m_strTempDb;
@@ -77,6 +77,11 @@ namespace FIA_Biosum_Manager
             "\\" + Tables.OptimizerDefinitions.DefaultDbFile;
         string m_strCalculatedVariablesDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
             "\\" + Tables.OptimizerDefinitions.DefaultSqliteDbFile;
+
+        string _strDataSetName = "";
+        const int TABLE_COUNT = 2;
+        const int DEFINITION_TABLE = 0;
+        const int ECON_DETAILS_TABLE = 1;
 
 
 
@@ -972,6 +977,8 @@ namespace FIA_Biosum_Manager
                 this.migrate_access_data();
             }
 
+            SQLiteConnect();
+
             this.loadLstVariablesSqlite();
 
             //get temporary db file
@@ -1621,7 +1628,7 @@ namespace FIA_Biosum_Manager
         }
 
         private void loadLstVariablesSqlite()
-        {
+        {            
             //Loading the first (main) groupbox
             //Only instantiate the m_oAdo if it is null so we don't wipe everything out in subsequent refreshes
             DataMgr oDataMgr = new DataMgr();
@@ -1867,29 +1874,23 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "------------------------------------------------------------------------------------------------\r\n");
             }
 
-            DataMgr oDataMgr = new DataMgr();
-            using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(m_oDataMgr.GetConnectionString(m_strCalculatedVariablesDb)))
-            {
-                conn.Open();
-                if (oDataMgr.m_intError == 0)
-                {
                     int intId = -1;
                     string strSql = "";
                     string strBaselinePackage = "";
                     // DELETE EXISTING RECORD ON SHARED DEFINITIONS TABLE
                     if (m_intCurVar > 0)
                     {
-                        oDataMgr.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                        m_oDataMgr.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
                                         " WHERE ID = " + m_intCurVar;
-                        oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
                         string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName;
                         if (strVariableType.Equals("ECON"))
                         {
                             strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
                         }
-                        oDataMgr.m_strSQL = "DELETE FROM " + strTableName +
+                m_oDataMgr.m_strSQL = "DELETE FROM " + strTableName +
                             " WHERE calculated_variables_id = " + m_intCurVar;
-                        oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
                         intId = m_intCurVar;
                         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         {
@@ -1931,9 +1932,9 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for FVS weighted variable \r\n");
                             frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
                         }
-                        oDataMgr.SqlNonQuery(conn, strSql);
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
                         // ADD CHILD PERCENTAGE RECORD
-                        if (oDataMgr.m_intError == 0)
+                        if (m_oDataMgr.m_intError == 0)
                         {
                             double[] arrPrePercents = new double[4];
                             double[] arrPostPercents = new double[4];
@@ -1966,7 +1967,7 @@ namespace FIA_Biosum_Manager
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Add child weight values entry for FVS variable id: " + intId + " \r\n");
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
                             }
-                            oDataMgr.SqlNonQuery(conn, strSql);
+                    m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
                         }
                     }
                     else
@@ -1983,13 +1984,11 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for Economic weighted variable \r\n");
                             frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
                         }
-                        oDataMgr.SqlNonQuery(conn, strSql);
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
                     }
                         // MODIFY CHILD PERCENTAGE RECORD
-                        if (oDataMgr.m_intError == 0 && this.m_oDataMgr.m_intError == 0)
-                        {
-                            
-                            this.m_oDataMgr.OpenConnection(oDataMgr.GetConnectionString(m_strCalculatedVariablesDb));
+                        if (this.m_oDataMgr.m_intError == 0)
+                        {                           
                             int intCurrRow;
                             this.m_intError = 0;
 
@@ -2009,53 +2008,47 @@ namespace FIA_Biosum_Manager
                             }
 
 
-                            DataTable p_dtChanges;
-
-                            try
+                        DataTable p_dtChanges;
+                        string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                        try
                             {
-
-                                p_dtChanges = this.m_oDataMgr.m_DataSet.Tables["econ_variable"].GetChanges();
+                            
+                            p_dtChanges = m_oDataMgr.m_DataSet.Tables[strTableName].GetChanges();
 
                                 //check if any inserted rows
                                 if (p_dtChanges.HasErrors)
                                 {
-                                    this.m_oDataMgr.m_DataSet.Tables["econ_variable"].RejectChanges();
+                                m_oDataMgr.m_DataSet.Tables[strTableName].RejectChanges();
                                     this.m_intError = -1;
                                 }
                                 else
                                 {
-                                this.InitializeOleDbTransactionCommandsSqlite();
-                                this.m_oDataMgr.m_DataAdapter.Update(this.m_oDataMgr.m_DataSet.Tables["econ_variable"]);
+                                //this.InitializeOleDbTransactionCommandsSqlite();
+                                m_oDataMgr.m_DataAdapterArray[ECON_DETAILS_TABLE].Update(m_oDataMgr.m_DataSet.Tables[strTableName]);
+                                //this.m_oDataMgr.m_DataAdapter.Update(m_oDataMgr.m_DataSet.Tables[strTableName]);
                                 this.m_oDataMgr.m_Transaction.Commit();
-                                    this.m_oDataMgr.m_DataSet.Tables["econ_variable"].AcceptChanges();
+                                m_oDataMgr.m_DataSet.Tables[strTableName].AcceptChanges();
                                 
                                 }
-                            }
-                            catch (Exception caught)
-                            {
-                                this.m_intError = -1;
-                                MessageBox.Show(caught.Message);
-                                this.m_oDataMgr.m_DataSet.Tables["econ_variable"].RejectChanges();
-                            //rollback the transaction to the original records
-                            if (this.m_oDataMgr.m_Transaction != null)
-                            {
-                                this.m_oDataMgr.m_Transaction.Rollback();
-                            }
-                            else
-                            {
-                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                                {
-                                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Tried to rollback transaction but transaction object was null \r\n");
-                                }
-                            }
-                                
-                            }
-
                             p_dtChanges = null;
                             this.m_dgEcon.CurrentRowIndex = intCurrRow;
                         }
+                        catch (System.Data.SQLite.SQLiteException errSQLite)
+                        {
+                            m_intError = -1;
+                            MessageBox.Show(errSQLite.Message);
+                        }
+                        catch (Exception caught)
+                        {
+                            this.m_intError = -1;
+                            MessageBox.Show(caught.Message);                                
+                        }
+                        finally
+                        {
+                            m_oDataMgr.ResetTransactionObjectToDataAdapterArray();
+                        }
+
                     }
-                }
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
             {
@@ -2063,7 +2056,7 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "savevalues_sqlite END \r\n");
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "------------------------------------------------------------------------------------------------\r\n");
             }
-            return oDataMgr.m_intError;
+            return m_oDataMgr.m_intError;
         }
 
         private void val_data_fvs(string strPrePostAccdb, string strPreTable, string strPostTable)
@@ -2322,27 +2315,23 @@ namespace FIA_Biosum_Manager
 
         protected void loadEconVariablesGridSqlite()
         {
-            m_oDataMgr = new DataMgr();
-            m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(m_strCalculatedVariablesDb));
-            try
+            if (m_oDataMgr.m_intError == 0)
             {
-                    m_oDataMgr.m_DataSet = new DataSet("econ_variable");
-                    m_oDataMgr.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
-                    //this.InitializeOleDbTransactionCommandsSqlite();
-
-                    m_oDataMgr.m_strSQL = "SELECT * FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
-                        " WHERE CALCULATED_VARIABLES_ID = -1";
+                string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                try
+                {
+                    //m_oDataMgr.m_DataSet = new DataSet("econ_variable");
+                    string strPrimaryKeys = "calculated_variables_id, rxcycle";
+                    string strColumns = "calculated_variables_id, rxcycle, weight";
+                    m_oDataMgr.m_Transaction = m_oDataMgr.m_Connection.BeginTransaction();
+                    m_oDataMgr.InitializeDataAdapterArrayItem(ECON_DETAILS_TABLE, strTableName, strColumns, strPrimaryKeys);
                     this.m_dtTableSchema = m_oDataMgr.getTableSchema(m_oDataMgr.m_Connection,
-                                                       m_oDataMgr.m_Transaction,
-                                                       m_oDataMgr.m_strSQL);
+                                                 m_oDataMgr.m_Transaction,
+                                                 m_oDataMgr.m_strSQL);
+
                     if (m_oDataMgr.m_intError == 0)
                     {
-                        m_oDataMgr.m_Command = m_oDataMgr.m_Connection.CreateCommand();
-                        m_oDataMgr.m_Command.CommandText = m_oDataMgr.m_strSQL;
-                        m_oDataMgr.m_DataAdapter.SelectCommand = m_oDataMgr.m_Command;
-                        m_oDataMgr.m_DataAdapter.SelectCommand.Transaction = m_oDataMgr.m_Transaction;
-                        m_oDataMgr.m_DataAdapter.Fill(m_oDataMgr.m_DataSet, "econ_variable");
-                        this.m_econ_dv = new DataView(m_oDataMgr.m_DataSet.Tables["econ_variable"]);
+                        this.m_econ_dv = new DataView(m_oDataMgr.m_DataSet.Tables[strTableName]);
 
                         this.m_econ_dv.AllowNew = false;       //cannot append new records
                         this.m_econ_dv.AllowDelete = false;    //cannot delete records
@@ -2364,7 +2353,7 @@ namespace FIA_Biosum_Manager
                         /***********************************************************************
                          **map the data grid table style to the scenario rx intensity dataset
                          ***********************************************************************/
-                        tableStyle.MappingName = "econ_variable";
+                        tableStyle.MappingName = strTableName;
                         tableStyle.AlternatingBackColor = frmMain.g_oGridViewAlternateRowBackgroundColor;
                         tableStyle.BackColor = frmMain.g_oGridViewRowBackgroundColor;
                         tableStyle.ForeColor = frmMain.g_oGridViewRowForegroundColor;
@@ -2376,7 +2365,7 @@ namespace FIA_Biosum_Manager
                          **we will use those to create new columnstyles for the columns in our grid
                          ******************************************************************************/
                         //get the number of columns from the view_weights data set
-                        int numCols = m_oDataMgr.m_DataSet.Tables["econ_variable"].Columns.Count;
+                        int numCols = m_oDataMgr.m_DataSet.Tables[strTableName].Columns.Count;
 
                         /************************************************
                          **loop through all the columns in the dataset	
@@ -2384,7 +2373,7 @@ namespace FIA_Biosum_Manager
                         string strColumnName = ""; ;
                         for (int i = 0; i < numCols; ++i)
                         {
-                            strColumnName = m_oDataMgr.m_DataSet.Tables["econ_variable"].Columns[i].ColumnName;
+                            strColumnName = m_oDataMgr.m_DataSet.Tables[strTableName].Columns[i].ColumnName;
 
                             /***********************************
                             **all columns are read-only except weight
@@ -2437,16 +2426,17 @@ namespace FIA_Biosum_Manager
                         this.m_dgEcon.Expand(-1);
                         this.SumWeights(true);
                     }
-            }
-            catch (Exception e2)
-            {
-                MessageBox.Show(e2.Message, "Table", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                catch (Exception e2)
+                {
+                    MessageBox.Show(e2.Message, "Table", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.m_intError = -1;
-                m_oDataMgr.m_DataSet.Clear();
-                m_oDataMgr.m_DataSet = null;
-                m_oDataMgr.m_DataAdapter.Dispose();
-                m_oDataMgr.m_DataAdapter = null;
-                return;
+                    m_oDataMgr.m_DataSet.Clear();
+                    m_oDataMgr.m_DataSet = null;
+                    m_oDataMgr.m_DataAdapter.Dispose();
+                    m_oDataMgr.m_DataAdapter = null;
+                    return;
+                }
             }
         }
 
@@ -2603,8 +2593,17 @@ namespace FIA_Biosum_Manager
 
         private void btnCancelSummary_Click(object sender, EventArgs e)
         {
-
             this.ParentForm.Close();
+        }
+
+        protected override void OnHandleDestroyed(EventArgs e)
+        {
+            if (m_oDataMgr != null && m_oDataMgr.m_Connection != null)
+            {
+
+                m_oDataMgr.CloseAndDisposeConnection(m_oDataMgr.m_Connection, true);
+            }
+            base.OnHandleDestroyed(e);
         }
 
         private void btnNewFvs_Click(object sender, EventArgs e)
@@ -2648,6 +2647,7 @@ namespace FIA_Biosum_Manager
             if (this.m_oDataMgr == null)
             {
                 this.m_oAdo.m_DataSet.Clear();
+                // Add row to the dataset for each cycle
                 for (int i = 1; i < 5; i++)
                 {
                     DataRow p_row = this.m_oAdo.m_DataSet.Tables["econ_variable"].NewRow();
@@ -2660,14 +2660,17 @@ namespace FIA_Biosum_Manager
             }
             else
             {
+                // Replaced m_oDataMgr.m_DataSet.Tables["econ_variable"] with
+                // m_oDataMgr.m_DataSet.Tables[strTableName]
+                string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
                 this.m_oDataMgr.m_DataSet.Clear();
                 for (int i = 1; i < 5; i++)
                 {
-                    DataRow p_row = this.m_oDataMgr.m_DataSet.Tables["econ_variable"].NewRow();
+                    DataRow p_row = m_oDataMgr.m_DataSet.Tables[strTableName].NewRow();
                     p_row["calculated_variables_id"] = intNewId;
                     p_row["rxcycle"] = Convert.ToString(i);
                     p_row["weight"] = 0;
-                    this.m_oDataMgr.m_DataSet.Tables["econ_variable"].Rows.Add(p_row);
+                    m_oDataMgr.m_DataSet.Tables[strTableName].Rows.Add(p_row);
                     p_row = null;
                 }
             }
@@ -2869,7 +2872,6 @@ namespace FIA_Biosum_Manager
                 BtnEconImport.Enabled = true;
                 this.SumWeights(true);
                 this.updateWeightColumn(VARIABLE_ECON, false);
-                this.enableEconVariableUc(false);
             }
             else
             {
@@ -2918,6 +2920,7 @@ namespace FIA_Biosum_Manager
                     oAdo.m_OleDbDataAdapter.SelectCommand = oAdo.m_OleDbCommand;
                     oAdo.m_OleDbDataAdapter.SelectCommand.Transaction = oAdo.m_OleDbTransaction;
                     oAdo.m_OleDbDataAdapter.Fill(m_oAdo.m_DataSet, "econ_variable");
+                    this.enableEconVariableUc(false);
                     BtnDeleteEconVariable.Enabled = true;
                     for (int i = 0; i < PREFIX_ECON_VALUE_ARRAY.Length; i++)
                     {
@@ -3038,37 +3041,42 @@ namespace FIA_Biosum_Manager
 
         private void load_properties_sqlite(string strVariableName, string strVariableSource)
         {
-            DataMgr oDataMgr = new DataMgr();
-            using (var oPropertiesConn = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(m_strCalculatedVariablesDb)))
+            if (lstVariables.SelectedItems[0].SubItems[2].Text.Trim().Equals(VARIABLE_ECON))
             {
-                oPropertiesConn.Open();
-                if (lstVariables.SelectedItems[0].SubItems[2].Text.Trim().Equals(VARIABLE_ECON))
+                string strSelectedType = getEconVariableType(strVariableName);
+                int idxType = 0;
+                foreach (string strValue in PREFIX_ECON_VALUE_ARRAY)
                 {
-                    string strSelectedType = getEconVariableType(strVariableName);
-                    int idxType = 0;
-                    foreach (string strValue in PREFIX_ECON_VALUE_ARRAY)
+                    if (strValue.Equals(strSelectedType))
                     {
-                        if (strValue.Equals(strSelectedType))
-                        {
-                            lblSelectedEconType.Text = PREFIX_ECON_NAME_ARRAY[idxType];
-                            break;
-                        }
-                        else
-                        {
-                            idxType++;
-                        }
+                        lblSelectedEconType.Text = PREFIX_ECON_NAME_ARRAY[idxType];
+                        break;
                     }
-                    lstEconVariablesList.SelectedIndex = idxType;
-                    //m_oAdo.m_DataSet.Clear();
-                    m_oDataMgr.m_DataSet.Clear();
-                    oDataMgr.m_strSQL = "select * from " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
-                        " where calculated_variables_id = " + m_intCurVar;
-                    oDataMgr.m_Command = oPropertiesConn.CreateCommand();
-                    oDataMgr.m_Command.CommandText = oDataMgr.m_strSQL;
-                    oDataMgr.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
-                    oDataMgr.m_DataAdapter.SelectCommand = oDataMgr.m_Command;
-                    oDataMgr.m_DataAdapter.SelectCommand.Transaction = oDataMgr.m_Transaction;
-                    oDataMgr.m_DataAdapter.Fill(m_oDataMgr.m_DataSet, "econ_variable");
+                    else
+                    {
+                        idxType++;
+                    }
+                }
+                lstEconVariablesList.SelectedIndex = idxType;
+                string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                m_oDataMgr.m_DataSet.Clear();
+                m_oDataMgr.m_strSQL = "select * from " + strTableName +
+                    " where calculated_variables_id = " + m_intCurVar;
+                m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                if (m_oDataMgr.m_DataReader.HasRows)
+                {
+                    while (m_oDataMgr.m_DataReader.Read())
+                    {
+                        DataRow p_row = m_oDataMgr.m_DataSet.Tables[strTableName].NewRow();
+                        p_row["calculated_variables_id"] = m_intCurVar;
+                        p_row["rxcycle"] = Convert.ToString(m_oDataMgr.m_DataReader["rxcycle"]);
+                        p_row["weight"] = Convert.ToDouble(m_oDataMgr.m_DataReader["weight"]);
+                        m_oDataMgr.m_DataSet.Tables[strTableName].Rows.Add(p_row);
+                        p_row = null;
+                    }
+                }
+
+                this.enableEconVariableUc(false);
                     BtnDeleteEconVariable.Enabled = true;
                     for (int i = 0; i < PREFIX_ECON_VALUE_ARRAY.Length; i++)
                     {
@@ -3081,6 +3089,9 @@ namespace FIA_Biosum_Manager
                     this.grpBoxEconomicVariable.Show();
                 }
                 else
+                {
+                DataMgr oDataMgr = new DataMgr();
+                using (var oPropertiesConn = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(m_strCalculatedVariablesDb)))
                 {
                     oDataMgr.m_strSQL = "select * from " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
                         " where calculated_variables_id = " + m_intCurVar;
@@ -3176,7 +3187,6 @@ namespace FIA_Biosum_Manager
                                         }
                                         break;
                                 }
-
                             }
                         }
                     }
@@ -3670,8 +3680,9 @@ namespace FIA_Biosum_Manager
 
         private void BtnDeleteEconVariable_Click(object sender, EventArgs e)
         {
-            ado_data_access oAdo = new ado_data_access();
             string strScenarioDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
+            // @ToDo: Switch this over to sqlite when migrating Optimizer
+            ado_data_access oAdo = new ado_data_access();
             string strScenarioConn = oAdo.getMDBConnString(strScenarioDir + "\\" + Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioTableDbFile, "", "");
             using (var oScenarioConn = new OleDbConnection(strScenarioConn))
             {
@@ -3712,28 +3723,79 @@ namespace FIA_Biosum_Manager
                     return;
                 }
             }
+            if (oAdo != null)
+            {
+                if (oAdo.m_DataSet != null)
+                {
+                    oAdo.m_DataSet.Clear();
+                    oAdo.m_DataSet.Dispose();
+                }
+                oAdo = null;
+            }
             DialogResult objResult = MessageBox.Show("!!You are about to delete an Economic weighted variable. This action cannot be undone. Do you wish to continue?", "FIA Biosum",
-                   System.Windows.Forms.MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
+                MessageBoxButtons.YesNo, System.Windows.Forms.MessageBoxIcon.Question);
             if (objResult == DialogResult.Yes)
             {
-                strScenarioConn = oAdo.getMDBConnString(frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
+                if (!m_bUsingSqlite)
+                {
+                    DeleteEconVariableAccdb();
+                }
+                else
+                {
+                    DeleteEconVariableSqlite();
+                }
+                this.btnEconDetailsCancel.PerformClick();
+            }
+        }
+
+        private void DeleteEconVariableAccdb()
+        {
+                string strConn = m_oAdo.getMDBConnString(frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
                    "\\" + Tables.OptimizerDefinitions.DefaultDbFile, "", "");
-                using (var oScenarioConn = new OleDbConnection(strScenarioConn))
+                using (var oScenarioConn = new OleDbConnection(strConn))
                 {
                     // Delete entries from configuration database
                     oScenarioConn.Open();
-                    oAdo.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
+                    m_oAdo.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
                                       " WHERE calculated_variables_id = " + m_intCurVar;
-                    oAdo.SqlNonQuery(oScenarioConn, oAdo.m_strSQL);
-                    oAdo.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                    m_oAdo.SqlNonQuery(oScenarioConn, m_oAdo.m_strSQL);
+                    m_oAdo.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
                                       " WHERE ID = " + m_intCurVar;
-                    oAdo.SqlNonQuery(oScenarioConn, oAdo.m_strSQL);
+                    m_oAdo.SqlNonQuery(oScenarioConn, m_oAdo.m_strSQL);
                 }
                 // Update UI
                 this.loadLstVariables();
+        }
 
-                this.btnEconDetailsCancel.PerformClick();
+        private void DeleteEconVariableSqlite()
+        {
+            try
+            {
+                // Delete entries from configuration database
+                m_oDataMgr.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName +
+                                      " WHERE calculated_variables_id = " + m_intCurVar;
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                m_oDataMgr.m_strSQL = "DELETE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                                      " WHERE ID = " + m_intCurVar;
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                m_oDataMgr.m_Transaction.Commit();
             }
+            catch (System.Data.SQLite.SQLiteException errSQLite)
+            {
+                m_intError = -1;
+                MessageBox.Show(errSQLite.Message);
+            }
+            catch (Exception caught)
+            {
+                this.m_intError = -1;
+                MessageBox.Show(caught.Message);
+            }
+            finally
+            {
+                m_oDataMgr.ResetTransactionObjectToDataAdapterArray();
+            }
+            // Update UI
+            this.loadLstVariablesSqlite();
         }
 
         private void InitializeOleDbTransactionCommands()
@@ -4691,7 +4753,74 @@ namespace FIA_Biosum_Manager
                 m_oAdo.SqlNonQuery(calculateConn, m_oAdo.m_strSQL);
             }
         }
-        
+
+        private void SQLiteConnect()
+        {
+            try
+            {
+                if (m_oDataMgr.m_Connection != null && m_oDataMgr.m_Connection.State != ConnectionState.Closed)
+                {
+                    if (m_oDataMgr.m_DataReader != null) m_oDataMgr.m_DataReader.Dispose();
+                    if (m_oDataMgr.m_Command != null) m_oDataMgr.m_Command.Dispose();
+                    //if (m_oDataMgr.m_Transaction != null) m_oDataMgr.m_Transaction.Dispose();
+                    if (m_oDataMgr.m_DataAdapter != null)
+                    {
+                        if (m_oDataMgr.m_DataAdapter.SelectCommand != null)
+                        {
+                            m_oDataMgr.m_DataAdapter.SelectCommand.Dispose();
+                        }
+                        if (m_oDataMgr.m_DataAdapter.UpdateCommand != null)
+                        {
+                            m_oDataMgr.m_DataAdapter.UpdateCommand.Dispose();
+                        }
+                        if (m_oDataMgr.m_DataAdapter.DeleteCommand != null)
+                        {
+                            m_oDataMgr.m_DataAdapter.DeleteCommand.Dispose();
+                        }
+                        if (m_oDataMgr.m_DataAdapter.InsertCommand != null)
+                        {
+                            m_oDataMgr.m_DataAdapter.InsertCommand.Dispose();
+                        }
+                    }
+                    m_oDataMgr.CloseConnection(m_oDataMgr.m_Connection);
+                }
+
+                Thread.Sleep(2000); //sleep 5 seconds
+
+                if (m_oDataMgr.m_Connection != null) m_oDataMgr.m_Connection.Dispose();
+                m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(m_strCalculatedVariablesDb));
+            }
+            catch (System.Data.SQLite.SQLiteException errSQLite)
+            {
+                m_strError = errSQLite.Message;
+                m_intError = -1;
+            }
+            catch (Exception err)
+            {
+                m_strError = err.Message;
+                m_intError = -1;
+            }
+            finally
+            {
+                if (m_intError != 0 || m_oDataMgr.m_intError != 0)
+                {
+                    m_oDataMgr.CloseConnection(m_oDataMgr.m_Connection);
+                }
+                else
+                {
+                    if (m_oDataMgr.m_DataSet != null)
+                    {
+                        m_oDataMgr.m_DataSet.Tables.Clear();
+                        m_oDataMgr.m_DataSet.Dispose();
+                    }
+
+                    this.m_oDataMgr.m_DataSet = new System.Data.DataSet();
+
+                    m_oDataMgr.InitializeDataAdapterArray(TABLE_COUNT);
+                }
+            }
+        }
+
         private void StartTherm(string p_strNumberOfTherms, string p_strTitle)
         {
             m_frmTherm = new frmTherm((frmDialog)ParentForm, p_strTitle);
