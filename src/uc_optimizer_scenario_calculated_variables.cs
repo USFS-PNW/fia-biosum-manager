@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Data.OleDb;
 using System.Threading;
 using SQLite.ADO;
+using System.Data.SQLite;
 
 namespace FIA_Biosum_Manager
 {
@@ -47,7 +48,6 @@ namespace FIA_Biosum_Manager
         private DataMgr m_oDataMgr = new DataMgr();
         private DataMgr m_oDataMgrFvs;
         private string m_strTempMDB;
-        private string m_strTempDb;
         private bool m_bUsingSqlite;
 
         const int COLUMN_CHECKBOX = 0;
@@ -78,10 +78,9 @@ namespace FIA_Biosum_Manager
         string m_strCalculatedVariablesDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
             "\\" + Tables.OptimizerDefinitions.DefaultSqliteDbFile;
 
-        string _strDataSetName = "";
         const int TABLE_COUNT = 2;
-        const int DEFINITION_TABLE = 0;
-        const int ECON_DETAILS_TABLE = 1;
+        const int ECON_DETAILS_TABLE = 0;
+        const int FVS_DETAILS_TABLE = 1;
 
 
 
@@ -981,17 +980,18 @@ namespace FIA_Biosum_Manager
 
             this.loadLstVariablesSqlite();
 
-            //get temporary db file
-            m_strTempDb = m_oUtils.getRandomFile(this.m_oEnv.strTempDir, "db");
-            m_oDataMgrFvs = new DataMgr();
-            m_oDataMgrFvs.CreateDbFile(m_strTempDb);
-            m_oDataMgrFvs.OpenConnection(m_oDataMgrFvs.GetConnectionString(m_strTempDb));
-            if (m_oDataMgrFvs.m_intError == 0)
+            if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, m_strFvsViewTableName))
             {
-                frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgrFvs,
-                    m_oDataMgrFvs.m_Connection, m_strFvsViewTableName);
-                init_sqlite_m_dg();
+                m_oDataMgr.m_strSQL = "DROP TABLE " + m_strFvsViewTableName;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + "\r\n");
+                }
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
             }
+            frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgr,
+                m_oDataMgr.m_Connection, m_strFvsViewTableName);
+            init_sqlite_m_dg();
 
             //load datagrid for economic variables
             loadEconVariablesGridSqlite();
@@ -1201,17 +1201,17 @@ namespace FIA_Biosum_Manager
                     }
                     else
                     {
-                        if (m_oDataMgrFvs.TableExist(m_oDataMgrFvs.m_Connection, m_strFvsViewTableName))
+                        if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, m_strFvsViewTableName))
                         {
-                            m_oDataMgrFvs.m_strSQL = "DROP TABLE " + m_strFvsViewTableName;
+                            m_oDataMgr.m_strSQL = "DROP TABLE " + m_strFvsViewTableName;
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             {
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgrFvs.m_strSQL + "\r\n");
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + "\r\n");
                             }
-                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, m_oDataMgrFvs.m_strSQL);
+                            m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
                         }
-                        frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgrFvs,
-                           m_oDataMgrFvs.m_Connection, m_strFvsViewTableName);
+                        frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateSqliteScenarioFvsVariableWeightsReferenceTable(m_oDataMgr,
+                           m_oDataMgr.m_Connection, m_strFvsViewTableName);
                     }
 
                     strSql = "SELECT rxcycle, MIN(Year) as MinYear, \"PRE\" as pre_or_post" +
@@ -1249,7 +1249,7 @@ namespace FIA_Biosum_Manager
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Insert records into " + m_strFvsViewTableName + "\r\n");
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, insertSql + "\r\n\r\n");
                             }
-                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, insertSql);
+                            m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, insertSql);
                         }
                     }
 
@@ -1288,17 +1288,17 @@ namespace FIA_Biosum_Manager
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, "Insert records into " + m_strFvsViewTableName + "\r\n");
                                 frmMain.g_oUtils.WriteText(m_strDebugFile, insertSql + "\r\n\r\n");
                             }
-                            m_oDataMgrFvs.SqlNonQuery(m_oDataMgrFvs.m_Connection, insertSql);
+                            m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, insertSql);
                         }
                     }
-                    m_oDataMgrFvs.m_DataSet.Clear();
-                    m_oDataMgrFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
-                    m_oDataMgrFvs.m_Command = m_oDataMgrFvs.m_Connection.CreateCommand();
-                    m_oDataMgrFvs.m_Command.CommandText = m_oDataMgrFvs.m_strSQL;
-                    m_oDataMgrFvs.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
-                    m_oDataMgrFvs.m_DataAdapter.SelectCommand = m_oDataMgrFvs.m_Command;
-                    m_oDataMgrFvs.m_DataAdapter.SelectCommand.Transaction = m_oDataMgrFvs.m_Transaction;
-                    m_oDataMgrFvs.m_DataAdapter.Fill(m_oDataMgrFvs.m_DataSet, m_strFvsViewTableName);
+                    m_oDataMgr.m_DataSet.Clear();
+                    m_oDataMgr.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
+                    m_oDataMgr.m_Command = m_oDataMgr.m_Connection.CreateCommand();
+                    m_oDataMgr.m_Command.CommandText = m_oDataMgr.m_strSQL;
+                    m_oDataMgr.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
+                    m_oDataMgr.m_DataAdapter.SelectCommand = m_oDataMgr.m_Command;
+                    m_oDataMgr.m_DataAdapter.SelectCommand.Transaction = m_oDataMgr.m_Transaction;
+                    m_oDataMgr.m_DataAdapter.Fill(m_oDataMgr.m_DataSet, m_strFvsViewTableName);
                 }
                 BtnFvsImport.Enabled = true;
             }
@@ -1455,26 +1455,46 @@ namespace FIA_Biosum_Manager
         private void init_sqlite_m_dg()
         {
 
-            m_oDataMgrFvs.m_DataSet = new DataSet(m_strFvsViewTableName);
-            m_oDataMgrFvs.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
-            m_oDataMgrFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
-            this.m_dtTableSchema = m_oDataMgrFvs.getTableSchema(m_oDataMgrFvs.m_Connection,
-                                           m_oDataMgrFvs.m_Transaction,
-                                           m_oDataMgrFvs.m_strSQL);
+            //m_oDataMgrFvs.m_DataSet = new DataSet(m_strFvsViewTableName);
+            //m_oDataMgrFvs.m_DataAdapter = new System.Data.SQLite.SQLiteDataAdapter();
+            //m_oDataMgrFvs.m_strSQL = "select * from " + m_strFvsViewTableName + " order by RXYEAR";
+            //this.m_dtTableSchema = m_oDataMgrFvs.getTableSchema(m_oDataMgrFvs.m_Connection,
+            //                               m_oDataMgrFvs.m_Transaction,
+            //                               m_oDataMgrFvs.m_strSQL);
 
-            if (m_oDataMgrFvs.m_intError == 0)
-            {
-                m_oDataMgrFvs.m_Command = m_oDataMgrFvs.m_Connection.CreateCommand();
-                m_oDataMgrFvs.m_Command.CommandText = m_oDataMgrFvs.m_strSQL;
-                m_oDataMgrFvs.m_DataAdapter.SelectCommand = m_oDataMgrFvs.m_Command;
-                m_oDataMgrFvs.m_DataAdapter.SelectCommand.Transaction = m_oDataMgrFvs.m_Transaction;
-            }
+            //if (m_oDataMgrFvs.m_intError == 0)
+            //{
+            //    m_oDataMgrFvs.m_Command = m_oDataMgrFvs.m_Connection.CreateCommand();
+            //    m_oDataMgrFvs.m_Command.CommandText = m_oDataMgrFvs.m_strSQL;
+            //    m_oDataMgrFvs.m_DataAdapter.SelectCommand = m_oDataMgrFvs.m_Command;
+            //    m_oDataMgrFvs.m_DataAdapter.SelectCommand.Transaction = m_oDataMgrFvs.m_Transaction;
+            //}
 
             try
             {
+                string strPrimaryKeys = "rxcycle, pre_or_post, rxyear";
+                string strColumns = "rxcycle, pre_or_post, rxyear, weight";
+                m_oDataMgr.m_Transaction = m_oDataMgr.m_Connection.BeginTransaction();
+                string strWhereClause = "";
+                m_oDataMgr.InitializeDataAdapterArrayItem(FVS_DETAILS_TABLE, m_strFvsViewTableName, strColumns, strPrimaryKeys, strWhereClause);
+                this.m_dtTableSchema = m_oDataMgr.getTableSchema(m_oDataMgr.m_Connection,
+                                             m_oDataMgr.m_Transaction,
+                                             m_oDataMgr.m_strSQL);
 
-                m_oDataMgrFvs.m_DataAdapter.Fill(m_oDataMgrFvs.m_DataSet, "view_weights");
-                this.m_dv = new DataView(m_oDataMgrFvs.m_DataSet.Tables["view_weights"]);
+                //if (m_oDataMgr.m_intError == 0)
+                //{
+                //    this.m_econ_dv = new DataView(m_oDataMgr.m_DataSet.Tables[strTableName]);
+
+                //    this.m_econ_dv.AllowNew = false;       //cannot append new records
+                //    this.m_econ_dv.AllowDelete = false;    //cannot delete records
+                //    this.m_econ_dv.AllowEdit = true;
+                //    this.m_dgEcon.CaptionText = "econ_variable";
+                //    m_dgEcon.BackgroundColor = frmMain.g_oGridViewBackgroundColor;
+
+
+
+                //m_oDataMgrFvs.m_DataAdapter.Fill(m_oDataMgrFvs.m_DataSet, "view_weights");
+                this.m_dv = new DataView(m_oDataMgr.m_DataSet.Tables[m_strFvsViewTableName]);
 
                 this.m_dv.AllowNew = false;       //cannot append new records
                 this.m_dv.AllowDelete = false;    //cannot delete records
@@ -1495,7 +1515,7 @@ namespace FIA_Biosum_Manager
                 /***********************************************************************
                  **map the data grid table style to the scenario rx intensity dataset
                  ***********************************************************************/
-                tableStyle.MappingName = "view_weights";
+                tableStyle.MappingName = m_strFvsViewTableName;
                 tableStyle.AlternatingBackColor = frmMain.g_oGridViewAlternateRowBackgroundColor;
                 tableStyle.BackColor = frmMain.g_oGridViewRowBackgroundColor;
                 tableStyle.ForeColor = frmMain.g_oGridViewRowForegroundColor;
@@ -1508,7 +1528,7 @@ namespace FIA_Biosum_Manager
                  **we will use those to create new columnstyles for the columns in our grid
                  ******************************************************************************/
                 //get the number of columns from the view_weights data set
-                int numCols = m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Columns.Count;
+                int numCols = m_oDataMgr.m_DataSet.Tables[m_strFvsViewTableName].Columns.Count;
 
                 /************************************************
                  **loop through all the columns in the dataset	
@@ -1516,7 +1536,7 @@ namespace FIA_Biosum_Manager
                 string strColumnName;
                 for (int i = 0; i < numCols; ++i)
                 {
-                    strColumnName = m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Columns[i].ColumnName;
+                    strColumnName = m_oDataMgr.m_DataSet.Tables[m_strFvsViewTableName].Columns[i].ColumnName;
 
                     /***********************************
                     **all columns are read-only except weight
@@ -1573,12 +1593,12 @@ namespace FIA_Biosum_Manager
             {
                 MessageBox.Show(e.Message, "view_weights Table", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.m_intError = -1;
-                m_oDataMgrFvs.m_Connection.Close();
-                m_oDataMgrFvs.m_Connection = null;
-                m_oDataMgrFvs.m_DataSet.Clear();
-                m_oDataMgrFvs.m_DataSet = null;
-                m_oDataMgrFvs.m_DataAdapter.Dispose();
-                m_oDataMgrFvs.m_DataAdapter = null;
+                //m_oDataMgrFvs.m_Connection.Close();
+                //m_oDataMgrFvs.m_Connection = null;
+                //m_oDataMgrFvs.m_DataSet.Clear();
+                //m_oDataMgrFvs.m_DataSet = null;
+                //m_oDataMgrFvs.m_DataAdapter.Dispose();
+                //m_oDataMgrFvs.m_DataAdapter = null;
                 return;
 
             }
@@ -2320,11 +2340,11 @@ namespace FIA_Biosum_Manager
                 string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
                 try
                 {
-                    //m_oDataMgr.m_DataSet = new DataSet("econ_variable");
                     string strPrimaryKeys = "calculated_variables_id, rxcycle";
                     string strColumns = "calculated_variables_id, rxcycle, weight";
                     m_oDataMgr.m_Transaction = m_oDataMgr.m_Connection.BeginTransaction();
-                    m_oDataMgr.InitializeDataAdapterArrayItem(ECON_DETAILS_TABLE, strTableName, strColumns, strPrimaryKeys);
+                    string strWhereClause = "calculated_variables_id = -1";
+                    m_oDataMgr.InitializeDataAdapterArrayItem(ECON_DETAILS_TABLE, strTableName, strColumns, strPrimaryKeys, strWhereClause);
                     this.m_dtTableSchema = m_oDataMgr.getTableSchema(m_oDataMgr.m_Connection,
                                                  m_oDataMgr.m_Transaction,
                                                  m_oDataMgr.m_strSQL);
@@ -2600,7 +2620,15 @@ namespace FIA_Biosum_Manager
         {
             if (m_oDataMgr != null && m_oDataMgr.m_Connection != null)
             {
-
+                if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, m_strFvsViewTableName))
+                {
+                    m_oDataMgr.m_strSQL = "DROP TABLE " + m_strFvsViewTableName;
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + "\r\n");
+                    }
+                    m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                }
                 m_oDataMgr.CloseAndDisposeConnection(m_oDataMgr.m_Connection, true);
             }
             base.OnHandleDestroyed(e);
@@ -3059,22 +3087,10 @@ namespace FIA_Biosum_Manager
                 }
                 lstEconVariablesList.SelectedIndex = idxType;
                 string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
-                m_oDataMgr.m_DataSet.Clear();
-                m_oDataMgr.m_strSQL = "select * from " + strTableName +
-                    " where calculated_variables_id = " + m_intCurVar;
-                m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
-                if (m_oDataMgr.m_DataReader.HasRows)
-                {
-                    while (m_oDataMgr.m_DataReader.Read())
-                    {
-                        DataRow p_row = m_oDataMgr.m_DataSet.Tables[strTableName].NewRow();
-                        p_row["calculated_variables_id"] = m_intCurVar;
-                        p_row["rxcycle"] = Convert.ToString(m_oDataMgr.m_DataReader["rxcycle"]);
-                        p_row["weight"] = Convert.ToDouble(m_oDataMgr.m_DataReader["weight"]);
-                        m_oDataMgr.m_DataSet.Tables[strTableName].Rows.Add(p_row);
-                        p_row = null;
-                    }
-                }
+                string strPrimaryKeys = "calculated_variables_id, rxcycle";
+                string strColumns = "calculated_variables_id, rxcycle, weight";
+                string strWhereClause = "calculated_variables_id = " + m_intCurVar;
+                m_oDataMgr.InitializeDataAdapterArrayItem(ECON_DETAILS_TABLE, strTableName, strColumns, strPrimaryKeys, strWhereClause);
 
                 this.enableEconVariableUc(false);
                     BtnDeleteEconVariable.Enabled = true;
@@ -3090,16 +3106,7 @@ namespace FIA_Biosum_Manager
                 }
                 else
                 {
-                DataMgr oDataMgr = new DataMgr();
-                using (var oPropertiesConn = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(m_strCalculatedVariablesDb)))
-                {
-                    oDataMgr.m_strSQL = "select * from " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
-                        " where calculated_variables_id = " + m_intCurVar;
-                    oDataMgr.SqlQueryReader(oPropertiesConn, oDataMgr.m_strSQL);
-                    if (oDataMgr.m_DataReader.HasRows)
-                    {
-                        while (oDataMgr.m_DataReader.Read())
-                        {
+
                             //Selected FVS table (lstFVSTablesList)
                             string[] strPieces = strVariableSource.Split('.');
                             for (int i = 0; i < lstFVSTablesList.Items.Count; i++)
@@ -3140,57 +3147,68 @@ namespace FIA_Biosum_Manager
                                     break;
                                 }
                             }
-                            foreach (DataRow p_row in m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Rows)
+                string strSql = "select * from " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
+                    " where calculated_variables_id = " + m_intCurVar;
+                using (SQLiteCommand cmd = new SQLiteCommand(strSql, m_oDataMgr.m_Connection))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
                             {
-                                string strRxCycle = Convert.ToString(p_row["rxcycle"]);
-                                string strPrePost = Convert.ToString(p_row["pre_or_post"]).Trim();
-                                switch (strRxCycle)
+                                foreach (DataRow p_row in m_oDataMgr.m_DataSet.Tables[m_strFvsViewTableName].Rows)
                                 {
-                                    case "1":
-                                        if (strPrePost.Equals("PRE"))
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_1_PRE"]);
-                                        }
-                                        else
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_1_POST"]);
-                                        }
-                                        break;
-                                    case "2":
-                                        if (strPrePost.Equals("PRE"))
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_2_PRE"]);
-                                        }
-                                        else
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_2_POST"]);
-                                        }
-                                        break;
-                                    case "3":
-                                        if (strPrePost.Equals("PRE"))
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_3_PRE"]);
-                                        }
-                                        else
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_3_POST"]);
-                                        }
-                                        break;
-                                    case "4":
-                                        if (strPrePost.Equals("PRE"))
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_4_PRE"]);
-                                        }
-                                        else
-                                        {
-                                            p_row["weight"] = Convert.ToDouble(oDataMgr.m_DataReader["WEIGHT_4_POST"]);
-                                        }
-                                        break;
+                                    string strRxCycle = Convert.ToString(p_row["rxcycle"]);
+                                    string strPrePost = Convert.ToString(p_row["pre_or_post"]).Trim();
+                                    switch (strRxCycle)
+                                    {
+                                        case "1":
+                                            if (strPrePost.Equals("PRE"))
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_1_PRE"]);
+                                            }
+                                            else
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_1_POST"]);
+                                            }
+                                            break;
+                                        case "2":
+                                            if (strPrePost.Equals("PRE"))
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_2_PRE"]);
+                                            }
+                                            else
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_2_POST"]);
+                                            }
+                                            break;
+                                        case "3":
+                                            if (strPrePost.Equals("PRE"))
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_3_PRE"]);
+                                            }
+                                            else
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_3_POST"]);
+                                            }
+                                            break;
+                                        case "4":
+                                            if (strPrePost.Equals("PRE"))
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_4_PRE"]);
+                                            }
+                                            else
+                                            {
+                                                p_row["weight"] = Convert.ToDouble(reader["WEIGHT_4_POST"]);
+                                            }
+                                            break;
+                                    }
                                 }
                             }
                         }
-                    }
-                }
+                    } 
+                } 
             }
         }
 
@@ -4815,7 +4833,6 @@ namespace FIA_Biosum_Manager
                     }
 
                     this.m_oDataMgr.m_DataSet = new System.Data.DataSet();
-
                     m_oDataMgr.InitializeDataAdapterArray(TABLE_COUNT);
                 }
             }
