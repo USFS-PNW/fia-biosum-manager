@@ -46,7 +46,6 @@ namespace FIA_Biosum_Manager
         private ado_data_access m_oAdo;
         private ado_data_access m_oAdoFvs;
         private DataMgr m_oDataMgr = new DataMgr();
-        private DataMgr m_oDataMgrFvs;
         private string m_strTempMDB;
         private bool m_bUsingSqlite;
 
@@ -1870,142 +1869,156 @@ namespace FIA_Biosum_Manager
                 intId = GetNextId();
             }
 
-        // SHARED BEGINNING OF INSERT STATEMENT
-        strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+            // SHARED BEGINNING OF INSERT STATEMENT
+            strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
                         " (ID, VARIABLE_NAME, VARIABLE_DESCRIPTION, VARIABLE_TYPE, BASELINE_RXPACKAGE, VARIABLE_SOURCE)" +
                         " VALUES ( " + intId + ", '";
 
-                    if (strVariableType.Equals("FVS"))
-                    {
-                        if (cboFvsVariableBaselinePkg.SelectedIndex > -1)
-                        {
-                            strBaselinePackage = cboFvsVariableBaselinePkg.SelectedItem.ToString();
-                        }
-                        string strDescription = "";
-                        if (!String.IsNullOrEmpty(txtFVSVariableDescr.Text))
-                            strDescription = txtFVSVariableDescr.Text.Trim();
-                        strSql = strSql + lblFvsVariableName.Text.Trim() + "','" + strDescription + "','" +
-                                 strVariableType + "','" + strBaselinePackage + "','" + LblSelectedVariable.Text.Trim() + "')";
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                        {
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for FVS weighted variable \r\n");
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
-                        }
-                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
-                        // ADD CHILD PERCENTAGE RECORD
-                        if (m_oDataMgr.m_intError == 0)
-                        {
-                            double[] arrPrePercents = new double[4];
-                            double[] arrPostPercents = new double[4];
-                            int intRxCycle;
-                            double dblWeight;
-                            string strPrePost = "";
-                            foreach (DataRow row in this.m_dv.Table.Rows)
-                            {
-                                intRxCycle = Convert.ToInt32(row["rxcycle"]);
-                                dblWeight = Convert.ToDouble(row["weight"]);
-                                strPrePost = row["pre_or_post"].ToString().Trim();
-                                if (strPrePost.Equals("PRE"))
-                                {
-                                    arrPrePercents[intRxCycle - 1] = dblWeight;
-                                }
-                                else
-                                {
-                                    arrPostPercents[intRxCycle - 1] = dblWeight;
-                                }
-                            }
-
-                            strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
-                                " (calculated_variables_id, weight_1_pre, weight_1_post, weight_2_pre, weight_2_post, " +
-                                "weight_3_pre, weight_3_post, weight_4_pre, weight_4_post)" +
-                                " VALUES ( " + intId + ", " + arrPrePercents[0] + ", " + arrPostPercents[0] +
-                                ", " + arrPrePercents[1] + ", " + arrPostPercents[1] + ", " + arrPrePercents[2] +
-                                ", " + arrPostPercents[2] + ", " + arrPrePercents[3] + ", " + arrPostPercents[3] + ")";
-                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                            {
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Add child weight values entry for FVS variable id: " + intId + " \r\n");
-                                frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
-                            }
+            if (strVariableType.Equals("FVS"))
+            {
+                if (cboFvsVariableBaselinePkg.SelectedIndex > -1)
+                {
+                    strBaselinePackage = cboFvsVariableBaselinePkg.SelectedItem.ToString();
+                }
+                string strDescription = "";
+                if (!String.IsNullOrEmpty(txtFVSVariableDescr.Text))
+                    strDescription = txtFVSVariableDescr.Text.Trim();
+                strSql = strSql + lblFvsVariableName.Text.Trim() + "','" + strDescription + "','" +
+                         strVariableType + "','" + strBaselinePackage + "','" + LblSelectedVariable.Text.Trim() + "')";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for FVS weighted variable \r\n");
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
+                }
+                try
+                {
                     m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
-                        }
-                    }
-                    else
+                    // ADD CHILD PERCENTAGE RECORD
+                    if (m_oDataMgr.m_intError == 0)
                     {
-                        string strDescription = "";
-                        if (!String.IsNullOrEmpty(txtEconVariableDescr.Text))
-                            strDescription = txtEconVariableDescr.Text.Trim();
-                        string strVariableSource = Tables.OptimizerScenarioResults.DefaultScenarioResultsPostEconomicWeightedTableName +
-                            "." + lblEconVariableName.Text.Trim();
-                        strSql = strSql + lblEconVariableName.Text.Trim() + "','" + strDescription + "','" +
-                                 strVariableType + "','" + strBaselinePackage + "','" + strVariableSource + "')";
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        double[] arrPrePercents = new double[4];
+                        double[] arrPostPercents = new double[4];
+                        int intRxCycle;
+                        double dblWeight;
+                        string strPrePost = "";
+                        foreach (DataRow row in this.m_dv.Table.Rows)
                         {
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for Economic weighted variable \r\n");
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
-                        }
-                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
-                    }
-                        // MODIFY CHILD PERCENTAGE RECORD
-                        if (this.m_oDataMgr.m_intError == 0)
-                        {                           
-                            int intCurrRow;
-                            this.m_intError = 0;
-
-                            /******************************************************
-                             **save the current row, move the current row to a
-                             **different row to enable getchanges() method, then
-                             **move back to current row
-                             ******************************************************/
-                            intCurrRow = this.m_dgEcon.CurrentRowIndex;
-                            if (intCurrRow == 0)
+                            intRxCycle = Convert.ToInt32(row["rxcycle"]);
+                            dblWeight = Convert.ToDouble(row["weight"]);
+                            strPrePost = row["pre_or_post"].ToString().Trim();
+                            if (strPrePost.Equals("PRE"))
                             {
-                                this.m_dgEcon.CurrentRowIndex++;
+                                arrPrePercents[intRxCycle - 1] = dblWeight;
                             }
                             else
                             {
-                                this.m_dgEcon.CurrentRowIndex = 0;
+                                arrPostPercents[intRxCycle - 1] = dblWeight;
                             }
-
-
-                        DataTable p_dtChanges;
-                        string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
-                        try
-                            {
-                            
-                            p_dtChanges = m_oDataMgr.m_DataSet.Tables[strTableName].GetChanges();
-
-                                //check if any inserted rows
-                                if (p_dtChanges.HasErrors)
-                                {
-                                m_oDataMgr.m_DataSet.Tables[strTableName].RejectChanges();
-                                    this.m_intError = -1;
-                                }
-                                else
-                                {
-                               
-                                m_oDataMgr.m_DataAdapterArray[ECON_DETAILS_TABLE].Update(m_oDataMgr.m_DataSet.Tables[strTableName]);
-                                this.m_oDataMgr.m_Transaction.Commit();
-                                m_oDataMgr.m_DataSet.Tables[strTableName].AcceptChanges();
-                                
-                                }
-                            p_dtChanges = null;
-                            this.m_dgEcon.CurrentRowIndex = intCurrRow;
                         }
-                        catch (System.Data.SQLite.SQLiteException errSQLite)
+
+                        strSql = "INSERT INTO " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName +
+                        " (calculated_variables_id, weight_1_pre, weight_1_post, weight_2_pre, weight_2_post, " +
+                        "weight_3_pre, weight_3_post, weight_4_pre, weight_4_post)" +
+                        " VALUES ( " + intId + ", " + arrPrePercents[0] + ", " + arrPostPercents[0] +
+                        ", " + arrPrePercents[1] + ", " + arrPostPercents[1] + ", " + arrPrePercents[2] +
+                        ", " + arrPostPercents[2] + ", " + arrPrePercents[3] + ", " + arrPostPercents[3] + ")";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         {
-                            m_intError = -1;
-                            MessageBox.Show(errSQLite.Message);
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Add child weight values entry for FVS variable id: " + intId + " \r\n");
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
                         }
-                        catch (Exception caught)
-                        {
-                            this.m_intError = -1;
-                            MessageBox.Show(caught.Message);                                
-                        }
-                        finally
-                        {
+                        m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
+                        m_oDataMgr.m_Transaction.Commit();
+                    }
+                }
+                catch (System.Data.SQLite.SQLiteException errSQLite)
+                {
+                    m_intError = -1;
+                    MessageBox.Show(errSQLite.Message);
+                }
+                catch (Exception caught)
+                {
+                    this.m_intError = -1;
+                    MessageBox.Show(caught.Message);
+                }
+                finally
+                {
                     m_oDataMgr.ResetTransactionObjectToDataAdapterArray();
                 }
+            }
+            else
+            {
+                string strDescription = "";
+                if (!String.IsNullOrEmpty(txtEconVariableDescr.Text))
+                    strDescription = txtEconVariableDescr.Text.Trim();
+                string strVariableSource = Tables.OptimizerScenarioResults.DefaultScenarioResultsPostEconomicWeightedTableName +
+                    "." + lblEconVariableName.Text.Trim();
+                strSql = strSql + lblEconVariableName.Text.Trim() + "','" + strDescription + "','" +
+                    strVariableType + "','" + strBaselinePackage + "','" + strVariableSource + "')";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                {
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Add parent record for Economic weighted variable \r\n");
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "SQL: " + strSql + "\r\n\r\n");
+                }
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
 
+                // MODIFY CHILD PERCENTAGE RECORD
+                if (this.m_oDataMgr.m_intError == 0)
+                {
+                    int intCurrRow;
+                    this.m_intError = 0;
+
+                    /******************************************************
+                     **save the current row, move the current row to a
+                     **different row to enable getchanges() method, then
+                     **move back to current row
+                     ******************************************************/
+                    intCurrRow = this.m_dgEcon.CurrentRowIndex;
+                    if (intCurrRow == 0)
+                    {
+                        this.m_dgEcon.CurrentRowIndex++;
+                    }
+                    else
+                    {
+                        this.m_dgEcon.CurrentRowIndex = 0;
+                    }
+
+                    DataTable p_dtChanges;
+                    string strTableName = Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName;
+                    try
+                    {
+                        p_dtChanges = m_oDataMgr.m_DataSet.Tables[strTableName].GetChanges();
+
+                        //check if any inserted rows
+                        if (p_dtChanges.HasErrors)
+                        {
+                            m_oDataMgr.m_DataSet.Tables[strTableName].RejectChanges();
+                            this.m_intError = -1;
+                        }
+                        else
+                        {
+                            m_oDataMgr.m_DataAdapterArray[ECON_DETAILS_TABLE].Update(m_oDataMgr.m_DataSet.Tables[strTableName]);
+                            m_oDataMgr.m_Transaction.Commit();
+                            m_oDataMgr.m_DataSet.Tables[strTableName].AcceptChanges();
+                        }
+                        p_dtChanges = null;
+                        this.m_dgEcon.CurrentRowIndex = intCurrRow;
+                    }
+                    catch (System.Data.SQLite.SQLiteException errSQLite)
+                    {
+                        m_intError = -1;
+                        MessageBox.Show(errSQLite.Message);
+                    }
+                    catch (Exception caught)
+                    {
+                        this.m_intError = -1;
+                        MessageBox.Show(caught.Message);
+                    }
+                    finally
+                    {
+                        m_oDataMgr.ResetTransactionObjectToDataAdapterArray();
+                    }
+                }
             }
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
@@ -2577,14 +2590,13 @@ namespace FIA_Biosum_Manager
             this.enableFvsVariableUc(true);
             lstFVSTablesList.ClearSelected();
 
-            if (m_oAdoFvs != null)
+            if (! m_bUsingSqlite)
             {
                 m_oAdoFvs.m_DataSet.Tables["view_weights"].Rows.Clear();
             }
-
-            if (m_oDataMgrFvs != null)
+            else
             {
-                m_oDataMgrFvs.m_DataSet.Tables["view_weights"].Rows.Clear();
+                m_oDataMgr.m_DataSet.Tables[m_strFvsViewTableName].Rows.Clear();
             }
 
             lblFvsVariableName.Text = "Not Defined";
@@ -3294,7 +3306,15 @@ namespace FIA_Biosum_Manager
                     
                     //Save associated configuration records
                     frmMain.g_sbpInfo.Text = "Saving scenario rule definitions...Stand by";
-                    savevalues("FVS");
+                    if (! m_bUsingSqlite)
+                    {
+                        savevalues("FVS");
+                    }
+                    else
+                    {
+                        savevalues_sqlite("FVS");
+                    }
+                    
 
                     frmMain.g_sbpInfo.Text = "Calculating and saving PRE/POST values...Stand by";
                     string strPrePostWeightedDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
@@ -3397,7 +3417,15 @@ namespace FIA_Biosum_Manager
                     //Reload the main grid
                     if (m_intError == 0)
                     {
-                        this.loadLstVariables();
+                        if (!m_bUsingSqlite)
+                        {
+                            this.loadLstVariables();
+                        }
+                        else
+                        {
+                            this.loadLstVariablesSqlite();
+                        }
+                        
                     }                    
 
                     frmMain.g_sbpInfo.Text = "Ready";
