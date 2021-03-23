@@ -1021,17 +1021,15 @@ namespace FIA_Biosum_Manager
             }
 
             // Enable the refresh button if we have calculated weighted variables
-            string strPrePostWeightedDb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
-                "\\" + Tables.OptimizerScenarioResults.DefaultCalculatedPrePostFVSVariableTableSqliteDbFile;
-            if (System.IO.File.Exists(strPrePostWeightedDb))
+            //@ToDo: Update when weighted variable output moves to sqlite
+            string strPrePostWeightedAccdb = frmMain.g_oFrmMain.frmProject.uc_project1.m_strProjectDirectory +
+                "\\" + Tables.OptimizerScenarioResults.DefaultCalculatedPrePostFVSVariableTableDbFile;
+            if (System.IO.File.Exists(strPrePostWeightedAccdb))
             {
-                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(m_oDataMgr.GetConnectionString(strPrePostWeightedDb)))
-                {
-                    con.Open();
-                    string[] arrTableNames = m_oDataMgr.getTableNames(con);
-                    if (arrTableNames.Length > 0)
-                        BtnRecalculateAll.Enabled = true;
-                }
+                m_oAdo.OpenConnection(m_oAdo.getMDBConnString(strPrePostWeightedAccdb, "", ""));
+                string[] arrTableNames = m_oAdo.getTableNames(m_oAdo.m_OleDbConnection);
+                if (arrTableNames.Length > 0)
+                    BtnRecalculateAll.Enabled = true;
             }
 
             //@ToDo: Using MS Access to query FVS Out tables
@@ -1294,7 +1292,6 @@ namespace FIA_Biosum_Manager
                     }
                     string strPrimaryKeys = "rxcycle, pre_or_post, rxyear";
                     string strColumns = "rxcycle, pre_or_post, rxyear, weight";
-                    //@ToDo: what to do about order by rxyear?
                     m_oDataMgr.DataAdapterArrayItemConfigureSelectCommand(FVS_DETAILS_TABLE, m_strFvsViewTableName, strColumns, strPrimaryKeys, "");
                 }
                 BtnFvsImport.Enabled = true;
@@ -2670,7 +2667,6 @@ namespace FIA_Biosum_Manager
         {
             this.grpboxSummary.Show();
             this.grpboxDetails.Hide();
-            //@ToDo: Add code to clear fields on details screen
         }
 
 
@@ -2701,7 +2697,6 @@ namespace FIA_Biosum_Manager
         {
             this.grpboxSummary.Show();
             this.grpBoxEconomicVariable.Hide();
-            //@ToDo: Add code to clear fields on econ variable screen
         }
 
         public void SumWeights(bool bIsEconVariable)
@@ -4223,36 +4218,70 @@ namespace FIA_Biosum_Manager
                 // Get list of variables to recalculate
                 UpdateProgressBar1("Querying database for calculated variables", counter1);
                 IDictionary<int, string> dictFvsWeightedVariables = new Dictionary<int,string>();
-                oAdo.OpenConnection(oAdo.getMDBConnString(m_strCalculatedVariablesAccdb, "", ""));
-                oAdo.m_strSQL = "SELECT ID, VARIABLE_SOURCE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
-                    " WHERE VARIABLE_TYPE = 'FVS' ORDER BY VARIABLE_SOURCE";
-                oAdo.SqlQueryReader(oAdo.m_OleDbConnection, oAdo.m_strSQL);
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                {
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, oAdo.m_strSQL + "\r\n\r\n");
-                }
-
                 IList<string> lstTables = new List<string>();
-                if (oAdo.m_OleDbDataReader.HasRows)
+                if (!m_bUsingSqlite)
                 {
-                    while (oAdo.m_OleDbDataReader.Read())
+                    oAdo.OpenConnection(oAdo.getMDBConnString(m_strCalculatedVariablesAccdb, "", ""));
+                    oAdo.m_strSQL = "SELECT ID, VARIABLE_SOURCE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                        " WHERE VARIABLE_TYPE = 'FVS' ORDER BY VARIABLE_SOURCE";
+                    oAdo.SqlQueryReader(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     {
-                        int key = Convert.ToInt32(oAdo.m_OleDbDataReader["ID"]);
-                        if (oAdo.m_OleDbDataReader["VARIABLE_SOURCE"] != System.DBNull.Value && ! dictFvsWeightedVariables.Keys.Contains(key))
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, oAdo.m_strSQL + "\r\n\r\n");
+                    }
+
+                    if (oAdo.m_OleDbDataReader.HasRows)
+                    {
+                        while (oAdo.m_OleDbDataReader.Read())
                         {
-                            dictFvsWeightedVariables.Add(key, Convert.ToString(oAdo.m_OleDbDataReader["VARIABLE_SOURCE"]));
-                            // Count the number of tables so we know how to set up the step progressor
-                            string[] strPieces = dictFvsWeightedVariables[key].Split('.');
-                            if (strPieces.Length == 2)
+                            int key = Convert.ToInt32(oAdo.m_OleDbDataReader["ID"]);
+                            if (oAdo.m_OleDbDataReader["VARIABLE_SOURCE"] != System.DBNull.Value && !dictFvsWeightedVariables.Keys.Contains(key))
                             {
-                                if (!lstTables.Contains(strPieces[0]))
+                                dictFvsWeightedVariables.Add(key, Convert.ToString(oAdo.m_OleDbDataReader["VARIABLE_SOURCE"]));
+                                // Count the number of tables so we know how to set up the step progressor
+                                string[] strPieces = dictFvsWeightedVariables[key].Split('.');
+                                if (strPieces.Length == 2)
                                 {
-                                    lstTables.Add(strPieces[0]);
+                                    if (!lstTables.Contains(strPieces[0]))
+                                    {
+                                        lstTables.Add(strPieces[0]);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                else
+                {
+                    m_oDataMgr.m_strSQL = "SELECT ID, VARIABLE_SOURCE FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName +
+                        " WHERE VARIABLE_TYPE = 'FVS' ORDER BY VARIABLE_SOURCE";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    {
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + "\r\n\r\n");
+                    }
+                    m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                    if (m_oDataMgr.m_intError == 0 && m_oDataMgr.m_DataReader.HasRows)
+                    {
+                        while (m_oDataMgr.m_DataReader.Read())
+                        {                          
+                            int key = Convert.ToInt32(m_oDataMgr.m_DataReader["ID"]);
+                            if (m_oDataMgr.m_DataReader["VARIABLE_SOURCE"] != System.DBNull.Value && !dictFvsWeightedVariables.Keys.Contains(key))
+                            {
+                                dictFvsWeightedVariables.Add(key, Convert.ToString(m_oDataMgr.m_DataReader["VARIABLE_SOURCE"]));
+                                // Count the number of tables so we know how to set up the step progressor
+                                string[] strPieces = dictFvsWeightedVariables[key].Split('.');
+                                if (strPieces.Length == 2)
+                                {
+                                    if (!lstTables.Contains(strPieces[0]))
+                                    {
+                                        lstTables.Add(strPieces[0]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (lstTables.Count > 0)
                 {
                     // Reset interval for counter 2 based on number of tables
@@ -4380,60 +4409,103 @@ namespace FIA_Biosum_Manager
                             oDao.DeleteTableFromMDB(strRecalculateAccdb, strWeightsByRxCyclePostTable);
                         }
 
-                        // open connection to optimizer_definitions.accdb to query for weights
-                        oAdo.OpenConnection(oAdo.getMDBConnString(m_strCalculatedVariablesAccdb, "", ""));
-                        oAdo.m_strSQL = "SELECT ID, VARIABLE_NAME, BASELINE_RXPACKAGE, " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".* " +
-                            "FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + " INNER JOIN " +
-                            Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + " ON " + 
-                            Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + ".ID = " +
-                            Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".CALCULATED_VARIABLES_ID " +
-                            "WHERE CALCULATED_VARIABLES_ID = " + keyId;
-                        oAdo.SqlQueryReader(oAdo.m_OleDbConnection, oAdo.m_strSQL);
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                        {
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Querying weights for next variable \r\n\r\n");
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, oAdo.m_strSQL + "\r\n\r\n");
-                        }
-
                         IList<string[]> lstWeights = new List<string[]>();
                         string strVariableName = "";
                         string strBaselinePackage = "";
-                        if (oAdo.m_OleDbDataReader.HasRows)
-                        {
-                            while (oAdo.m_OleDbDataReader.Read())
-                            {
-                                strVariableName = Convert.ToString(oAdo.m_OleDbDataReader["VARIABLE_NAME"]).Trim();
-                                strBaselinePackage = Convert.ToString(oAdo.m_OleDbDataReader["BASELINE_RXPACKAGE"]).Trim();
-                                for (int rxCycle = 1; rxCycle < 5; rxCycle ++)
-                                {
-                                    // PRE VALUES
-                                    string[] strPreRow = new string[3];
-                                    string strFieldName = "weight_" + rxCycle + "_pre";
-                                    strPreRow[idxRxCycle] = Convert.ToString(rxCycle);
-                                    strPreRow[idxPreOrPost] = "PRE";
-                                    strPreRow[idxWeight] = Convert.ToString(oAdo.m_OleDbDataReader[strFieldName]);
-                                    lstWeights.Add(strPreRow);
 
-                                    // POST VALUES
-                                    string[] strPostRow = new string[3];
-                                    strFieldName = "weight_" + rxCycle + "_post";
-                                    strPostRow[idxRxCycle] = Convert.ToString(rxCycle);
-                                    strPostRow[idxPreOrPost] = "POST";
-                                    strPostRow[idxWeight] = Convert.ToString(oAdo.m_OleDbDataReader[strFieldName]);
-                                    lstWeights.Add(strPostRow);
+                        if (! m_bUsingSqlite)
+                        {
+                            // open connection to optimizer_definitions.accdb to query for weights
+                            oAdo.OpenConnection(oAdo.getMDBConnString(m_strCalculatedVariablesAccdb, "", ""));
+                            oAdo.m_strSQL = "SELECT ID, VARIABLE_NAME, BASELINE_RXPACKAGE, " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".* " +
+                                "FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + " INNER JOIN " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + " ON " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + ".ID = " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".CALCULATED_VARIABLES_ID " +
+                                "WHERE CALCULATED_VARIABLES_ID = " + keyId;
+                            oAdo.SqlQueryReader(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            {
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Querying weights for next variable \r\n\r\n");
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, oAdo.m_strSQL + "\r\n\r\n");
+                            }
+
+                            if (oAdo.m_OleDbDataReader.HasRows)
+                            {
+                                while (oAdo.m_OleDbDataReader.Read())
+                                {
+                                    strVariableName = Convert.ToString(oAdo.m_OleDbDataReader["VARIABLE_NAME"]).Trim();
+                                    strBaselinePackage = Convert.ToString(oAdo.m_OleDbDataReader["BASELINE_RXPACKAGE"]).Trim();
+                                    for (int rxCycle = 1; rxCycle < 5; rxCycle++)
+                                    {
+                                        // PRE VALUES
+                                        string[] strPreRow = new string[3];
+                                        string strFieldName = "weight_" + rxCycle + "_pre";
+                                        strPreRow[idxRxCycle] = Convert.ToString(rxCycle);
+                                        strPreRow[idxPreOrPost] = "PRE";
+                                        strPreRow[idxWeight] = Convert.ToString(oAdo.m_OleDbDataReader[strFieldName]);
+                                        lstWeights.Add(strPreRow);
+
+                                        // POST VALUES
+                                        string[] strPostRow = new string[3];
+                                        strFieldName = "weight_" + rxCycle + "_post";
+                                        strPostRow[idxRxCycle] = Convert.ToString(rxCycle);
+                                        strPostRow[idxPreOrPost] = "POST";
+                                        strPostRow[idxWeight] = Convert.ToString(oAdo.m_OleDbDataReader[strFieldName]);
+                                        lstWeights.Add(strPostRow);
+                                    }
                                 }
                             }
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            {
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, "Saved values loaded into data structure for calculation \r\n\r\n");
+                            }
                         }
-                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        else
                         {
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, "Saved values loaded into data structure for calculation \r\n\r\n");
+                            m_oDataMgr.m_strSQL = "SELECT ID, VARIABLE_NAME, BASELINE_RXPACKAGE, " + Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".* " +
+                                "FROM " + Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + " INNER JOIN " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + " ON " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName + ".ID = " +
+                                Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName + ".CALCULATED_VARIABLES_ID " +
+                                "WHERE CALCULATED_VARIABLES_ID = " + keyId;
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            {
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + "\r\n\r\n");
+                            }
+                            m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                            if (m_oDataMgr.m_intError == 0 && m_oDataMgr.m_DataReader.HasRows)
+                            {
+                                while (m_oDataMgr.m_DataReader.Read())
+                                {
+                                    strVariableName = Convert.ToString(m_oDataMgr.m_DataReader["VARIABLE_NAME"]).Trim();
+                                    strBaselinePackage = Convert.ToString(m_oDataMgr.m_DataReader["BASELINE_RXPACKAGE"]).Trim();
+                                    for (int rxCycle = 1; rxCycle < 5; rxCycle++)
+                                    {
+                                        // PRE VALUES
+                                        string[] strPreRow = new string[3];
+                                        string strFieldName = "weight_" + rxCycle + "_pre";
+                                        strPreRow[idxRxCycle] = Convert.ToString(rxCycle);
+                                        strPreRow[idxPreOrPost] = "PRE";
+                                        strPreRow[idxWeight] = Convert.ToString(m_oDataMgr.m_DataReader[strFieldName]);
+                                        lstWeights.Add(strPreRow);
+
+                                        // POST VALUES
+                                        string[] strPostRow = new string[3];
+                                        strFieldName = "weight_" + rxCycle + "_post";
+                                        strPostRow[idxRxCycle] = Convert.ToString(rxCycle);
+                                        strPostRow[idxPreOrPost] = "POST";
+                                        strPostRow[idxWeight] = Convert.ToString(m_oDataMgr.m_DataReader[strFieldName]);
+                                        lstWeights.Add(strPostRow);
+                                    }
+                                }
+                            }
                         }
 
                         string strCalculateConn = m_oAdo.getMDBConnString(strRecalculateAccdb, "", "");
                         CalculateVariable(oDao, strCalculateConn, strWeightsByRxPkgPreTable, strSourcePreTable,
                             strWeightsByRxPkgPostTable, strSourcePostTable, strVariableName, strColumn, strBaselinePackage,
                             lstWeights,false, ref counter1);
-
                     }
                 }
 
