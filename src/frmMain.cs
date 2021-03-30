@@ -217,6 +217,7 @@ namespace FIA_Biosum_Manager
         private MenuItem mnuToolsProjectRootFolder;
         public StandByAnimation.StandByAnimation standByAnimation;
         private MenuItem mnuReleaseNotes;
+        private MenuItem mnuToolsPath;
         static readonly object _locker = new object();
 
 
@@ -430,6 +431,8 @@ namespace FIA_Biosum_Manager
 
             CheckForBiosumRefData();
 
+            AddBiosumVolumeColumns();
+
             Validate_OracleConnectivity();
 
             
@@ -517,6 +520,7 @@ namespace FIA_Biosum_Manager
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.txtDropDown = new System.Windows.Forms.TextBox();
+            this.mnuToolsPath = new System.Windows.Forms.MenuItem();
             this.grpboxLeft.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -663,7 +667,8 @@ namespace FIA_Biosum_Manager
             this.mnuTools.Index = 3;
             this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuToolsFCS,
-            this.mnuToolsProjectRootFolder});
+            this.mnuToolsProjectRootFolder,
+            this.mnuToolsPath});
             this.mnuTools.Text = "Tools";
             // 
             // mnuToolsFCS
@@ -855,7 +860,7 @@ namespace FIA_Biosum_Manager
             // 
             this.btnDB.Dock = System.Windows.Forms.DockStyle.Top;
             this.btnDB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDB.Location = new System.Drawing.Point(4, 19);
+            this.btnDB.Location = new System.Drawing.Point(4, 23);
             this.btnDB.Margin = new System.Windows.Forms.Padding(4);
             this.btnDB.Name = "btnDB";
             this.btnDB.Size = new System.Drawing.Size(172, 34);
@@ -910,6 +915,12 @@ namespace FIA_Biosum_Manager
             this.txtDropDown.Size = new System.Drawing.Size(226, 34);
             this.txtDropDown.TabIndex = 11;
             this.txtDropDown.Visible = false;
+            // 
+            // mnuToolsPath
+            // 
+            this.mnuToolsPath.Index = 2;
+            this.mnuToolsPath.Text = "Path Environment Variable Value";
+            this.mnuToolsPath.Click += new System.EventHandler(this.mnuToolsPath_Click);
             // 
             // frmMain
             // 
@@ -4286,6 +4297,15 @@ namespace FIA_Biosum_Manager
                     System.IO.Path.GetDirectoryName(strDestFile) + " !!", "FIA Biosum");
             }
         }
+        private void AddBiosumVolumeColumns()
+        {
+            string strBATFile="";
+            FcsClassLibrary.FCSEntities.AddBiosumVolumeColumns(frmMain.g_oEnv.strTempDir, frmMain.g_oEnv.strAppDir, out strBATFile);
+            if (strBATFile.Trim().Length > 0 && System.IO.File.Exists(strBATFile))
+            {
+                frmMain.g_oUtils.RunProcess(frmMain.g_oEnv.strTempDir, strBATFile, "BAT");
+            }
+        }
         public static int Validate_OracleConnectivity()
         {
             int ErrCode = 0;
@@ -4313,16 +4333,28 @@ namespace FIA_Biosum_Manager
             Oracle.ADO.FCSOracle.FCSSchema = FCSSchema;
             if (FIA_Biosum_Manager.utils.FS_NETWORK == utils.FS_NETWORK_STATUS.NotAvailable)
             {
-                string str = System.Environment.GetEnvironmentVariable("PATH");
+                string str = System.Environment.GetEnvironmentVariable("PATH").ToLower() ;
                 if (str.IndexOf(@"oraclexe\app\oracle\product\11.2.0\server\bin", 0) < 0)
                 {
                     MessageBox.Show("!!FS Network Not Detected and Oracle XE not found.\r\n" + "One of these must exist to input plot records!!", "FIA Biosum");
                     return -1;
                 }
+                int intOracleXELoc = str.IndexOf(OracleXEPath, 0);
+                int intOracleLoc = str.IndexOf(OracleClient32bitPath);
+                if (intOracleLoc < 0) intOracleLoc = str.IndexOf(OracleClient64bitPath);
+                if (intOracleLoc >= 0 && intOracleXELoc > intOracleLoc)
+                {
+                    MessageBox.Show("!!You have chosen to use Oracle XE!!\r\n\r\n" + OracleXEPath + "\r\nneeds to be first item in the PATH environment variable.\r\n\r\nChange the PATH environment variable and then restart the application.", "FIA Biosum");
+                    return -1;
+                    //str = OracleXEPath + ";" + str;
+                    //System.Environment.SetEnvironmentVariable("PATH", str);
+                }
                 FIADBOracle.Services oAdo = new FIADBOracle.Services();
                 oAdo.Start();
                 if (oAdo.m_intError == 0)
+                {
                     oAdo.FCSEntities.InitializeADOOracleObject();
+                }
                 ErrCode = oAdo.m_intError;
                 if (ErrCode != 0)
                 {
@@ -4333,6 +4365,7 @@ namespace FIA_Biosum_Manager
             }
             else
             {
+                string str = System.Environment.GetEnvironmentVariable("PATH").ToString().ToLower();
                 if (System.IO.File.Exists(frmMain.g_oEnv.strApplicationDataDirectory + "\\FIABiosum\\FCS_TREE.db") == false)
                 {
                     ErrCode = -1;
@@ -4350,6 +4383,48 @@ namespace FIA_Biosum_Manager
                 }
                 if (ErrCode == 0)
                 {
+                    int intOracleXELoc = str.IndexOf(OracleXEPath, 0);
+                    int intOracle32Loc = str.IndexOf(OracleClient32bitPath);
+                    int intOracle64Loc = str.IndexOf(OracleClient64bitPath);
+
+                    if (intOracleXELoc >= 0)
+                    {
+                        //check if oracle xe path comes before oracle client path
+                        if (intOracle64Loc > 0 || intOracle32Loc > 0)
+                        {
+                            if (intOracle64Loc > 0 && intOracleXELoc < intOracle64Loc)
+                            {
+                                MessageBox.Show("!!You have chosen to use Oracle Client.!!\r\n\r\n" +
+                                              OracleClient64bitPath + "\r\nneeds to be first item in the PATH environment variable.\r\n\r\nChange the PATH environment variable and then restart the application.", "FIA Biosum");
+                                return -1;
+                            }
+                            else if (intOracle32Loc > 0 && intOracleXELoc < intOracle32Loc)
+                            {
+                                MessageBox.Show("!!You have chosen to use Oracle Client.!!\r\n\r\n" +
+                                                OracleClient32bitPath + "\r\nneeds to be first item in the PATH environment variable.\r\n\r\nChange the PATH environment variable and then restart the application.", "FIA Biosum");
+
+                                return -1;
+                            }
+                        }
+                      
+
+                    }
+                    /*
+                    if (str.IndexOf(OracleClient64bitPath, 0) > 0)
+                    {
+                        str = OracleClient64bitPath + ";" + str;
+                        System.Environment.SetEnvironmentVariable("PATH", str);
+                    }
+                    else
+                    {
+                        if (str.IndexOf(OracleClient32bitPath, 0) > 0)
+                        {
+                            str = OracleClient32bitPath + ";" + str;
+                            System.Environment.SetEnvironmentVariable("PATH", str);
+                        }
+                    }
+                     */
+
                     FIADBOracle.Services oAdo = new FIADBOracle.Services();
                     oAdo.Start();
                     if (oAdo.m_intError == 0)
@@ -4400,7 +4475,22 @@ namespace FIA_Biosum_Manager
                 }
             }
         }
-        
+        public static string OracleXEPath
+        {
+            get { return @"c:\oraclexe\app\oracle\product\11.2.0\server\bin"; }
+        }
+        public static string  OracleClient32bitPath
+        {
+            get {return @"c:\oracle\product\12.2.0\client\bin"; }
+        }
+        public static string OracleClient64bitPath
+        {
+            get { return @"c:\oracle64\product\12.2.0\client\bin"; }
+        }
 
+        private void mnuToolsPath_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(System.Environment.GetEnvironmentVariable("PATH").ToString());
+        }
 	}
 }

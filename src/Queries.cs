@@ -2856,7 +2856,8 @@ namespace FIA_Biosum_Manager
                     return "UPDATE " + p_strInputVolumesTable + " i " +
                                       "INNER JOIN " + p_strFIACondTable + " c " +
                                       "ON i.biosum_cond_id=c.biosum_cond_id " +
-                                      "SET i.vol_loc_grp=IIF(INSTR(1,c.vol_loc_grp,'22') > 0,'S26LEOR',c.vol_loc_grp)," + 
+                                      "SET i.vol_loc_grp=c.vol_loc_grp," + 
+                                          //i.vol_loc_grp=IIF(INSTR(1,c.vol_loc_grp,'22') > 0,'S26LEOR',c.vol_loc_grp)," + 
                                           "i.statuscd=IIF(i.statuscd IS NULL,1,i.statuscd)," +
                                           "i.cull=IIF(i.cull IS NULL,0,i.cull)," + 
                                           "i.roughcull=IIF(i.roughcull IS NULL,0,i.roughcull)," +

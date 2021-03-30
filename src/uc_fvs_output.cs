@@ -4845,7 +4845,28 @@ namespace FIA_Biosum_Manager
                                                 m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Tree = Convert.ToInt32(oAdo.m_OleDbDataReader["id"]);
                                                 m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Vol_Loc_Grp = Convert.ToString(oAdo.m_OleDbDataReader["vol_loc_grp"]);
                                                 m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.TreeClCd = Convert.ToInt32(oAdo.m_OleDbDataReader["treeclcd"]); //GetTreeClassCode(oAdo.m_OleDbDataReader);
+                                                //START: ADDED BIOSUM_VOLUME COLUMNS
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.SiTree = Convert.ToInt32(oAdo.m_OleDbDataReader["sitree"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.WoodlandStem = Convert.ToInt32(oAdo.m_OleDbDataReader["wdldstem"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.UpperDia = Convert.ToDouble(oAdo.m_OleDbDataReader["upper_dia"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.UpperDiaHt = Convert.ToDouble(oAdo.m_OleDbDataReader["upper_dia_ht"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CentroidDia = Convert.ToDouble(oAdo.m_OleDbDataReader["centroid_dia"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CentroidDiaHtActual = Convert.ToDouble(oAdo.m_OleDbDataReader["centroid_dia_ht_actual"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.SawHt = Convert.ToInt32(oAdo.m_OleDbDataReader["sawht"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.HtDmp = Convert.ToDouble(oAdo.m_OleDbDataReader["htdmp"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BoleHt = Convert.ToInt32(oAdo.m_OleDbDataReader["boleht"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullCf = Convert.ToInt32(oAdo.m_OleDbDataReader["cullcf"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullFld = Convert.ToInt32(oAdo.m_OleDbDataReader["cull_fld"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullDead = Convert.ToInt32(oAdo.m_OleDbDataReader["culldead"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullForm = Convert.ToInt32(oAdo.m_OleDbDataReader["cullform"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullMStop = Convert.ToInt32(oAdo.m_OleDbDataReader["cullmstop"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CfSnd = Convert.ToInt32(oAdo.m_OleDbDataReader["cfsnd"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BfSnd = Convert.ToInt32(oAdo.m_OleDbDataReader["bfsnd"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Precipitation = Convert.ToDouble(oAdo.m_OleDbDataReader["precipitation"]);
+                                                m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BaLive = Convert.ToDouble(oAdo.m_OleDbDataReader["balive"]);
+                                                //END: ADDED BIOSUM_VOLUME COLUMNS
                                                 m_oOracleServices.m_oTree.AddBiosumRecord(m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord);
+
 
                                                 xx++;
                                             }
@@ -4968,9 +4989,20 @@ namespace FIA_Biosum_Manager
                                         //
                                         //INSERT ALL THE MS ACCESS DATA INTO SQLITE
                                         //
+                                        //string strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
+                                        //        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN," +
+                                        //        "VOLCSGRS_CALC,VOLCFGRS_CALC,VOLCFNET_CALC,DRYBIOT_CALC,DRYBIOM_CALC,VOLTSGRS_CALC";
+                                        //BIOSUM_VOLUME ADDED COLUMNS
                                         string strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
-                                                "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN," +
-                                                "VOLCSGRS_CALC,VOLCFGRS_CALC,VOLCFNET_CALC,DRYBIOT_CALC,DRYBIOM_CALC,VOLTSGRS_CALC";
+                                                            "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                                                             //START: ADDED BIOSUM_VOLUME COLUMNS
+                                                             "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," + 
+                                                             "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," + 
+                                                             "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," + 
+                                                             "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                                                             //END: ADDED BIOSUM_VOLUME COLUMNS
+                                                            "TRE_CN,CND_CN,PLT_CN," +
+                                                            "VOLCSGRS_CALC,VOLCFGRS_CALC,VOLCFNET_CALC,DRYBIOT_CALC,DRYBIOM_CALC,VOLTSGRS_CALC";
                                         strValues = "";
                                         oAdo.SqlQueryReader(oConn, "SELECT * FROM " + Tables.FVS.DefaultOracleInputFCSVolumesTable);
                                         if (oAdo.m_OleDbDataReader.HasRows)
@@ -10057,6 +10089,98 @@ namespace FIA_Biosum_Manager
             else
                 strValues = strValues + "null,";
 
+            //START: ADDED BIOSUM_VOLUME COLUMNS
+            if (p_DataReader["SITREE"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["SITREE"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["WDLDSTEM"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["WDLDSTEM"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["UPPER_DIA"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["UPPER_DIA"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["UPPER_DIA_HT"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["UPPER_DIA_HT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CENTROID_DIA"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["CENTROID_DIA"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CENTROID_DIA_HT_ACTUAL"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["CENTROID_DIA_HT_ACTUAL"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["SAWHT"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["SAWHT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["HTDMP"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["HTDMP"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BOLEHT"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["BOLEHT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLCF"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLCF"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULL_FLD"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULL_FLD"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLDEAD"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLDEAD"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLFORM"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLFORM"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLMSTOP"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLMSTOP"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CFSND"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CFSND"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BFSND"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["BFSND"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["PRECIPITATION"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["PRECIPITATION"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BALIVE"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["BALIVE"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+            //END: ADDED BIOSUM_VOLUME COLUMNS
+
             strValues = strValues + "'" + p_DataReader["TRE_CN"].ToString() + "',";
 
             if (p_DataReader["CND_CN"] != DBNull.Value)
@@ -10161,6 +10285,99 @@ namespace FIA_Biosum_Manager
                 strValues = strValues + Convert.ToDouble(p_DataReader["TOTAGE"]).ToString() + ",";
             else
                 strValues = strValues + "null,";
+
+            //START: ADDED BIOSUM_VOLUME COLUMNS
+            if (p_DataReader["SITREE"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["SITREE"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["WDLDSTEM"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["WDLDSTEM"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["UPPER_DIA"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["UPPER_DIA"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["UPPER_DIA_HT"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["UPPER_DIA_HT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CENTROID_DIA"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["CENTROID_DIA"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CENTROID_DIA_HT_ACTUAL"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["CENTROID_DIA_HT_ACTUAL"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["SAWHT"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["SAWHT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["HTDMP"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["HTDMP"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BOLEHT"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["BOLEHT"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLCF"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLCF"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULL_FLD"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULL_FLD"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLDEAD"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLDEAD"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLFORM"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLFORM"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CULLMSTOP"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CULLMSTOP"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["CFSND"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["CFSND"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BFSND"] != DBNull.Value)
+                strValues = strValues + Convert.ToInt32(p_DataReader["BFSND"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["PRECIPITATION"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["PRECIPITATION"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+
+            if (p_DataReader["BALIVE"] != DBNull.Value)
+                strValues = strValues + Convert.ToDouble(p_DataReader["BALIVE"]).ToString() + ",";
+            else
+                strValues = strValues + "null,";
+            //END: ADDED BIOSUM_VOLUME COLUMNS
+
 
             strValues = strValues + "'" + p_DataReader["TRE_CN"].ToString() + "',";
 

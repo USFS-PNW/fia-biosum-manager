@@ -37,6 +37,15 @@ namespace FIA_Biosum_Manager
     const int COL_ROUGHCULL = 21;
     const int COL_DECAYCD = 22;
     const int COL_TOTAGE = 23;
+
+    /*
+    const int COL_SITREE = 24;
+    const int COL_WDLDSTEM = 25;
+    const int COL_UPPERDIA = 26;
+    const int COL_UPPERDIAHT = 27;
+    const int COL_CENTROIDDIA = 28;
+     */
+
     const int COL_TRECN = 24;
     const int COL_PLTCN = 25;
     const int COL_CNDCN = 26;
@@ -958,6 +967,26 @@ namespace FIA_Biosum_Manager
               m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.TreeClCd = Convert.ToInt32(txtTreeClCd.Text.Trim());
               m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Tree = 123456;
               m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Vol_Loc_Grp = txtVolLocGrp.Text.Trim();
+               //START: ADDED BIOSUM_VOLUME COLUMNS
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.SiTree = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.UpperDia = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.UpperDiaHt = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.WoodlandStem = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CentroidDia = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CentroidDiaHtActual = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.SawHt = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.HtDmp = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BoleHt = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullCf = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullFld = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullDead = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullForm = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CullMStop = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.CfSnd = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BfSnd = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.Precipitation = null;
+              m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord.BaLive = null;
+              //END: ADDED BIOSUM_VOLUME COLUMNS
 
               m_oOracleServices.m_oTree.AddBiosumRecord(m_oOracleServices.m_oTree.BiosumTreeInputSingleRecord);
               if (m_oOracleServices.m_intError == 0)
@@ -1099,6 +1128,7 @@ namespace FIA_Biosum_Manager
             strWorkDbFile = m_strTempDBFile;
             m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
 
+            
             oDao.CreateOracleXETableLink("FIA Biosum Oracle Services", "fcs_biosum", "fcs", "FCS_BIOSUM", "BIOSUM_VOLUME", strWorkDbFile, "fcs_biosum_volume");
 
             oDao.m_DaoWorkspace.Close();
@@ -1139,13 +1169,26 @@ namespace FIA_Biosum_Manager
                 //step 6 - insert records
                 frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Prepare Tree Data For Oracle...Stand By");
                 strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
-                            "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+                            "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                            //START: ADDED BIOSUM_VOLUME COLUMNS
+                            "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                            "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                            "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                            "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                            //END: ADDED BIOSUM_VOLUME COLUMNS
+                            "TRE_CN,CND_CN,PLT_CN";
 
 
                 strValues = "CINT(MID(BIOSUM_COND_ID,6,2)) AS STATECD," +
                             "CINT(MID(BIOSUM_COND_ID,12,3)) AS COUNTYCD," +
                             "CINT(MID(BIOSUM_COND_ID,16,5)) AS PLOT," +
                             "INVYR,VOL_LOC_GRP,ID AS TREE,SPCD,DBH AS DIA,HT,ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                            //START: ADDED BIOSUM_VOLUME COLUMNS
+                            "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                            "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                            "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                            "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                            //END: ADDED BIOSUM_VOLUME COLUMNS
                             "CSTR(ID) AS TRE_CN," +
                             "BIOSUM_COND_ID AS CND_CN," +
                             "MID(BIOSUM_COND_ID,1,LEN(BIOSUM_COND_ID)-1) AS PLT_CN";
@@ -1159,7 +1202,14 @@ namespace FIA_Biosum_Manager
             else
             {
                 strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
-                            "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+                            "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                            //START: ADDED BIOSUM_VOLUME COLUMNS
+                            "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                            "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                            "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                            "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                            //END: ADDED BIOSUM_VOLUME COLUMNS
+                            "TRE_CN,CND_CN,PLT_CN";
                 intThermValue++;
                 UpdateThermPercent(0, intRecordCount + 8, intThermValue);
             }
@@ -1367,13 +1417,26 @@ namespace FIA_Biosum_Manager
             //step 6 - insert records
             frmMain.g_oDelegate.SetStatusBarPanelTextValue(frmMain.g_sbpInfo.Parent, 1, "Prepare Tree Data For Oracle...Stand By");
             strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
-                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                        //START: ADDED BIOSUM_VOLUME COLUMNS
+                        "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                        "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                        "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                        "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                        //END: ADDED BIOSUM_VOLUME COLUMNS
+                        "TRE_CN,CND_CN,PLT_CN";
 
 
             strValues = "CINT(MID(BIOSUM_COND_ID,6,2)) AS STATECD," +
                         "CINT(MID(BIOSUM_COND_ID,12,3)) AS COUNTYCD," +
                         "CINT(MID(BIOSUM_COND_ID,16,5)) AS PLOT," +
                         "INVYR,VOL_LOC_GRP,ID AS TREE,SPCD,DBH AS DIA,HT,ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                        //START: ADDED BIOSUM_VOLUME COLUMNS
+                        "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                        "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                        "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                        "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                        //END: ADDED BIOSUM_VOLUME COLUMNS
                         "CSTR(ID) AS TRE_CN," +
                         "BIOSUM_COND_ID AS CND_CN," +
                         "MID(BIOSUM_COND_ID,1,LEN(BIOSUM_COND_ID)-1) AS PLT_CN";
@@ -1387,7 +1450,14 @@ namespace FIA_Biosum_Manager
         else
         {
             strColumns = "STATECD,COUNTYCD,PLOT,INVYR,VOL_LOC_GRP,TREE,SPCD,DIA,HT," +
-                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE,TRE_CN,CND_CN,PLT_CN";
+                        "ACTUALHT,CR,STATUSCD,TREECLCD,ROUGHCULL,CULL,DECAYCD,TOTAGE," +
+                        //START: ADDED BIOSUM_VOLUME COLUMNS
+                        "SITREE,WDLDSTEM,UPPER_DIA,UPPER_DIA_HT," +
+                        "CENTROID_DIA,CENTROID_DIA_HT_ACTUAL,SAWHT," +
+                        "HTDMP,BOLEHT,CULLCF,CULL_FLD,CULLDEAD," +
+                        "CULLFORM,CULLMSTOP,CFSND,BFSND,PRECIPITATION,BALIVE," +
+                        //END: ADDED BIOSUM_VOLUME COLUMNS
+                        "TRE_CN,CND_CN,PLT_CN";
             intThermValue++;
             UpdateThermPercent(0, intRecordCount + 8, intThermValue);
         }
@@ -1676,6 +1746,26 @@ namespace FIA_Biosum_Manager
                    "IIF(roughcull IS NULL,0,roughcull) AS roughcull," +
                    "decaycd," +
                    "totage," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                   "sitree," + 
+                   "wdldstem," + 
+                   "upper_dia," + 
+                   "upper_dia_ht," + 
+                   "centroid_dia," + 
+                   "centroid_dia_ht_actual," + 
+                   "sawht," + 
+                   "htdmp," + 
+                   "boleht," + 
+                   "cullcf," + 
+                   "cull_fld," + 
+                   "culldead," + 
+                   "cullform," + 
+                   "cullmstop," + 
+                   "cfsnd," +
+                   "bfsnd," + 
+                   "precipitation," + 
+                   "balive," +
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                    "fvs_tree_id," +
                    "biosum_cond_id " +
              "FROM " + Tables.FVS.DefaultOracleInputVolumesTable, this.cmbDatasource.Text.Trim());
@@ -1720,6 +1810,26 @@ namespace FIA_Biosum_Manager
                    "IIF(roughcull IS NULL,0,roughcull) AS roughcull," +
                    "decaycd," +
                    "totage," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                   "sitree," +
+                   "wdldstem," +
+                   "upper_dia," +
+                   "upper_dia_ht," +
+                   "centroid_dia," +
+                   "centroid_dia_ht_actual," +
+                   "sawht," +
+                   "htdmp," +
+                   "boleht," +
+                   "cullcf," +
+                   "cull_fld," +
+                   "culldead," +
+                   "cullform," +
+                   "cullmstop," +
+                   "cfsnd," +
+                   "bfsnd," +
+                   "precipitation," +
+                   "balive," +
+                  //END: ADDED BIOSUM_VOLUME COLUMNS
                    "fvs_tree_id," +
                    "biosum_cond_id " +
              "FROM TreeSample", "TreeSample");
@@ -1857,6 +1967,26 @@ namespace FIA_Biosum_Manager
                    "IIF(roughcull IS NULL,0,roughcull) AS roughcull," +
                    "decaycd," + 
                    "totage," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                   "sitree," + 
+                   "wdldstem," + 
+                   "upper_dia," + 
+                   "upper_dia_ht," + 
+                   "centroid_dia," + 
+                   "centroid_dia_ht_actual," + 
+                   "sawht," + 
+                   "htdmp," + 
+                   "boleht," + 
+                   "cullcf," + 
+                   "cull_fld," + 
+                   "culldead," + 
+                   "cullform," + 
+                   "cullmstop," + 
+                   "cfsnd," + 
+                   "bfsnd," + 
+                   "precipitation," + 
+                   "balive," +
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                    "fvs_tree_id," +
                    "biosum_cond_id " +
              "FROM Tree_Work_Table", m_oQueries.m_oFIAPlot.m_strTreeTable);

@@ -2670,6 +2670,26 @@ namespace FIA_Biosum_Manager
                     "roughcull DOUBLE," +
                     "decaycd BYTE," +
                     "totage DOUBLE," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                    "sitree INTEGER, " + 
+                    "wdldstem INTEGER," + 
+                    "upper_dia DECIMAL(4,1)," + 
+                    "upper_dia_ht DECIMAL(4,1)," + 
+                    "centroid_dia DECIMAL(4,1)," + 
+                    "centroid_dia_ht_actual DECIMAL(4,1)," + 
+                    "sawht DECIMAL(2,0)," + 
+                    "htdmp DECIMAL(3,1)," + 
+                    "boleht DECIMAL(3,0)," + 
+                    "cullcf DECIMAL(3,0)," + 
+                    "cull_fld DECIMAL(2,0)," + 
+                    "culldead DECIMAL(3,0)," + 
+                    "cullform DECIMAL(3,0)," + 
+                    "cullmstop DECIMAL(3,0)," + 
+                    "cfsnd DECIMAL(3,0)," + 
+                    "bfsnd DECIMAL(3,0)," + 
+                    "precipitation DOUBLE," + 
+                    "balive DOUBLE," + 
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                     "volcfnet DOUBLE," +
                     "volcfgrs DOUBLE," +
                     "volcsgrs DOUBLE," +
@@ -2708,6 +2728,26 @@ namespace FIA_Biosum_Manager
                     "CULL DOUBLE," +
                     "DECAYCD BYTE," +
                     "TOTAGE DOUBLE," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                    "SITREE INTEGER," +
+                    "WDLDSTEM INTEGER," +
+                    "UPPER_DIA DOUBLE," +
+                    "UPPER_DIA_HT DOUBLE," +
+                    "CENTROID_DIA DOUBLE," +
+                    "CENTROID_DIA_HT_ACTUAL DOUBLE," +
+                    "SAWHT INTEGER," +
+                    "HTDMP DOUBLE," +
+                    "BOLEHT INTEGER," +
+                    "CULLCF INTEGER," +
+                    "CULL_FLD INTEGER," +
+                    "CULLDEAD INTEGER," +
+                    "CULLFORM INTEGER," +
+                    "CULLMSTOP INTEGER," +
+                    "CFSND INTEGER," +
+                    "BFSND INTEGER," +
+                    "PRECIPITATION DOUBLE," +
+                    "BALIVE DOUBLE," +
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                     "TRE_CN CHAR(34)," +
                     "CND_CN CHAR(34)," +
                     "PLT_CN CHAR(34)," +
@@ -2744,6 +2784,26 @@ namespace FIA_Biosum_Manager
                     "CULL DOUBLE," +
                     "DECAYCD BYTE," +
                     "TOTAGE DOUBLE," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                    "SITREE INTEGER, " +
+                    "WDLDSTEM INTEGER," +
+                    "UPPER_DIA DOUBLE," +
+                    "UPPER_DIA_HT DOUBLE," +
+                    "CENTROID_DIA DOUBLE," +
+                    "CENTROID_DIA_HT_ACTUAL DOUBLE," +
+                    "SAWHT INTEGER," +
+                    "HTDMP DOUBLE," +
+                    "BOLEHT INTEGER," +
+                    "CULLCF INTEGER," +
+                    "CULL_FLD INTEGER," +
+                    "CULLDEAD INTEGER," +
+                    "CULLFORM INTEGER," +
+                    "CULLMSTOP INTEGER," +
+                    "CFSND INTEGER," +
+                    "BFSND INTEGER," +
+                    "PRECIPITATION DOUBLE," +
+                    "BALIVE DOUBLE," +
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                     "TRE_CN CHAR(34)," +
                     "CND_CN CHAR(34)," +
                     "PLT_CN CHAR(34)," +
@@ -3736,6 +3796,7 @@ namespace FIA_Biosum_Manager
                     "lat DOUBLE," +
                     "lon DOUBLE," +
                     "macro_breakpoint_dia INTEGER," +
+                    "precipitation DOUBLE," +
                     "biosum_status_cd BYTE," +
                     "cn CHAR(34))";
             }
@@ -3843,7 +3904,8 @@ namespace FIA_Biosum_Manager
                     "cn CHAR(34)," +
                     "biosum_status_cd BYTE, " +
                     "model_YN CHAR(1), " +
-                    "dwm_fuelbed_typcd TEXT(3))";
+                    "dwm_fuelbed_typcd TEXT(3)," + 
+                    "balive DOUBLE)";
 
             }
             public void CreateSqliteConditionTable(SQLite.ADO.DataMgr p_oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn, string p_strTableName)
@@ -3912,6 +3974,7 @@ namespace FIA_Biosum_Manager
                     "biosum_status_cd TEXT, " +
                     "model_YN TEXT, " +
                     "dwm_fuelbed_typcd TEXT," +
+                    "balive DOUBLE," + 
                     "CONSTRAINT " + p_strTableName + "_pk PRIMARY KEY (biosum_cond_id))";
             }
             public void CreateTreeTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
@@ -3990,6 +4053,22 @@ namespace FIA_Biosum_Manager
                     "fvs_dmg_sv3 CHAR(2)," +
                     "inc10yr INTEGER," +
                     "condprop_specific DOUBLE," +
+                    //START: ADDED BIOSUM_VOLUME COLUMNS
+                    "sitree INTEGER," +
+                    "upper_dia DECIMAL(4,1)," +
+                    "upper_dia_ht DECIMAL(4,1)," + 
+                    "centroid_dia DECIMAL(4,1)," + 
+                    "centroid_dia_ht_actual DECIMAL(4,1)," +
+                    "sawht DECIMAL(2,0)," +
+                    "htdmp DECIMAL(3,1)," + 
+                    "boleht DECIMAL(3,0)," + 
+                    "cull_fld DECIMAL(2,0)," + 
+                    "culldead DECIMAL(3,0)," +
+                    "cullform DECIMAL(3,0)," +
+                    "cullmstop DECIMAL(3,0)," +
+                    "cfsnd DECIMAL(3,0)," +
+                    "bfsnd DECIMAL(3,0)," + 
+                    //END: ADDED BIOSUM_VOLUME COLUMNS
                     "fvs_tree_id CHAR(10)," +
                     "idb_alltree_id LONG," +
                     "cn CHAR(34)," +
