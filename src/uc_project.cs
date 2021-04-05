@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
-using System.Text;
+using SQLite.ADO;
 
 namespace FIA_Biosum_Manager
 {
@@ -1604,7 +1604,30 @@ namespace FIA_Biosum_Manager
 			oDao = null;
 		}
 
-		private void btnSharedDirectory_Click(object sender, System.EventArgs e)
+        public void CreateProcessorScenarioRuleDefinitionSqliteDbAndTables(string p_strPathAndFile)
+        {
+            DataMgr dataMgr = new DataMgr();
+
+            dataMgr.CreateDbFile(p_strPathAndFile);
+            using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(dataMgr.GetConnectionString(p_strPathAndFile)))
+            {
+                conn.Open();
+                frmMain.g_oTables.m_oScenario.CreateSqliteScenarioDatasourceTable(dataMgr, conn, Tables.Scenario.DefaultScenarioDatasourceTableName);
+                frmMain.g_oTables.m_oScenario.CreateSqliteScenarioTable(dataMgr, conn, Tables.Scenario.DefaultScenarioTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioTreeSpeciesDollarValuesTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioRxHarvestMethodTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultRxHarvestMethodTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioHarvestMethodTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioCostRevenueEscalatorsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioHarvestCostColumnsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioAdditionalHarvestCostsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioMoveInCostsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioTreeDiamGroupsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioTreeSpeciesGroupsListTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName);
+                frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateSqliteScenarioTreeSpeciesGroupsTable(dataMgr, conn, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName);
+            }
+        }
+
+        private void btnSharedDirectory_Click(object sender, System.EventArgs e)
 		{
 		    string strSourceFile="";
 			string strDestFile="";

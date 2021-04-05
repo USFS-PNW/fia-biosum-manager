@@ -1266,6 +1266,10 @@ namespace FIA_Biosum_Manager
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
+            ProcessorScenarioTools oTools = new ProcessorScenarioTools();
+            oTools.migrate_access_data();
+
+
             if (!String.IsNullOrEmpty(m_helpChapter))
             {
                 if (m_oHelp == null)
@@ -3100,6 +3104,20 @@ namespace FIA_Biosum_Manager
             strLine = strLine + "\r\n\r\nEOF";
             return strLine;
 
+        }
+
+        public void migrate_access_data()
+        {
+            string targetDbFile = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                @"\processor\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+            if (System.IO.File.Exists(targetDbFile) == false)
+            {
+                frmMain.g_oFrmMain.frmProject.uc_project1.CreateProcessorScenarioRuleDefinitionSqliteDbAndTables(targetDbFile);
+            }
+            else
+            {
+                MessageBox.Show(targetDbFile + " already exists. New tables cannot be created!!", "FIA Biosum");
+            }
         }
 
     }
