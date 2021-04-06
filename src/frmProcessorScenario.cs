@@ -1266,10 +1266,6 @@ namespace FIA_Biosum_Manager
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
-            ProcessorScenarioTools oTools = new ProcessorScenarioTools();
-            oTools.migrate_access_data();
-
-
             if (!String.IsNullOrEmpty(m_helpChapter))
             {
                 if (m_oHelp == null)
@@ -3110,6 +3106,8 @@ namespace FIA_Biosum_Manager
         {
             string targetDbFile = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
                 @"\processor\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+            string sourceDbFile = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                @"\processor\" + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodDbFile;
             if (System.IO.File.Exists(targetDbFile) == false)
             {
                 frmMain.g_oFrmMain.frmProject.uc_project1.CreateProcessorScenarioRuleDefinitionSqliteDbAndTables(targetDbFile);
@@ -3117,6 +3115,94 @@ namespace FIA_Biosum_Manager
             else
             {
                 MessageBox.Show(targetDbFile + " already exists. New tables cannot be created!!", "FIA Biosum");
+                return;
+            }
+
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            ado_data_access oAdo = new ado_data_access();
+            dao_data_access oDao = new dao_data_access();
+            ODBCMgr odbcmgr = new ODBCMgr();
+            try
+            {
+
+                string[] arrTargetTables = { };
+                using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(dataMgr.GetConnectionString(targetDbFile)))
+                {
+                    conn.Open();
+                    arrTargetTables = dataMgr.getTableNames(conn);
+                    if (arrTargetTables.Length < 1)
+                    {
+                        MessageBox.Show("Target SQLite tables could not be created. Migration stopped!!", "FIA Biosum");
+                        return;
+                    }
+
+                    // custom processing for scenario_additional_harvest_costs
+                    string[] strSourceColumnsArray = new string[0];
+                    string strTableName = Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName;
+                    oDao.getFieldNames(sourceDbFile, strTableName, ref strSourceColumnsArray);
+                    foreach (string strColumn in strSourceColumnsArray)
+                    {
+                        if (!dataMgr.ColumnExists(conn, strTableName, strColumn))
+                        {
+                            dataMgr.AddColumn(conn, strTableName, strColumn, "REAL", "");
+                        }
+                    }
+                }
+
+                // Check to see if the input SQLite DSN exists and if so, delete so we can add
+                if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName))
+                {
+                    odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName);
+                }
+                odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName, targetDbFile);
+
+                // Create temporary database
+                utils oUtils = new utils();
+                env oEnv = new env();
+                string strTempAccdb = oUtils.getRandomFile(oEnv.strTempDir, "accdb");
+                oDao.CreateMDB(strTempAccdb);
+
+                // Link all the target tables to the database
+                for (int i = 0; i < arrTargetTables.Length; i++)
+                {
+                    oDao.CreateSQLiteTableLink(strTempAccdb, arrTargetTables[i], arrTargetTables[i] + "_1",
+                        ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName, targetDbFile);
+                }
+                oDao.CreateTableLinks(strTempAccdb, sourceDbFile);  // Link all the source tables to the database
+
+                string strCopyConn = oAdo.getMDBConnString(strTempAccdb, "", "");
+                using (var copyConn = new System.Data.OleDb.OleDbConnection(strCopyConn))
+                {
+                    copyConn.Open();
+                    foreach (var strTable in arrTargetTables)
+                    {
+                        oAdo.m_strSQL = "INSERT INTO " + strTable + "_1" +
+                        " SELECT * FROM " + strTable;
+                        oAdo.SqlNonQuery(copyConn, oAdo.m_strSQL);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            finally
+            {
+                // Clean-up
+                if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName))
+                {
+                    odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName);
+                }
+                if (oAdo != null)
+                {
+                    oAdo = null;
+                }
+                if (oDao != null)
+                {
+                    oDao.m_DaoWorkspace.Close();
+                    oDao = null;
+                }
             }
         }
 

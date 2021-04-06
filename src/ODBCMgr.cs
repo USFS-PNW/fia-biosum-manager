@@ -195,6 +195,7 @@ namespace FIA_Biosum_Manager
             static public string Fia2FvsOutputDsnName { get { return "FIABIOSUM_FIA2FVS_OUTPUT"; } }
             static public string PlotInputDsnName { get { return "FIABIOSUM_PLOT_INPUT"; } }
             static public string OptimizerCalcVariableDsnName { get { return "FIABIOSUM_OPTIMIZER_CALC_VAR"; } }
+            static public string ProcessorRuleDefinitionsDsnName { get { return "PROCESSOR_RULE_DEFINITIONS"; } }
         }
 
     }
