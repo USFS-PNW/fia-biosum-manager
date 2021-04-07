@@ -134,7 +134,7 @@ namespace FIA_Biosum_Manager
             this.lblScenarioDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblScenarioDescription.Location = new System.Drawing.Point(16, 168);
             this.lblScenarioDescription.Name = "lblScenarioDescription";
-            this.lblScenarioDescription.Size = new System.Drawing.Size(138, 16);
+            this.lblScenarioDescription.Size = new System.Drawing.Size(160, 16);
             this.lblScenarioDescription.TabIndex = 5;
             this.lblScenarioDescription.Text = "Scenario Description";
             // 
@@ -152,7 +152,7 @@ namespace FIA_Biosum_Manager
             this.txtScenarioPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtScenarioPath.Location = new System.Drawing.Point(16, 129);
             this.txtScenarioPath.Name = "txtScenarioPath";
-            this.txtScenarioPath.Size = new System.Drawing.Size(592, 26);
+            this.txtScenarioPath.Size = new System.Drawing.Size(592, 30);
             this.txtScenarioPath.TabIndex = 7;
             // 
             // dataSet1
@@ -182,7 +182,7 @@ namespace FIA_Biosum_Manager
             this.txtScenarioId.Location = new System.Drawing.Point(16, 75);
             this.txtScenarioId.MaxLength = 20;
             this.txtScenarioId.Name = "txtScenarioId";
-            this.txtScenarioId.Size = new System.Drawing.Size(120, 26);
+            this.txtScenarioId.Size = new System.Drawing.Size(120, 30);
             this.txtScenarioId.TabIndex = 10;
             this.txtScenarioId.Leave += new System.EventHandler(this.txtScenarioId_Leave);
             // 
@@ -222,7 +222,7 @@ namespace FIA_Biosum_Manager
             this.lblTitle.Dock = System.Windows.Forms.DockStyle.Top;
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
-            this.lblTitle.Location = new System.Drawing.Point(3, 16);
+            this.lblTitle.Location = new System.Drawing.Point(3, 18);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(626, 32);
             this.lblTitle.TabIndex = 25;
@@ -297,33 +297,18 @@ namespace FIA_Biosum_Manager
 		}
         private string getNextScenarioId()
         {
-            System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
             string strProjDir = frmMain.g_oFrmMain.getProjectDirectory();
             string strScenarioDir = strProjDir + "\\" + ScenarioType + "\\db";
-            string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb";
-            System.Text.StringBuilder strFullPath = new System.Text.StringBuilder(strScenarioDir);
-            strFullPath.Append("\\");
-            strFullPath.Append(strFile);
-            ado_data_access oAdo = new ado_data_access();
-            string strConn = oAdo.getMDBConnString(strFullPath.ToString(), "admin", "");
-            oAdo.OpenConnection(strConn);
-            string strSQL = "SELECT scenario_id from " + Tables.Scenario.DefaultScenarioTableName;
             System.Collections.Generic.IList<string> lstExistingScenarios = new System.Collections.Generic.List<string>();
-
-            oAdo.SqlQueryReader(oAdo.m_OleDbConnection, strSQL);
-            if (oAdo.m_OleDbDataReader.HasRows)
+            if (ReferenceProcessorScenarioForm.m_bUsingSqlite == false)
             {
-                // Load all of the existing scenarios into a list we can query
-                while (oAdo.m_OleDbDataReader.Read())
-                {
-                    string strScenario = Convert.ToString(oAdo.m_OleDbDataReader["scenario_id"]).Trim();
-                    if (!String.IsNullOrEmpty(strScenario))
-                    {
-                        lstExistingScenarios.Add(strScenario);
-                    }
-                }
+                lstExistingScenarios = QueryScenarioNames(strScenarioDir);
             }
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
+            else
+            {
+                lstExistingScenarios = QueryScenarioNamesSqlite(strScenarioDir);
+            }
+            
 
             int i = 1;
             string strTestName;
@@ -339,7 +324,62 @@ namespace FIA_Biosum_Manager
             strTestName = "scenario" + Convert.ToString(i);
             return strTestName;
         }
-		private void btnFolder_Click(object sender, System.EventArgs e)
+
+        private System.Collections.Generic.IList<string> QueryScenarioNames(string strScenarioDir)
+        {
+            ado_data_access oAdo = new ado_data_access();
+            string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb";
+            string strFullPath = strScenarioDir + "\\" + strFile;
+            string strConn = oAdo.getMDBConnString(strFullPath, "", "");
+            System.Collections.Generic.IList<string> lstExistingScenarios = new System.Collections.Generic.List<string>();
+            using (var conn = new System.Data.OleDb.OleDbConnection(strConn))
+            {
+                conn.Open();
+                string strSQL = "SELECT scenario_id from " + Tables.Scenario.DefaultScenarioTableName;
+                oAdo.SqlQueryReader(conn, strSQL);
+                if (oAdo.m_OleDbDataReader.HasRows)
+                {
+                    // Load all of the existing scenarios into a list we can query
+                    while (oAdo.m_OleDbDataReader.Read())
+                    {
+                        string strScenario = Convert.ToString(oAdo.m_OleDbDataReader["scenario_id"]).Trim();
+                        if (!String.IsNullOrEmpty(strScenario))
+                        {
+                            lstExistingScenarios.Add(strScenario);
+                        }
+                    }
+                }
+            }
+            return lstExistingScenarios;
+        }
+        private System.Collections.Generic.IList<string> QueryScenarioNamesSqlite(string strScenarioDir)
+        {
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strFile = "scenario_" + ScenarioType + "_rule_definitions.db";
+            string strFullPath = strScenarioDir + "\\" + strFile;
+            string strConn = dataMgr.GetConnectionString(strFullPath);
+            System.Collections.Generic.IList<string> lstExistingScenarios = new System.Collections.Generic.List<string>();
+            using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                conn.Open();
+                string strSQL = "SELECT scenario_id from " + Tables.Scenario.DefaultScenarioTableName;
+                dataMgr.SqlQueryReader(conn, strSQL);
+                if (dataMgr.m_DataReader.HasRows)
+                {
+                    // Load all of the existing scenarios into a list we can query
+                    while (dataMgr.m_DataReader.Read())
+                    {
+                        string strScenario = Convert.ToString(dataMgr.m_DataReader["scenario_id"]).Trim();
+                        if (!String.IsNullOrEmpty(strScenario))
+                        {
+                            lstExistingScenarios.Add(strScenario);
+                        }
+                    }
+                }
+            }
+            return lstExistingScenarios;
+        }
+        private void btnFolder_Click(object sender, System.EventArgs e)
 		{
 		
             

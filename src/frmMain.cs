@@ -2590,31 +2590,38 @@ namespace FIA_Biosum_Manager
         public void StartBiosumProcessorDialog()
         {
             System.Text.StringBuilder strFullPath;
+            long lngCount = -1;
 
-            System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
             string strProjDir = getProjectDirectory();
-            string strScenarioDir = strProjDir.Trim() + "\\processor\\db";
-            string strFile = "scenario_processor_rule_definitions.mdb";
+            string strScenarioDir = strProjDir.Trim() + "\\processor";
             strFullPath = new System.Text.StringBuilder(strScenarioDir);
             strFullPath.Append("\\");
-            strFullPath.Append(strFile);
-            ado_data_access oAdo = new ado_data_access();
-            string strConn = oAdo.getMDBConnString(strFullPath.ToString(), "admin", "");
-            int intCount = Convert.ToInt32(oAdo.getRecordCount(strConn, "select count(*) from scenario", "scenario"));
-            if (oAdo.m_intError == 0)
+            string strDbFullPath = strFullPath.ToString() + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+            strFullPath.Append(Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile);
+            if (System.IO.File.Exists(strDbFullPath))
             {
-                frmMain.g_oFrmMain = this;
-                if (intCount > 0)
+                SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(dataMgr.GetConnectionString(strDbFullPath)))
                 {
-                    OpenProcessorScenario("Open", null);
-                }
-                else
-                {
-
-                    OpenProcessorScenario("New", null);
+                    con.Open();
+                    lngCount = dataMgr.getRecordCount(con, "select count(*) from scenario", "scenario");
                 }
             }
+            else
+            {
+                ado_data_access oAdo = new ado_data_access();
+                string strConn = oAdo.getMDBConnString(strFullPath.ToString(), "admin", "");
+                lngCount = oAdo.getRecordCount(strConn, "select count(*) from scenario", "scenario");
+            }
 
+            if (lngCount > 0)
+            {
+                OpenProcessorScenario("Open", null);
+            }
+            else
+            {
+                OpenProcessorScenario("New", null);
+            }
         }
         public void StartFVSOutputDataDialog()
         {

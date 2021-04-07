@@ -66,7 +66,8 @@ namespace FIA_Biosum_Manager
         private string m_xpsFile = Help.DefaultProcessorXPSFile;
         private string m_helpChapter = "PROCESSOR_DESCRIPTION";
         private Queries m_oQueries = new Queries();
-        
+        public bool m_bUsingSqlite;
+
         public string m_strError = "";
 		
 		public frmProcessorScenario(frmMain p_frmMain)
@@ -671,7 +672,13 @@ namespace FIA_Biosum_Manager
 
 			this.uc_scenario1.ReferenceProcessorScenarioForm=this;
 
-			this.uc_scenario1.ScenarioType="processor";
+            this.uc_scenario1.ScenarioType = "processor";
+            string strDbFile = "scenario_" + uc_scenario1.ScenarioType + "_rule_definitions.db";
+            if (System.IO.File.Exists(
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + uc_scenario1.ScenarioType + "\\db\\" + strDbFile))
+            {
+                uc_scenario1.ReferenceProcessorScenarioForm.m_bUsingSqlite = true;
+            }
 
 			this.uc_scenario1.NewScenario();
 
@@ -703,8 +710,14 @@ namespace FIA_Biosum_Manager
 
 			this.uc_scenario_open1.ReferenceProcessorScenarioForm=this;
 			this.uc_scenario_open1.ScenarioType="processor";
+            string strDbFile = "scenario_" + uc_scenario1.ScenarioType + "_rule_definitions.db";
+            if (System.IO.File.Exists(
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + uc_scenario1.ScenarioType + "\\db\\" + strDbFile))
+            {
+                uc_scenario1.ReferenceProcessorScenarioForm.m_bUsingSqlite = true;
+            }
 
-			this.uc_scenario_open1.OpenScenario();
+            this.uc_scenario_open1.OpenScenario();
 
 			this.Height = 200;
 			int intHt = this.Height;
