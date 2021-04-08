@@ -117,6 +117,8 @@ namespace FIA_Biosum_Manager
         private TextBox txtFIADatamart;
         private Label lblFiaDatamartFile;
         private string m_strDebugFile;
+        private Label label7;
+        private ComboBox cboGroups;
 
         delegate string[] GetListBoxItemsDlg(CheckedListBox checkedListBox);
 
@@ -222,6 +224,8 @@ namespace FIA_Biosum_Manager
             this.btnHelp = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.lblTitle = new System.Windows.Forms.Label();
+            this.cboGroups = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -651,6 +655,8 @@ namespace FIA_Biosum_Manager
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.cboGroups);
             this.panel1.Controls.Add(this.btnDatamart);
             this.panel1.Controls.Add(this.txtFIADatamart);
             this.panel1.Controls.Add(this.lblFiaDatamartFile);
@@ -742,6 +748,25 @@ namespace FIA_Biosum_Manager
             this.lblTitle.TabIndex = 99;
             this.lblTitle.Text = "Create FVS Input";
             // 
+            // cboGroups
+            // 
+            this.cboGroups.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboGroups.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cboGroups.FormattingEnabled = true;
+            this.cboGroups.Location = new System.Drawing.Point(6, 98);
+            this.cboGroups.Name = "cboGroups";
+            this.cboGroups.Size = new System.Drawing.Size(250, 28);
+            this.cboGroups.TabIndex = 41;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 78);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(107, 17);
+            this.label7.TabIndex = 42;
+            this.label7.Text = "Selected Group";
+            // 
             // uc_fvs_input
             // 
             this.Controls.Add(this.groupBox1);
@@ -804,6 +829,42 @@ namespace FIA_Biosum_Manager
         {
             this.LoadDataSources();
             this.populate_listbox();
+            this.populate_FIA2FVS_combobox();
+        }
+
+        private void populate_FIA2FVS_combobox()
+        {
+            SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+            string applicationDb = frmMain.g_oEnv.strAppDir + "\\db\\" + Tables.FIA2FVS.DefaultFvsInputFile;
+            using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(oDataMgr.GetConnectionString(applicationDb)))
+            {
+                con.Open();
+                if (!oDataMgr.TableExist(con, Tables.FIA2FVS.DefaultFvsInputKeywordsTableName))
+                {
+                    MessageBox.Show("The template FVSIn.db could not be found in the BioSum installation directory!",
+                        "FIA Biosum");
+                    return;
+                }
+                else
+                {
+                    oDataMgr.SqlQueryReader(con, "SELECT GROUPS FROM " + Tables.FIA2FVS.DefaultFvsInputKeywordsTableName);
+                    if (oDataMgr.m_DataReader.HasRows)
+                    {
+                        while (oDataMgr.m_DataReader.Read())
+                        {
+                            if (oDataMgr.m_DataReader["GROUPS"] != DBNull.Value &&
+                                Convert.ToString(oDataMgr.m_DataReader["GROUPS"]).Trim().Length > 0)
+                            {
+                                cboGroups.Items.Add(Convert.ToString(oDataMgr.m_DataReader["GROUPS"]).Trim());
+                            }
+                        }
+                        if (cboGroups.Items.Count > 0)
+                        {
+                            cboGroups.SelectedIndex = 0;
+                        }
+                    }
+                }
+            }
         }
 
         private void populate_listbox()
@@ -1636,6 +1697,13 @@ namespace FIA_Biosum_Manager
                 return;
             }
 
+            // Make sure a group is selected
+            if (cboGroups.SelectedIndex < 0)
+            {
+                MessageBox.Show("You must specify a group on the FVSIn FIA2FVS tab before proceeding!", "FIA Biosum");
+                return;
+            }
+
             this.m_frmTherm = new frmTherm(((frmDialog)ParentForm), "EXTRACT FIA2FVS FVS INPUT FILE",
                                  "FIA2FVS FVS Input", "2");
 
@@ -1894,6 +1962,8 @@ namespace FIA_Biosum_Manager
 
                 string strDataDir = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.txtDataDir, "Text", false);
                 strDataDir = strDataDir.Trim();
+                string strGroups = (string)frmMain.g_oDelegate.GetControlPropertyValue((Control)this.cboGroups, "SelectedItem", false);
+                strGroups = strGroups.Trim();
                 for (int x = 0; x <= this.lstFvsInput.Items.Count - 1; x++)
                 {
                     int intValue = Convert.ToInt32((double)(((double)(x + 1) / (double)this.lstFvsInput.Items.Count) * 100));
@@ -1910,7 +1980,8 @@ namespace FIA_Biosum_Manager
                                 "Value", 20);
                             strCurVariant = strVariant;
                             p_fvsinput.StartFIA2FVS(odbcmgr, oDao, oAdo, strTempMDB, 
-                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, strSourceTreeTableAlias);
+                                strSourceDbDir, strDataDir, m_strDebugFile, strCurVariant, strSourceStandTableAlias, strSourceTreeTableAlias,
+                                strGroups);
                         }
                         frmMain.g_oDelegate.SetControlPropertyValue(
                             m_frmTherm.progressBar1,
@@ -2942,8 +3013,10 @@ namespace FIA_Biosum_Manager
                         MessageBox.Show("A valid input database was not selected. The " + Tables.FIA2FVS.DefaultFvsInputTreeTableName + " table is missing!",
                             "FIA Biosum");
                         txtFIADatamart.Text = "";
+                        return;
                     }
                 }
+
             }
         }
     }
