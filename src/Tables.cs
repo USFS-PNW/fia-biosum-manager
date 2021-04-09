@@ -4953,6 +4953,7 @@ namespace FIA_Biosum_Manager
             static public string DefaultTreeHwdBinSteepSlopeTableName { get { return "Hwd_BinsSteepSlope"; } }
             static public string DefaultFiaTreeSpeciesRefTableName { get { return "FIA_TREE_SPECIES_REF"; } }
             static public string DefaultOpcostErrorsTableName { get { return @"opcost_errors"; } }
+            static public string DefaultSqliteResultsDbFile { get { return @"db\scenario_results.db"; } }
 
             public ProcessorScenarioRun()
             {
