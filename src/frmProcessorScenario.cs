@@ -614,15 +614,32 @@ namespace FIA_Biosum_Manager
 					this.SaveRuleDefinitions();
 					break;
 				case "DELETE":
-					if (this.uc_scenario_open1 != null)
+                    bool bDeleted = false;
+                    if (this.uc_scenario_open1 != null)
 					{
-						frmMain.g_oFrmMain.DeleteScenario("processor",uc_scenario_open1.txtScenarioId.Text.Trim());
-						uc_scenario_open1.lstScenario.Items.Remove(uc_scenario_open1.lstScenario.SelectedItems[0]);
+                        if (!m_bUsingSqlite)
+                        {
+                            bDeleted = uc_scenario1.DeleteScenario(uc_scenario_open1.txtScenarioId.Text.Trim());
+                        }
+                        else
+                        {
+                            bDeleted = uc_scenario1.DeleteScenarioSqlite(uc_scenario_open1.txtScenarioId.Text.Trim());
+                        }
+                        if (bDeleted)
+						    uc_scenario_open1.lstScenario.Items.Remove(uc_scenario_open1.lstScenario.SelectedItems[0]);
 					}
 					else
 					{
-						if (frmMain.g_oFrmMain.DeleteScenario("processor",uc_scenario1.txtScenarioId.Text.Trim()))
-							this.Close();
+                        if (!m_bUsingSqlite)
+                        {
+                            bDeleted = uc_scenario1.DeleteScenario(uc_scenario1.txtScenarioId.Text.Trim());
+                        }
+                        else
+                        {
+                            bDeleted = uc_scenario1.DeleteScenarioSqlite(uc_scenario1.txtScenarioId.Text.Trim());
+                        }
+                        if (bDeleted)
+                            this.Close();
 					}
 					break;
                 case "PROPERTIES":
@@ -1279,6 +1296,8 @@ namespace FIA_Biosum_Manager
 
         private void btnHelp_Click(object sender, EventArgs e)
         {
+            //ProcessorScenarioTools oTools = new ProcessorScenarioTools();
+            //oTools.migrate_access_data();
             if (!String.IsNullOrEmpty(m_helpChapter))
             {
                 if (m_oHelp == null)
@@ -3191,6 +3210,17 @@ namespace FIA_Biosum_Manager
                     {
                         oAdo.m_strSQL = "INSERT INTO " + strTable + "_1" +
                         " SELECT * FROM " + strTable;
+                        oAdo.SqlNonQuery(copyConn, oAdo.m_strSQL);
+                    }
+
+                    if (oAdo.m_intError == 0)
+                    {
+                        // Primary key required to update
+                        oAdo.AddPrimaryKey(copyConn, "scenario_1", "scenario_id_pk", "scenario_id");
+                        // Set file (database) field to new Sqlite DB
+                        string newDbFile = System.IO.Path.GetFileName(Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile);
+                        oAdo.m_strSQL = "UPDATE scenario_1 set file = '" +
+                            newDbFile + "'";
                         oAdo.SqlNonQuery(copyConn, oAdo.m_strSQL);
                     }
                 }

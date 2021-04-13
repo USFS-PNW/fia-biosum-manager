@@ -816,67 +816,11 @@ namespace FIA_Biosum_Manager
  
 
 		}
-		public void DeleteScenario() 
-		{
 
-			string strSQL = "Delete Scenario '" + this.txtScenarioId.Text + "' (Y/N)?";
-			DialogResult result = MessageBox.Show(strSQL,"Delete Scenario", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-			switch (result) 
-			{
-				case DialogResult.Yes:
-					break;
-				case DialogResult.No:
-					return;
-			}                
-            
-			string strScenarioPath = this.txtScenarioPath.Text;
-			string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.mdb" ; 
-			string strScenarioDir = ((frmMain)this.ParentForm.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\" + ScenarioType + "\\db";
-			string strFile = "scenario_" + ScenarioType + "_rule_definitions.mdb"; //((frmMain)this.ParentForm.ParentForm).frmProject.uc_project1.m_strProjectFile;
-			StringBuilder strFullPath = new StringBuilder(strScenarioDir);
-			strFullPath.Append("\\");
-			strFullPath.Append(strFile);
-
-			System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection();
-			ado_data_access p_ado = new ado_data_access();
-			string strConn = p_ado.getMDBConnString(strFullPath.ToString(),"admin","");
-			//string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + strFullPath.ToString() + ";User Id=admin;Password=;";
-			
-            strSQL = "DELETE * FROM scenario WHERE scenario_id =  " + "'" + this.txtScenarioId.Text.Trim() + "'";
-			p_ado.SqlNonQuery(strConn,strSQL);
-			if (p_ado.m_intError==0)
-			{
-				strSQL = "DELETE * FROM scenario_datasource WHERE scenario_id =  " + "'" + this.txtScenarioId.Text.Trim() + "'";
-				p_ado.SqlNonQuery(strConn,strSQL);				
-			}
-			if (p_ado.m_intError==0)
-			{
-				strSQL = this.txtScenarioId.Text + " was successfully deleted from the scenario tables. Do you wish to delete the scenario file and directory (Y/N)?";
-				result = MessageBox.Show(strSQL,"Delete Scenario", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				switch (result) 
-				{
-					case DialogResult.Yes:
-						strSQL = strScenarioPath + "\\" + strScenarioFile;
-						try 
-						{
-							System.IO.Directory.Delete(strScenarioPath,true);
-						}
-						catch
-						{
-						}
-						break;
-					case DialogResult.No:
-						break;
-				}                
-
-			}
-			p_ado = null;
-     		this.ParentForm.Close();
-			
-		}
 		public void OpenScenario()
 		{
-            if (ReferenceProcessorScenarioForm.m_bUsingSqlite == true)
+            if (ReferenceProcessorScenarioForm != null && 
+                ReferenceProcessorScenarioForm.m_bUsingSqlite == true)
             {
                 this.populate_scenario_listbox_sqlite();
             }
@@ -904,7 +848,7 @@ namespace FIA_Biosum_Manager
 			ado_data_access p_ado = new ado_data_access();
 			string strConn = p_ado.getMDBConnString(strFullPath.ToString(),"admin","");
 			//string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + strFullPath.ToString() + ";User Id=admin;Password=;";
-			string strSQL = "select * from scenario where scenario_id = '" + this.lstScenario.SelectedItem.ToString() + "';";
+			string strSQL = "select * from scenario where scenario_id = '" + this.lstScenario.SelectedItem.ToString().Trim() + "';";
 			
             p_ado.SqlQueryReader(strConn,strSQL);
 			if (p_ado.m_intError==0)
@@ -959,6 +903,7 @@ namespace FIA_Biosum_Manager
 
                         }
                     }
+                    dataMgr.m_DataReader.Close();
                 }
             }
             catch (Exception caught)
@@ -977,13 +922,14 @@ namespace FIA_Biosum_Manager
 		{
 			if (this.lstScenario.SelectedIndex >= 0) 
 			{
-                if (ReferenceProcessorScenarioForm.m_bUsingSqlite == false)
+                if (ReferenceProcessorScenarioForm != null && 
+                    ReferenceProcessorScenarioForm.m_bUsingSqlite == true)
                 {
-                    this.RefreshForm();
+                    this.RefreshFormSqlite();
                 }
                 else
                 {
-                    this.RefreshFormSqlite();
+                    this.RefreshForm();
                 }                
 			}
 		}

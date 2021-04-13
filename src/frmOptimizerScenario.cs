@@ -961,11 +961,6 @@ namespace FIA_Biosum_Manager
 			this.txtDropDown.Visible=false;
 		}
 
-		private void btnDelete_Click(object sender, System.EventArgs e)
-		{
-			this.uc_scenario1.DeleteScenario();
-		}
-
 		private void btnOpen_Click(object sender, System.EventArgs e)
 		{
 			int intAvailWd = this.ParentForm.ClientSize.Width - ((frmMain)this.ParentForm).grpboxLeft.Left - ((frmMain)this.ParentForm).grpboxLeft.Width - 20;
@@ -1416,14 +1411,14 @@ namespace FIA_Biosum_Manager
 					this.SaveRuleDefinitions();
 					break;
 				case 3:
-					if (this.uc_scenario_open1 != null)
+                    if (this.uc_scenario_open1 != null)
 					{
-						frmMain.g_oFrmMain.DeleteScenario("optimizer",uc_scenario_open1.txtScenarioId.Text.Trim());
-						uc_scenario_open1.lstScenario.Items.Remove(uc_scenario_open1.lstScenario.SelectedItems[0]);
+                        if(uc_scenario1.DeleteScenario(uc_scenario_open1.txtScenarioId.Text.Trim()))
+						    uc_scenario_open1.lstScenario.Items.Remove(uc_scenario_open1.lstScenario.SelectedItems[0]);
 					}
 					else
 					{
-						if (frmMain.g_oFrmMain.DeleteScenario("optimizer",uc_scenario1.txtScenarioId.Text.Trim()))
+						if (uc_scenario1.DeleteScenario(uc_scenario1.txtScenarioId.Text.Trim()))
 							this.Close();
 					}
                     break;
