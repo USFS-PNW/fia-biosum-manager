@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
-using System.Text;
+using SQLite.ADO;
 
 namespace FIA_Biosum_Manager
 {
@@ -1233,6 +1233,88 @@ namespace FIA_Biosum_Manager
             oAdo = null;
             return strVariantArray;
         
+        }
+        public void ValidateDataSources(ref System.Collections.Generic.IDictionary<string, string[]> dictSources)
+        {
+            string strSql;
+            string strPathAndFile = "";
+            string strSqliteConn = "";
+            string strAccdbConn = "";
+
+            macrosubst oMacroSub = new macrosubst();
+            oMacroSub.ReferenceGeneralMacroSubstitutionVariableCollection = frmMain.g_oGeneralMacroSubstitutionVariable_Collection;
+            DataMgr dataMgr = new DataMgr();
+            ado_data_access oAdo = new ado_data_access();
+            using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection())
+            {
+                using (System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection())
+                {
+                    foreach (var tableType in dictSources.Keys)
+                    {
+                        string[] arrSource = dictSources[tableType];
+                        strPathAndFile = oMacroSub.GeneralTranslateVariableSubstitution(arrSource[PATH]) +
+                            "\\" + arrSource[MDBFILE];
+                        if (System.IO.File.Exists(strPathAndFile) == true)
+                        {
+                            arrSource[FILESTATUS] = "F";
+                            if (System.IO.Path.GetExtension(strPathAndFile).Equals(".db"))
+                            {
+                                string strNewConn = dataMgr.GetConnectionString(strPathAndFile);
+                                if (!strSqliteConn.Equals(strNewConn))
+                                {
+                                    con.Close();
+                                    con.ConnectionString = strNewConn;
+                                    con.Open();
+                                    strSqliteConn = strNewConn;
+                                }
+                                if (dataMgr.TableExist(con, arrSource[TABLE]))
+                                {
+                                    arrSource[TABLESTATUS] = "F";
+                                    strSql = "select count from " + arrSource[TABLE];
+                                    long recordCount = dataMgr.getRecordCount(con, strSql, arrSource[TABLE]);
+                                    arrSource[RECORDCOUNT] = Convert.ToString(recordCount);
+                                }
+                                else
+                                {
+                                    arrSource[TABLESTATUS] = "NF";
+                                }
+
+                            }
+                            else
+                            {
+                                //MS Access
+                                string strNewConn = oAdo.getMDBConnString(strPathAndFile, "admin", "");
+                                if (!strAccdbConn.Equals(strNewConn))
+                                {
+                                    oConn.Close();
+                                    while (oConn.State != ConnectionState.Closed)
+                                        System.Threading.Thread.Sleep(1000);
+                                    oConn.ConnectionString = strNewConn;
+                                    oConn.Open();
+                                    strAccdbConn = strNewConn;
+                                }                                
+                                if (oAdo.TableExist(oConn, arrSource[TABLE]))
+                                {
+                                    arrSource[TABLESTATUS] = "F";
+                                    strSql = "select count(*) from " + arrSource[TABLE];
+                                    long recordCount = oAdo.getRecordCount(oConn, strSql, arrSource[TABLE]);
+                                    arrSource[RECORDCOUNT] = Convert.ToString(recordCount);
+                                }
+                                else
+                                {
+                                    arrSource[TABLESTATUS] = "NF";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            arrSource[FILESTATUS] = "NF";
+                            arrSource[TABLESTATUS] = "NF";
+                            arrSource[RECORDCOUNT] = "0";
+                        }
+                    }
+                }
+            }
         }
 		public bool LoadTableColumnNamesAndDataTypes
 		{

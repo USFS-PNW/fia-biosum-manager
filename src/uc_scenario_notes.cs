@@ -194,6 +194,32 @@ namespace FIA_Biosum_Manager
 			this.txtNotes.Text = strNotes;
 		}
 
+        public void LoadValuesSqlite()
+        {
+            string strNotes = "";
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strScenarioDBDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
+            string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.db";
+            StringBuilder strScenarioFullPath = new StringBuilder(strScenarioDBDir);
+            strScenarioFullPath.Append("\\");
+            strScenarioFullPath.Append(strScenarioFile);
+            string strScenarioConn = dataMgr.GetConnectionString(strScenarioFullPath.ToString());
+            using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strScenarioConn))
+            {
+                con.Open();
+                if (ScenarioType.Trim().ToUpper() == "OPTIMIZER")
+                {
+                    dataMgr.m_strSQL = "SELECT notes FROM scenario WHERE TRIM(scenario_id)='" + this.ReferenceOptimizerScenarioForm.uc_scenario1.strScenarioId.Trim() + "'";
+                }
+                else
+                {
+                    dataMgr.m_strSQL = "SELECT notes FROM scenario WHERE TRIM(scenario_id)='" + this.ReferenceProcessorScenarioForm.uc_scenario1.strScenarioId.Trim() + "'";
+                }
+                strNotes = dataMgr.getSingleStringValueFromSQLQuery(con, dataMgr.m_strSQL, "scenario");
+            }
+            this.txtNotes.Text = strNotes;
+        }
+
         public void loadvalues_FromProperties()
         {
             if (ScenarioType.Trim().ToUpper() == "OPTIMIZER")
