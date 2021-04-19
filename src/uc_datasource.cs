@@ -41,7 +41,8 @@ namespace FIA_Biosum_Manager
 		public string m_strProjectDirectory="";
 		public string m_strScenarioId="";
 		public string m_strScenarioFile="";
-		private string m_strDataSourceMDBFile;
+        private bool m_bUsingSqlite = false;
+        private string m_strDataSourceMDBFile;
 		private System.Windows.Forms.ProgressBar progressBar1;
 		private System.Windows.Forms.Label lblProgress;
 		private string m_strDataSourceTable;
@@ -863,7 +864,15 @@ namespace FIA_Biosum_Manager
 			switch (result)
 			{
 				case DialogResult.Yes :
-					this.populate_listview_grid();
+                    if (!m_bUsingSqlite)
+                    {
+                        this.populate_listview_grid();
+                    }
+                    else
+                    {
+                        this.LoadValuesSqlite();
+                    }
+					
 				    break;
 			}
 		}
@@ -895,11 +904,16 @@ namespace FIA_Biosum_Manager
 			if (this.m_strScenarioId.Trim().Length > 0)
 			{
                 if (ScenarioType.Trim().ToUpper() == "OPTIMIZER")
-					frmTemp.Text = "Treatment Optimizer: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
-				else
-					frmTemp.Text = "Prcoessor: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
-				p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile,this.m_strScenarioId);
-			}
+                {
+                    frmTemp.Text = "Treatment Optimizer: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
+                    p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile, this.m_strScenarioId, false);
+                }
+                else
+                {
+                    frmTemp.Text = "Prcoessor: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
+                    p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile, this.m_strScenarioId, this.UsingSqlite);
+                }
+            }
 			else
 			{
 				frmTemp.Text = "Database: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
@@ -1017,10 +1031,15 @@ namespace FIA_Biosum_Manager
 			if (this.m_strScenarioId.Trim().Length > 0)
 			{
                 if (ScenarioType.Trim().ToUpper() == "OPTIMIZER")
-					frmTemp.Text = "Treatment Optimizer: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
-				else
-					frmTemp.Text = "Prcoessor: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
-				p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile,this.m_strScenarioId);
+                {
+                    frmTemp.Text = "Treatment Optimizer: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
+                    p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile, this.m_strScenarioId, false);
+                }
+                else
+                {
+                    frmTemp.Text = "Prcoessor: Edit " + this.lstRequiredTables.SelectedItems[0].SubItems[TABLETYPE].Text.Trim() + " Data Source";
+                    p_uc = new uc_datasource_edit(this.m_strDataSourceMDBFile, this.m_strScenarioId, this.UsingSqlite);
+                }
 			}
 			else
 			{
@@ -1656,7 +1675,15 @@ namespace FIA_Biosum_Manager
 
 		private void btnRefresh_Click(object sender, System.EventArgs e)
 		{
-			this.populate_listview_grid();
+            if (!m_bUsingSqlite)
+            {
+                this.populate_listview_grid();
+            }
+            else
+            {
+                this.LoadValuesSqlite();
+            }
+            
 		}
 
 		private void panel1_Resize(object sender, System.EventArgs e)
@@ -1720,7 +1747,15 @@ namespace FIA_Biosum_Manager
 					this.EditDatasource();
 					break;
 				case "Refresh":
-					this.populate_listview_grid();
+                    if (!m_bUsingSqlite)
+                    {
+                        this.populate_listview_grid();
+                    }
+                    else
+                    {
+                        this.LoadValuesSqlite();
+                    }
+					
 					break;
                 case "Help":
                     this.showHelp();
@@ -1813,7 +1848,18 @@ namespace FIA_Biosum_Manager
 				return this.m_strProjectDirectory;
 			}
 		}
-		public FIA_Biosum_Manager.frmOptimizerScenario ReferenceOptimizerScenarioForm
+        public bool UsingSqlite
+        {
+            set
+            {
+                this.m_bUsingSqlite = value;
+            }
+            get
+            {
+                return this.m_bUsingSqlite;
+            }
+        }
+        public FIA_Biosum_Manager.frmOptimizerScenario ReferenceOptimizerScenarioForm
 		{
 			get {return _frmScenario;}
 			set {_frmScenario=value;}

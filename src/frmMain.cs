@@ -1433,6 +1433,7 @@ namespace FIA_Biosum_Manager
 					oFrmScenario.uc_scenario1.strScenarioPath = oFrmProcessorScenario.uc_scenario_open1.strScenarioPath;
 					oFrmScenario.uc_scenario_notes1.ReferenceProcessorScenarioForm=oFrmScenario;
 					oFrmScenario.uc_scenario_notes1.ScenarioType="processor";
+                    oFrmScenario.uc_datasource1.UsingSqlite = oFrmProcessorScenario.m_bUsingSqlite;
                     if (oFrmProcessorScenario.m_bUsingSqlite == false)
                     {
                         oFrmScenario.uc_scenario_notes1.LoadValues();
@@ -1468,6 +1469,7 @@ namespace FIA_Biosum_Manager
 					oFrmScenario.uc_datasource1.strDataSourceTable = "scenario_datasource";
 					oFrmScenario.uc_datasource1.strScenarioId = oFrmProcessorScenario.uc_scenario1.txtScenarioId.Text.Trim();
 					oFrmScenario.uc_datasource1.strProjectDirectory = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
+                    oFrmScenario.uc_datasource1.UsingSqlite = oFrmProcessorScenario.m_bUsingSqlite;
                     if (oFrmProcessorScenario.m_bUsingSqlite == false)
                     {
                         oFrmScenario.uc_datasource1.LoadValues();
