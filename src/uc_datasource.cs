@@ -532,6 +532,7 @@ namespace FIA_Biosum_Manager
                     dataMgr.m_DataReader.Close();
                     Datasource oDatasource = new Datasource();
                     oDatasource.ValidateDataSources(ref dictSources);
+                    oDatasource = null;
 
                     // Add a ListItem object to the ListView for each data source
                     int x = 0;

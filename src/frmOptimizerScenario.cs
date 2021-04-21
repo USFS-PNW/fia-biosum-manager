@@ -108,9 +108,9 @@ namespace FIA_Biosum_Manager
             new FIA_Biosum_Manager.uc_optimizer_scenario_calculated_variables.Variable_Collection();
         private TabPage tbFilterPkg;
         private string m_strOutputTablePrefix;
+        public bool m_bProcessorUsingSqlite = false;
 
-
-		public frmOptimizerScenario(FIA_Biosum_Manager.frmMain p_frmMain)
+        public frmOptimizerScenario(FIA_Biosum_Manager.frmMain p_frmMain)
 		{
 			//
 			// Required for Windows Form Designer support
@@ -234,6 +234,14 @@ namespace FIA_Biosum_Manager
                 this.tbProcessorScenario.Controls.Add(this.uc_scenario_processor_scenario_select1);
                 this.uc_scenario_processor_scenario_select1.Dock = System.Windows.Forms.DockStyle.Fill;
                 this.uc_scenario_processor_scenario_select1.ReferenceOptimizerScenarioForm = this;
+                // Check to see if Processor is using Sqlite
+
+                if (System.IO.File.Exists(
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim()
+                    + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile) )
+                {
+                    uc_scenario1.ReferenceProcessorScenarioForm.m_bUsingSqlite = true;
+                }
 
                 this.uc_optimizer_scenario_select_packages1 = new uc_optimizer_scenario_select_packages();
                 this.tbFilterPkg.Controls.Add(uc_optimizer_scenario_select_packages1);
@@ -1052,7 +1060,7 @@ namespace FIA_Biosum_Manager
             this.m_oOptimizerScenarioTools.LoadAll(
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + 
                 Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioTableDbFile,
-                oQueries, m_oOptimizerScenarioItem.ScenarioId,
+                oQueries, m_bProcessorUsingSqlite, m_oOptimizerScenarioItem.ScenarioId,
                 m_oOptimizerScenarioItem_Collection);
             //find the current scenario
             for (x = 0; x <= m_oOptimizerScenarioItem_Collection.Count - 1; x++)
@@ -2649,7 +2657,8 @@ namespace FIA_Biosum_Manager
         public OptimizerScenarioTools()
         {
         }
-        public void LoadScenario(string p_strScenarioId, Queries p_oQueries,OptimizerScenarioItem_Collection p_oOptimizerScenarioItem_Collection)
+        public void LoadScenario(string p_strScenarioId, Queries p_oQueries, bool p_bProcessorUsingSqlite,
+            OptimizerScenarioItem_Collection p_oOptimizerScenarioItem_Collection)
         {
            
             //
@@ -2664,9 +2673,11 @@ namespace FIA_Biosum_Manager
                 p_oQueries.m_strTempDbFile,
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
                 "C");
-            LoadAll(p_oQueries.m_strTempDbFile, p_oQueries, p_strScenarioId, p_oOptimizerScenarioItem_Collection);
+            LoadAll(p_oQueries.m_strTempDbFile, p_oQueries, p_bProcessorUsingSqlite,
+                p_strScenarioId, p_oOptimizerScenarioItem_Collection);
         }
-        public void LoadAll(string p_strDbFile, Queries p_oQueries, string p_strScenarioId, FIA_Biosum_Manager.OptimizerScenarioItem_Collection p_oOptimizerScenarioItem_Collection)
+        public void LoadAll(string p_strDbFile, Queries p_oQueries, bool p_bProcessorUsingSqlite, 
+            string p_strScenarioId, FIA_Biosum_Manager.OptimizerScenarioItem_Collection p_oOptimizerScenarioItem_Collection)
         {
             int x;
             for (x = p_oOptimizerScenarioItem_Collection.Count - 1; x >= 0; x--)
@@ -2688,7 +2699,14 @@ namespace FIA_Biosum_Manager
                 this.LoadOptimizationVariable(oAdo, oAdo.m_OleDbConnection, p_strScenarioId,oItem);
                 this.LoadTieBreakerVariables(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
                 this.LoadLastTieBreakRank(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
-                this.LoadProcessorScenarioItems(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                if (!p_bProcessorUsingSqlite)
+                {
+                    this.LoadProcessorScenarioItems(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                }
+                else
+                {
+                    this.LoadProcessorScenarioItemsSqlite(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                }
                 this.LoadPlotFilter(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
                 this.LoadCondFilter(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
                 this.LoadProcessingSites(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
@@ -3281,9 +3299,106 @@ namespace FIA_Biosum_Manager
             {
                 frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateScenarioProcessorScenarioSelectTable(oAdo, p_oConn, Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioProcessorScenarioSelectTableName);
             }
+        }
+        //@ToDo: Convert this to sqlite
+        public void LoadProcessorScenarioItemsSqlite(ado_data_access p_oAdo,
+                                 System.Data.OleDb.OleDbConnection p_oConn,
+                                 string p_strScenarioId,
+                                 OptimizerScenarioItem p_oOptimizerScenarioItem)
+        {
+            int x;
+            Queries oQueries = new Queries();
+            ProcessorScenarioTools oTools = new ProcessorScenarioTools();
 
-            
-            
+            //scenario mdb connection
+            string strProcessorScenarioMDB =
+              frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+              "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+            //
+            //get a list of all the scenarios
+            //
+            ado_data_access oAdo = new ado_data_access();
+            oAdo.OpenConnection(oAdo.getMDBConnString(strProcessorScenarioMDB, "", ""));
+            string[] strScenarioArray =
+                frmMain.g_oUtils.ConvertListToArray(
+                    oAdo.CreateCommaDelimitedList(
+                       oAdo.m_OleDbConnection,
+                       "SELECT scenario_id " +
+                       "FROM scenario " +
+                       "WHERE scenario_id IS NOT NULL AND " +
+                                         "LEN(TRIM(scenario_id)) > 0", ""), ",");
+            oAdo.CloseConnection(oAdo.m_OleDbConnection);
+            if (strScenarioArray == null) return;
+
+            for (x = 0; x <= strScenarioArray.Length - 1; x++)
+            {
+                //
+                //LOAD PROJECT DATATASOURCES INFO
+                //
+                oQueries.m_oFvs.LoadDatasource = true;
+                oQueries.m_oFIAPlot.LoadDatasource = true;
+                oQueries.m_oProcessor.LoadDatasource = true;
+                oQueries.m_oReference.LoadDatasource = true;
+                oQueries.LoadDatasources(true, "processor", strScenarioArray[x]);
+                oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
+                    oQueries.m_strTempDbFile,
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
+                    "P");
+                oTools.LoadAllSqlite(oQueries, strScenarioArray[x], p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection);
+            }
+
+            if (p_oAdo.TableExist(p_oConn, Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioProcessorScenarioSelectTableName))
+            {
+                p_oAdo.m_strSQL = "SELECT * FROM " + Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioProcessorScenarioSelectTableName + " " +
+                                "WHERE TRIM(UCASE(scenario_id)) = '" +
+                                   p_strScenarioId.Trim().ToUpper() + "';";
+                p_oAdo.SqlQueryReader(p_oConn, p_oAdo.m_strSQL);
+                string strProcessorScenario = "";
+                string strFullDetailsYN = "N";
+
+                if (p_oAdo.m_OleDbDataReader.HasRows)
+                {
+                    while (p_oAdo.m_OleDbDataReader.Read())
+                    {
+                        if (p_oAdo.m_OleDbDataReader["processor_scenario_id"] != System.DBNull.Value &&
+                            p_oAdo.m_OleDbDataReader["processor_scenario_id"].ToString().Trim().Length > 0)
+                        {
+                            strProcessorScenario = p_oAdo.m_OleDbDataReader["processor_scenario_id"].ToString().Trim();
+                        }
+                        if (p_oAdo.m_OleDbDataReader["FullDetailsYN"] != System.DBNull.Value &&
+                            p_oAdo.m_OleDbDataReader["FullDetailsYN"].ToString().Trim().Length > 0)
+                        {
+                            strFullDetailsYN = p_oAdo.m_OleDbDataReader["FullDetailsYN"].ToString().Trim();
+                        }
+                    }
+                }
+                p_oAdo.m_OleDbDataReader.Close();
+                //
+                //find the current selected scenario in the collection
+                //
+                for (x = 0; x <= p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Count - 1; x++)
+                {
+                    if (p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Item(x).ScenarioId.Trim().ToUpper() ==
+                        strProcessorScenario.Trim().ToUpper())
+                    {
+                        p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Item(x).Selected = true;
+                        p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Item(x).DisplayFullDetailsYN = strFullDetailsYN;
+                    }
+                    else
+                    {
+                        p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Item(x).Selected = false;
+                        p_oOptimizerScenarioItem.m_oProcessorScenarioItem_Collection.Item(x).DisplayFullDetailsYN = strFullDetailsYN;
+
+                    }
+                }
+            }
+            else
+            {
+                frmMain.g_oTables.m_oOptimizerScenarioRuleDef.CreateScenarioProcessorScenarioSelectTable(oAdo, p_oConn, Tables.OptimizerScenarioRuleDefinitions.DefaultScenarioProcessorScenarioSelectTableName);
+            }
+
+
+
 
         }
         public void LoadPlotFilter(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strScenarioId, FIA_Biosum_Manager.OptimizerScenarioItem p_oOptimizerScenarioItem)

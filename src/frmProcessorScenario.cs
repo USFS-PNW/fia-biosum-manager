@@ -82,14 +82,21 @@ namespace FIA_Biosum_Manager
 			}
 
             this.m_oEnv = new env();
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-			
-			//
-			//scenario description and properties
-			//
-			this.uc_scenario1 = new uc_scenario();
+            //
+            // TODO: Add any constructor code after InitializeComponent call
+            //
+
+            if (System.IO.File.Exists(
+                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim()
+                + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile))
+            {
+                m_bUsingSqlite = true;
+            }
+
+            //
+            //scenario description and properties
+            //
+            this.uc_scenario1 = new uc_scenario();
 				
 			this.tbDesc.Controls.Add(uc_scenario1);
 			uc_scenario1.btnCancel.Hide();
@@ -690,12 +697,6 @@ namespace FIA_Biosum_Manager
 			this.uc_scenario1.ReferenceProcessorScenarioForm=this;
 
             this.uc_scenario1.ScenarioType = "processor";
-            string strDbFile = "scenario_" + uc_scenario1.ScenarioType + "_rule_definitions.db";
-            if (System.IO.File.Exists(
-                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + uc_scenario1.ScenarioType + "\\db\\" + strDbFile))
-            {
-                uc_scenario1.ReferenceProcessorScenarioForm.m_bUsingSqlite = true;
-            }
 
 			this.uc_scenario1.NewScenario();
 
@@ -727,13 +728,6 @@ namespace FIA_Biosum_Manager
 
 			this.uc_scenario_open1.ReferenceProcessorScenarioForm=this;
 			this.uc_scenario_open1.ScenarioType="processor";
-            string strDbFile = "scenario_" + uc_scenario1.ScenarioType + "_rule_definitions.db";
-            if (System.IO.File.Exists(
-                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + uc_scenario1.ScenarioType + "\\db\\" + strDbFile))
-            {
-                uc_scenario1.ReferenceProcessorScenarioForm.m_bUsingSqlite = true;
-            }
-
             this.uc_scenario_open1.OpenScenario();
 
 			this.Height = 200;
@@ -950,12 +944,24 @@ namespace FIA_Biosum_Manager
         {
             string strScenario = uc_scenario1.txtScenarioId.Text.Trim();
             this.m_oProcessorScenarioItem.ScenarioId = strScenario;
-            string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
-            this.m_oProcessorScenarioTools.LoadTreeDiameterGroupValues(strScenarioMDB, 
-                strScenario, this.m_oProcessorScenarioItem);
-            this.m_oProcessorScenarioTools.LoadTreeSpeciesGroupValues(strScenarioMDB, strScenario,
-                this.m_oProcessorScenarioItem);
+            if (!m_bUsingSqlite)
+            {
+                string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsDbFile;
+                this.m_oProcessorScenarioTools.LoadTreeDiameterGroupValues(strScenarioMDB,
+                    strScenario, this.m_oProcessorScenarioItem);
+                this.m_oProcessorScenarioTools.LoadTreeSpeciesGroupValues(strScenarioMDB, strScenario,
+                    this.m_oProcessorScenarioItem);
+            }
+            else
+            {
+                string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                this.m_oProcessorScenarioTools.LoadTreeDiameterGroupValuesSqlite(strScenarioMDB,
+                    strScenario, this.m_oProcessorScenarioItem);
+                this.m_oProcessorScenarioTools.LoadTreeSpeciesGroupValuesSqlite(strScenarioMDB, strScenario,
+                    this.m_oProcessorScenarioItem);
+            }
             this.m_bTreeGroupsFirstTime = false;
         }
 		public void EnableTabPage(System.Windows.Forms.TabPage p_oTabPage,bool p_bEnable)
@@ -2170,7 +2176,8 @@ namespace FIA_Biosum_Manager
         {
         }
 
-        public void LoadScenario(string p_strScenarioId, Queries p_oQueries, ProcessorScenarioItem_Collection p_oProcessorScenarioItem_Collection)
+        public void LoadScenario(string p_strScenarioId, Queries p_oQueries, bool bUsingSqlite,
+            ProcessorScenarioItem_Collection p_oProcessorScenarioItem_Collection)
         {
 
             //
@@ -2181,11 +2188,18 @@ namespace FIA_Biosum_Manager
             p_oQueries.m_oProcessor.LoadDatasource = true;
             p_oQueries.m_oReference.LoadDatasource = true;
             p_oQueries.LoadDatasources(true, "processor", p_strScenarioId);
-            p_oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
-                p_oQueries.m_strTempDbFile,
-                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
-                "P");
-            LoadAll(p_oQueries.m_strTempDbFile, p_oQueries, p_strScenarioId, p_oProcessorScenarioItem_Collection);
+            if (!bUsingSqlite)
+            {
+                p_oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
+                    p_oQueries.m_strTempDbFile,
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
+                    "P");
+                LoadAll(p_oQueries.m_strTempDbFile, p_oQueries, p_strScenarioId, p_oProcessorScenarioItem_Collection);
+            }
+            else
+            {
+                LoadAllSqlite(p_oQueries, p_strScenarioId, p_oProcessorScenarioItem_Collection);
+            }
         }
 
         public void LoadAll(string p_strDbFile,Queries p_oQueries, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem_Collection p_oProcessorScenarioItem_Collection)
@@ -2212,6 +2226,36 @@ namespace FIA_Biosum_Manager
             m_intError = oAdo.m_intError;
             oAdo.CloseConnection(oAdo.m_OleDbConnection);
             oAdo = null;
+        }
+
+        public void LoadAllSqlite(Queries p_oQueries, string p_strScenarioId, 
+            FIA_Biosum_Manager.ProcessorScenarioItem_Collection p_oProcessorScenarioItem_Collection)
+        {
+            // Access version used a temp file with links; Trying to skip that
+            string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+            //ado_data_access oAdo = new ado_data_access();
+            //oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
+            //if (oAdo.m_intError == 0)
+            //{
+
+            ProcessorScenarioItem oItem = new ProcessorScenarioItem();
+                //this.LoadGeneral(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                this.LoadTreeDiameterGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
+                this.LoadTreeSpeciesGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
+                //this.LoadHarvestMethod(oAdo, oAdo.m_OleDbConnection, oItem);
+                //this.LoadMoveInCosts(p_oQueries.m_strTempDbFile, oItem);
+                //this.LoadSpeciesAndDiameterGroupDollarValues(
+                //    oAdo, oAdo.m_OleDbConnection, oItem);
+                //this.LoadHarvestCostComponents(oAdo,
+                //    oAdo.m_OleDbConnection, oItem);
+                //this.LoadEscalators(oAdo, oAdo.m_OleDbConnection, p_oQueries, oItem);
+                p_oProcessorScenarioItem_Collection.Add(oItem);
+
+            //}
+            //m_intError = oAdo.m_intError;
+            //oAdo.CloseConnection(oAdo.m_OleDbConnection);
+            //oAdo = null;
         }
 
         public void LoadGeneral(string p_strDbFile, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
@@ -2798,23 +2842,8 @@ namespace FIA_Biosum_Manager
             }
             p_oAdo.m_OleDbDataReader.Close();
         }
-
-        public void LoadTreeDiameterGroupValues(string p_strDbFile, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
-        {
-            ado_data_access oAdo = new ado_data_access();
-            oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
-            if (oAdo.m_intError == 0)
-            {
-                this.LoadTreeDiameterGroupValues(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, p_oProcessorScenarioItem);
-            }
-            m_intError = oAdo.m_intError;
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-            oAdo = null;
-        }
         
-        public void LoadTreeDiameterGroupValues(ado_data_access p_oAdo,
-                                                System.Data.OleDb.OleDbConnection p_oConn,
-                                                string p_strScenarioId,
+        public void LoadTreeDiameterGroupValues(string p_strDbFile, string p_strScenarioId,
                                                 ProcessorScenarioItem p_oProcessorScenarioItem)
         {
             int x;
@@ -2826,44 +2855,72 @@ namespace FIA_Biosum_Manager
             //
             //QUERY ALL DIAMETER GROUPS
             //
-            p_oAdo.SqlQueryReader(p_oConn, "SELECT * FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName + 
-                " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "' ORDER BY DIAM_GROUP");
-
-
-            //
-            //CREATE A COLLECTION CONTAINING EACH DIAMETER GROUP
-            //
-            if (p_oAdo.m_OleDbDataReader.HasRows)
-            {
-                while (p_oAdo.m_OleDbDataReader.Read())
-                {
-                    ProcessorScenarioItem.TreeDiamGroupsItem oItem = new ProcessorScenarioItem.TreeDiamGroupsItem();
-                    oItem.DiamGroup = p_oAdo.m_OleDbDataReader["diam_group"].ToString().Trim();
-                    oItem.DiamClass = p_oAdo.m_OleDbDataReader["diam_class"].ToString().Trim();
-                    oItem.MaxDiam = p_oAdo.m_OleDbDataReader["max_diam"].ToString().Trim();
-                    oItem.MinDiam = p_oAdo.m_OleDbDataReader["min_diam"].ToString().Trim();
-                    p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection.Add(oItem);
-                }
-            }
-
-            p_oAdo.m_OleDbDataReader.Close();
-        }
-        public void LoadTreeSpeciesGroupValues(string p_strDbFile, string p_strScenarioId,
-            FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
-        {
             ado_data_access oAdo = new ado_data_access();
-            oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
-            if (oAdo.m_intError == 0)
+            string strConn = oAdo.getMDBConnString(p_strDbFile, "", "");
+            using (var oConn = new System.Data.OleDb.OleDbConnection(strConn))
             {
-                this.LoadTreeSpeciesGroupValues(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, 
-                    p_oProcessorScenarioItem);
+                oConn.Open();
+                oAdo.SqlQueryReader(oConn, "SELECT * FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName +
+                    " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "' ORDER BY DIAM_GROUP");
+
+                //
+                //CREATE A COLLECTION CONTAINING EACH DIAMETER GROUP
+                //
+                if (oAdo.m_OleDbDataReader.HasRows)
+                {
+                    while (oAdo.m_OleDbDataReader.Read())
+                    {
+                        ProcessorScenarioItem.TreeDiamGroupsItem oItem = new ProcessorScenarioItem.TreeDiamGroupsItem();
+                        oItem.DiamGroup = oAdo.m_OleDbDataReader["diam_group"].ToString().Trim();
+                        oItem.DiamClass = oAdo.m_OleDbDataReader["diam_class"].ToString().Trim();
+                        oItem.MaxDiam = oAdo.m_OleDbDataReader["max_diam"].ToString().Trim();
+                        oItem.MinDiam = oAdo.m_OleDbDataReader["min_diam"].ToString().Trim();
+                        p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection.Add(oItem);
+                    }
+                }
+                oAdo.m_OleDbDataReader.Close();
             }
-            m_intError = oAdo.m_intError;
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-            oAdo = null;
         }
-        public void LoadTreeSpeciesGroupValues(ado_data_access p_oAdo,
-                                        System.Data.OleDb.OleDbConnection p_oConn,
+        public void LoadTreeDiameterGroupValuesSqlite(string p_strDbFile, string p_strScenarioId,
+                                                      ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            int x;
+            //REMOVE ANY EXISTING ITEMS
+            for (x = p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection.Count - 1; x >= 0; x--)
+            {
+                p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection.Remove(x);
+            }
+            //
+            //QUERY ALL DIAMETER GROUPS
+            //
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT * FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName +
+                    " WHERE TRIM(UPPER(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "' ORDER BY DIAM_GROUP");
+
+                //
+                //CREATE A COLLECTION CONTAINING EACH DIAMETER GROUP
+                //
+                if (dataMgr.m_DataReader.HasRows)
+                {
+                    while (dataMgr.m_DataReader.Read())
+                    {
+                        ProcessorScenarioItem.TreeDiamGroupsItem oItem = new ProcessorScenarioItem.TreeDiamGroupsItem();
+                        oItem.DiamGroup = dataMgr.m_DataReader["diam_group"].ToString().Trim();
+                        oItem.DiamClass = dataMgr.m_DataReader["diam_class"].ToString().Trim();
+                        oItem.MaxDiam = dataMgr.m_DataReader["max_diam"].ToString().Trim();
+                        oItem.MinDiam = dataMgr.m_DataReader["min_diam"].ToString().Trim();
+                        p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection.Add(oItem);
+                    }
+                }
+                dataMgr.m_DataReader.Close();
+            }
+        }
+
+        public void LoadTreeSpeciesGroupValues(string p_strDbFile,
                                         string p_strScenarioId,
                                         ProcessorScenarioItem p_oProcessorScenarioItem)
         {
@@ -2874,67 +2931,152 @@ namespace FIA_Biosum_Manager
                 p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Remove(x);
             }
 
-            //LOAD USER SPECIES COMMON NAME GROUPING ASSIGNMENTS
-            /****************************************************************************************
-             **load any previous group assignments 
-             ****************************************************************************************/
-            p_oAdo.m_strSQL = "select * from " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
+            ado_data_access oAdo = new ado_data_access();
+            string strConn = oAdo.getMDBConnString(p_strDbFile, "", "");
+            using (var oConn = new System.Data.OleDb.OleDbConnection(strConn))
+            {
+                oConn.Open();
+                //LOAD USER SPECIES COMMON NAME GROUPING ASSIGNMENTS
+                /****************************************************************************************
+                 **load any previous group assignments 
+                 ****************************************************************************************/
+                oAdo.m_strSQL = "select * from " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
                 " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "' order by species_group";
-            p_oAdo.SqlQueryReader(p_oConn, p_oAdo.m_strSQL);
-            if (p_oAdo.m_intError == 0)
-            {
-                /**************************************************************************************
-                 **go through the species group table and assign values to the group label text box
-                 **************************************************************************************/
-                int intSpcGrp;
-                string strSpeciesLabel;
-                if (p_oAdo.m_OleDbDataReader.HasRows)
+                oAdo.SqlQueryReader(oConn, oAdo.m_strSQL);
+                if (oAdo.m_intError == 0)
                 {
-                    while (p_oAdo.m_OleDbDataReader.Read())
+                    /**************************************************************************************
+                     **go through the species group table and assign values to the group label text box
+                     **************************************************************************************/
+                    int intSpcGrp;
+                    string strSpeciesLabel;
+                    if (oAdo.m_OleDbDataReader.HasRows)
                     {
-                        if (p_oAdo.m_OleDbDataReader["species_group"] != DBNull.Value)
+                        while (oAdo.m_OleDbDataReader.Read())
                         {
-                            intSpcGrp = Convert.ToInt32(p_oAdo.m_OleDbDataReader["species_group"]);
-                            strSpeciesLabel = Convert.ToString(p_oAdo.m_OleDbDataReader["species_label"]).Trim();
-                            ProcessorScenarioItem.SpcGroupItem oItem = new ProcessorScenarioItem.SpcGroupItem();
-                            oItem.SpeciesGroup = intSpcGrp;
-                            oItem.SpeciesGroupLabel = strSpeciesLabel;
-                            p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Add(oItem);
+                            if (oAdo.m_OleDbDataReader["species_group"] != DBNull.Value)
+                            {
+                                intSpcGrp = Convert.ToInt32(oAdo.m_OleDbDataReader["species_group"]);
+                                strSpeciesLabel = Convert.ToString(oAdo.m_OleDbDataReader["species_label"]).Trim();
+                                ProcessorScenarioItem.SpcGroupItem oItem = new ProcessorScenarioItem.SpcGroupItem();
+                                oItem.SpeciesGroup = intSpcGrp;
+                                oItem.SpeciesGroupLabel = strSpeciesLabel;
+                                p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Add(oItem);
+                            }
                         }
                     }
+                    oAdo.m_OleDbDataReader.Close();
                 }
-                p_oAdo.m_OleDbDataReader.Close();
-            }
+                //REMOVE ANY EXISTING ITEMS
+                for (x = p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Count - 1; x >= 0; x--)
+                {
+                    p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Remove(x);
+                }
 
+                //go through the species table and load its 
+                //group list box with the species common name
+                oAdo.m_strSQL = "SELECT DISTINCT common_name,species_group, spcd " +
+                    "FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
+                    " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + " '";
+                oAdo.SqlQueryReader(oConn, oAdo.m_strSQL);
+                if (oAdo.m_intError == 0)
+                {
+                    if (oAdo.m_OleDbDataReader.HasRows)
+                    {
+                        while (oAdo.m_OleDbDataReader.Read())
+                        {
+                            if (oAdo.m_OleDbDataReader["common_name"] != DBNull.Value)
+                            {
+                                ProcessorScenarioItem.SpcGroupListItem oItem = new ProcessorScenarioItem.SpcGroupListItem();
+                                oItem.SpeciesGroup = Convert.ToInt32(oAdo.m_OleDbDataReader["species_group"]);
+                                oItem.CommonName = Convert.ToString(oAdo.m_OleDbDataReader["common_name"]).Trim();
+                                oItem.SpeciesCode = Convert.ToInt32(oAdo.m_OleDbDataReader["spcd"]);
+                                p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Add(oItem);
+                            }
+                        }
+                    }
+                    oAdo.m_OleDbDataReader.Close();
+                }
+            }
+        }
+
+        public void LoadTreeSpeciesGroupValuesSqlite(string p_strDbFile,
+                                                     string p_strScenarioId,
+                                                     ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            int x;
             //REMOVE ANY EXISTING ITEMS
-            for (x = p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Count - 1; x >= 0; x--)
+            for (x = p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Count - 1; x >= 0; x--)
             {
-                p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Remove(x);
+                p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Remove(x);
             }
 
-            //go through the species table and load its 
-            //group list box with the species common name
-            p_oAdo.m_strSQL = "SELECT DISTINCT common_name,species_group, spcd " +
-                "FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
-                " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + " '";
-            p_oAdo.SqlQueryReader(p_oConn, p_oAdo.m_strSQL); 
-            if (p_oAdo.m_intError == 0)
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
             {
-                if (p_oAdo.m_OleDbDataReader.HasRows)
+                oConn.Open();
+                //LOAD USER SPECIES COMMON NAME GROUPING ASSIGNMENTS
+                /****************************************************************************************
+                 **load any previous group assignments 
+                 ****************************************************************************************/
+                dataMgr.m_strSQL = "select * from " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
+                " WHERE TRIM(UPPER(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "' order by species_group";
+                dataMgr.SqlQueryReader(oConn, dataMgr.m_strSQL);
+                if (dataMgr.m_intError == 0)
                 {
-                    while (p_oAdo.m_OleDbDataReader.Read())
+                    /**************************************************************************************
+                     **go through the species group table and assign values to the group label text box
+                     **************************************************************************************/
+                    int intSpcGrp;
+                    string strSpeciesLabel;
+                    if (dataMgr.m_DataReader.HasRows)
                     {
-                        if (p_oAdo.m_OleDbDataReader["common_name"] != DBNull.Value)
+                        while (dataMgr.m_DataReader.Read())
                         {
-                            ProcessorScenarioItem.SpcGroupListItem oItem = new ProcessorScenarioItem.SpcGroupListItem();
-                            oItem.SpeciesGroup = Convert.ToInt32(p_oAdo.m_OleDbDataReader["species_group"]);
-                            oItem.CommonName = Convert.ToString(p_oAdo.m_OleDbDataReader["common_name"]).Trim();
-                            oItem.SpeciesCode = Convert.ToInt32(p_oAdo.m_OleDbDataReader["spcd"]);
-                            p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Add(oItem);
+                            if (dataMgr.m_DataReader["species_group"] != DBNull.Value)
+                            {
+                                intSpcGrp = Convert.ToInt32(dataMgr.m_DataReader["species_group"]);
+                                strSpeciesLabel = Convert.ToString(dataMgr.m_DataReader["species_label"]).Trim();
+                                ProcessorScenarioItem.SpcGroupItem oItem = new ProcessorScenarioItem.SpcGroupItem();
+                                oItem.SpeciesGroup = intSpcGrp;
+                                oItem.SpeciesGroupLabel = strSpeciesLabel;
+                                p_oProcessorScenarioItem.m_oSpcGroupItem_Collection.Add(oItem);
+                            }
                         }
                     }
+                    dataMgr.m_DataReader.Close();
                 }
-                p_oAdo.m_OleDbDataReader.Close();
+                //REMOVE ANY EXISTING ITEMS
+                for (x = p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Count - 1; x >= 0; x--)
+                {
+                    p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Remove(x);
+                }
+
+                //go through the species table and load its 
+                //group list box with the species common name
+                dataMgr.m_strSQL = "SELECT DISTINCT common_name,species_group, spcd " +
+                    "FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
+                    " WHERE TRIM(UPPER(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "'";
+                dataMgr.SqlQueryReader(oConn, dataMgr.m_strSQL);
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            if (dataMgr.m_DataReader["common_name"] != DBNull.Value)
+                            {
+                                ProcessorScenarioItem.SpcGroupListItem oItem = new ProcessorScenarioItem.SpcGroupListItem();
+                                oItem.SpeciesGroup = Convert.ToInt32(dataMgr.m_DataReader["species_group"]);
+                                oItem.CommonName = Convert.ToString(dataMgr.m_DataReader["common_name"]).Trim();
+                                oItem.SpeciesCode = Convert.ToInt32(dataMgr.m_DataReader["spcd"]);
+                                p_oProcessorScenarioItem.m_oSpcGroupListItem_Collection.Add(oItem);
+                            }
+                        }
+                    }
+                    dataMgr.m_DataReader.Close();
+                }
             }
         }
 

@@ -1234,7 +1234,8 @@ namespace FIA_Biosum_Manager
             return strVariantArray;
         
         }
-        public void ValidateDataSources(ref System.Collections.Generic.IDictionary<string, string[]> dictSources)
+        public void ValidateDataSources(
+            ref System.Collections.Generic.IDictionary<string, string[]> dictSources)
         {
             string strSql;
             string strPathAndFile = "";
@@ -1245,6 +1246,7 @@ namespace FIA_Biosum_Manager
             oMacroSub.ReferenceGeneralMacroSubstitutionVariableCollection = frmMain.g_oGeneralMacroSubstitutionVariable_Collection;
             DataMgr dataMgr = new DataMgr();
             ado_data_access oAdo = new ado_data_access();
+            dao_data_access oDao = new dao_data_access();   // This is here even though we never use it to avoid dao errors later
             using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection())
             {
                 using (System.Data.OleDb.OleDbConnection oConn = new System.Data.OleDb.OleDbConnection())
@@ -1286,13 +1288,16 @@ namespace FIA_Biosum_Manager
                                 string strNewConn = oAdo.getMDBConnString(strPathAndFile, "admin", "");
                                 if (!strAccdbConn.Equals(strNewConn))
                                 {
-                                    oConn.Close();
+                                    if (oConn.State == ConnectionState.Open)
+                                    {
+                                        oConn.Close();
+                                    }
                                     while (oConn.State != ConnectionState.Closed)
-                                        System.Threading.Thread.Sleep(1000);
+                                        System.Threading.Thread.Sleep(2000);
                                     oConn.ConnectionString = strNewConn;
                                     oConn.Open();
                                     strAccdbConn = strNewConn;
-                                }                                
+                                }
                                 if (oAdo.TableExist(oConn, arrSource[TABLE]))
                                 {
                                     arrSource[TABLESTATUS] = "F";
