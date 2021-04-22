@@ -727,12 +727,14 @@ namespace FIA_Biosum_Manager
 
             this.txtDesc.Text="";
 			this.txtSteepSlopeDesc.Text="";
-			m_oAdo = new ado_data_access();
+        
             m_oAdo.OpenConnection(m_oAdo.getMDBConnString(this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile, "", ""));
-			if (m_oAdo.m_intError==0)
-			{
+            if (m_oAdo.m_intError == 0)
+            {
+                //@ToDo: harvest_methods still in ref_master.mdb
                 this.m_oRxTools.LoadRxHarvestMethods(m_oAdo, m_oAdo.m_OleDbConnection, this.ReferenceProcessorScenarioForm.LoadedQueries, cmbMethod, cmbSteepSlopeMethod);
-     		}
+            }
+
 			this.cmbSteepSlopePercent.Items.Clear();
 			for (int x=90;x>=10;x=x-5)
 			{

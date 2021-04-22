@@ -862,7 +862,7 @@ namespace FIA_Biosum_Manager
             m_oQueries.m_oFvs.LoadDatasource = true;
             m_oQueries.m_oReference.LoadDatasource = true;
             string ScenarioId = this.uc_scenario1.txtScenarioId.Text.Trim().ToLower();
-            m_oQueries.LoadDatasources(true, "processor", ScenarioId);
+            m_oQueries.LoadDatasources(true, m_bUsingSqlite, "processor", ScenarioId);
             
             this.m_oProcessorScenarioItem.ScenarioId = uc_scenario1.txtScenarioId.Text.Trim();
  			this.uc_processor_scenario_harvest_method1.ReferenceProcessorScenarioForm=this;
@@ -2187,7 +2187,7 @@ namespace FIA_Biosum_Manager
             p_oQueries.m_oFIAPlot.LoadDatasource = true;
             p_oQueries.m_oProcessor.LoadDatasource = true;
             p_oQueries.m_oReference.LoadDatasource = true;
-            p_oQueries.LoadDatasources(true, "processor", p_strScenarioId);
+            p_oQueries.LoadDatasources(true, bUsingSqlite, "processor", p_strScenarioId);
             if (!bUsingSqlite)
             {
                 p_oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
@@ -2240,7 +2240,7 @@ namespace FIA_Biosum_Manager
             //{
 
             ProcessorScenarioItem oItem = new ProcessorScenarioItem();
-                //this.LoadGeneral(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                this.LoadGeneralSqlite(strScenarioMDB, p_strScenarioId, oItem);
                 this.LoadTreeDiameterGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
                 this.LoadTreeSpeciesGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
                 //this.LoadHarvestMethod(oAdo, oAdo.m_OleDbConnection, oItem);
@@ -2258,18 +2258,6 @@ namespace FIA_Biosum_Manager
             //oAdo = null;
         }
 
-        public void LoadGeneral(string p_strDbFile, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
-        {
-            ado_data_access oAdo = new ado_data_access();
-            oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
-            if (oAdo.m_intError == 0)
-            {
-                this.LoadGeneral(oAdo, oAdo.m_OleDbConnection,p_strScenarioId, p_oProcessorScenarioItem);
-            }
-            m_intError = oAdo.m_intError;
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-            oAdo = null;
-        }
         public void LoadGeneral(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
         {
             p_oAdo.SqlQueryReader(p_oConn, "SELECT * FROM scenario " + " WHERE TRIM(UCASE(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "'");
@@ -2321,6 +2309,63 @@ namespace FIA_Biosum_Manager
                     p_oAdo.m_OleDbDataReader.Close();
                 }
             }
+        }
+        public void LoadGeneralSqlite(string p_strDbFile, string p_strScenarioId, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT * FROM scenario " + " WHERE TRIM(UPPER(scenario_id))='" + p_strScenarioId.Trim().ToUpper() + "'");
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            //
+                            //SCENARIO ID
+                            //
+                            if (dataMgr.m_DataReader["scenario_id"] != System.DBNull.Value)
+                            {
+                                p_oProcessorScenarioItem.ScenarioId = dataMgr.m_DataReader["scenario_id"].ToString().Trim();
+                            }
+                            //
+                            //DESCRIPTION
+                            //
+                            if (dataMgr.m_DataReader["description"] != System.DBNull.Value)
+                            {
+                                p_oProcessorScenarioItem.Description = dataMgr.m_DataReader["description"].ToString().Trim();
+                            }
+                            //
+                            //PATH
+                            //
+                            if (dataMgr.m_DataReader["path"] != System.DBNull.Value)
+                            {
+                                p_oProcessorScenarioItem.DbPath = dataMgr.m_DataReader["path"].ToString().Trim();
+                            }
+                            //
+                            //FILE
+                            //
+                            if (dataMgr.m_DataReader["file"] != System.DBNull.Value)
+                            {
+                                p_oProcessorScenarioItem.DbFileName = dataMgr.m_DataReader["file"].ToString().Trim();
+                            }
+                            //
+                            //NOTES
+                            //
+                            if (dataMgr.m_DataReader["notes"] != System.DBNull.Value)
+                            {
+                                p_oProcessorScenarioItem.Notes = dataMgr.m_DataReader["notes"].ToString().Trim();
+                            }
+                        }
+                        dataMgr.m_DataReader.Close();
+                    }
+                }
+            }
+
+
         }
         public void LoadHarvestMethod(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
         {
@@ -2485,6 +2530,26 @@ namespace FIA_Biosum_Manager
                     p_oAdo.m_OleDbDataReader.Close();
                 }
             }
+        }
+        public void LoadHarvestMethodSqlite(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+
+            }
+                ado_data_access oAdo = new ado_data_access();
+            oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
+            if (oAdo.m_intError == 0)
+            {
+                this.LoadHarvestMethod(oAdo, oAdo.m_OleDbConnection, p_oProcessorScenarioItem);
+            }
+            m_intError = oAdo.m_intError;
+            oAdo.CloseConnection(oAdo.m_OleDbConnection);
+            oAdo = null;
         }
         public void LoadMoveInCosts(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
         {

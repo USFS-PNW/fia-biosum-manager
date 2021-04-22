@@ -87,7 +87,7 @@ namespace FIA_Biosum_Manager
                     m_oQueries.m_oFIAPlot.LoadDatasource = true;
                     m_oQueries.m_oProcessor.LoadDatasource = true;
                     m_oQueries.m_oReference.LoadDatasource = true;
-                    m_oQueries.LoadDatasources(true, "processor", strScenarioArray[x]);
+                    m_oQueries.LoadDatasources(true, ReferenceOptimizerScenarioForm.m_bProcessorUsingSqlite, "processor", strScenarioArray[x]);
                     if (!ReferenceOptimizerScenarioForm.m_bProcessorUsingSqlite)
                     {
                         m_oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(

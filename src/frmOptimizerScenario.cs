@@ -2668,7 +2668,7 @@ namespace FIA_Biosum_Manager
             p_oQueries.m_oFIAPlot.LoadDatasource = true;
             p_oQueries.m_oProcessor.LoadDatasource = true;
             p_oQueries.m_oReference.LoadDatasource = true;
-            p_oQueries.LoadDatasources(true, "optimizer", p_strScenarioId);
+            p_oQueries.LoadDatasources(true, false, "optimizer", p_strScenarioId);
             p_oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
                 p_oQueries.m_strTempDbFile,
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
@@ -2701,11 +2701,11 @@ namespace FIA_Biosum_Manager
                 this.LoadLastTieBreakRank(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
                 if (!p_bProcessorUsingSqlite)
                 {
-                    this.LoadProcessorScenarioItems(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                    this.LoadProcessorScenarioItems(oAdo, oAdo.m_OleDbConnection, p_bProcessorUsingSqlite, p_strScenarioId, oItem);
                 }
                 else
                 {
-                    this.LoadProcessorScenarioItemsSqlite(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
+                    this.LoadProcessorScenarioItemsSqlite(oAdo, oAdo.m_OleDbConnection, p_bProcessorUsingSqlite, p_strScenarioId, oItem);
                 }
                 this.LoadPlotFilter(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
                 this.LoadCondFilter(oAdo, oAdo.m_OleDbConnection, p_strScenarioId, oItem);
@@ -3206,7 +3206,7 @@ namespace FIA_Biosum_Manager
         
         public void LoadProcessorScenarioItems(ado_data_access p_oAdo,
                                          System.Data.OleDb.OleDbConnection p_oConn,
-                                         string p_strScenarioId,
+                                         bool bProcessorUsingSqlite, string p_strScenarioId,
                                          OptimizerScenarioItem p_oOptimizerScenarioItem)
         {
             int x;
@@ -3242,7 +3242,7 @@ namespace FIA_Biosum_Manager
                 oQueries.m_oFIAPlot.LoadDatasource = true;
                 oQueries.m_oProcessor.LoadDatasource = true;
                 oQueries.m_oReference.LoadDatasource = true;
-                oQueries.LoadDatasources(true, "processor", strScenarioArray[x]);
+                oQueries.LoadDatasources(true, bProcessorUsingSqlite, "processor", strScenarioArray[x]);
                 oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
                     oQueries.m_strTempDbFile,
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),
@@ -3303,7 +3303,7 @@ namespace FIA_Biosum_Manager
         //@ToDo: Convert this to sqlite
         public void LoadProcessorScenarioItemsSqlite(ado_data_access p_oAdo,
                                  System.Data.OleDb.OleDbConnection p_oConn,
-                                 string p_strScenarioId,
+                                 bool bProcessorUsingSqlite, string p_strScenarioId,
                                  OptimizerScenarioItem p_oOptimizerScenarioItem)
         {
             int x;
@@ -3339,7 +3339,7 @@ namespace FIA_Biosum_Manager
                 oQueries.m_oFIAPlot.LoadDatasource = true;
                 oQueries.m_oProcessor.LoadDatasource = true;
                 oQueries.m_oReference.LoadDatasource = true;
-                oQueries.LoadDatasources(true, "processor", strScenarioArray[x]);
+                oQueries.LoadDatasources(true, bProcessorUsingSqlite, "processor", strScenarioArray[x]);
                 oQueries.m_oDataSource.CreateScenarioRuleDefinitionTableLinks(
                     oQueries.m_strTempDbFile,
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim(),

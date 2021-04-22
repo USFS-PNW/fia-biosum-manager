@@ -71,13 +71,13 @@ namespace FIA_Biosum_Manager
             if (this.m_oTravelTime.LoadDatasource) this.m_oTravelTime.LoadDatasources();
 			m_strTempDbFile = this.m_oDataSource.CreateMDBAndTableDataSourceLinks();
 		}
-		public void LoadDatasources(bool p_bLimited,string p_strScenarioType,string p_strScenarioId)
+		public void LoadDatasources(bool p_bLimited, bool p_bUsingSqlite, string p_strScenarioType, string p_strScenarioId)
 		{
 			Scenario=true;
 			ScenarioType=p_strScenarioType;
 			if (p_bLimited)
 			{
-				LoadLimitedDatasources(p_strScenarioType,p_strScenarioId);
+				LoadLimitedDatasources(p_strScenarioType, p_bUsingSqlite, p_strScenarioId);
 			}
             if (this.m_oDataSource.m_intError < 0)
             {
@@ -109,7 +109,7 @@ namespace FIA_Biosum_Manager
 			
 			
 		}
-		protected void LoadLimitedDatasources(string p_strScenarioType,string p_strScenarioId)
+		protected void LoadLimitedDatasources(string p_strScenarioType, bool p_bUsingSqlite, string p_strScenarioId)
 		{
 			string strProjDir=frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim();
 			
@@ -117,11 +117,18 @@ namespace FIA_Biosum_Manager
 			m_oDataSource.LoadTableColumnNamesAndDataTypes=false;
 			m_oDataSource.m_strScenarioId=p_strScenarioId.Trim();
 			m_oDataSource.LoadTableRecordCount=false;
-			m_oDataSource.m_strDataSourceMDBFile = strProjDir.Trim() + "\\" + p_strScenarioType + "\\db\\scenario_" + p_strScenarioType + "_rule_definitions.mdb";
-			m_oDataSource.m_strDataSourceTableName = "scenario_datasource";
-			m_oDataSource.populate_datasource_array();
-			
-		}
+            m_oDataSource.m_strDataSourceTableName = "scenario_datasource";
+            if (!p_bUsingSqlite)
+            {
+                m_oDataSource.m_strDataSourceMDBFile = strProjDir.Trim() + "\\" + p_strScenarioType + "\\db\\scenario_" + p_strScenarioType + "_rule_definitions.mdb";
+                m_oDataSource.populate_datasource_array();
+            }
+            else
+            {
+                m_oDataSource.m_strDataSourceMDBFile = strProjDir.Trim() + "\\" + p_strScenarioType + "\\db\\scenario_" + p_strScenarioType + "_rule_definitions.db";
+                m_oDataSource.populate_datasource_array_sqlite();
+            }
+        }
 		static public string GetInsertSQL(string p_strFields, string p_strValues,string p_strTable)
 		{
 			return "INSERT INTO " + p_strTable + " (" + p_strFields + ") VALUES (" + p_strValues + ")";

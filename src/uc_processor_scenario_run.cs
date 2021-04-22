@@ -357,7 +357,7 @@ namespace FIA_Biosum_Manager
             m_oQueries.m_oFvs.LoadDatasource = true;
             m_oQueries.m_oReference.LoadDatasource = true;
             m_oQueries.m_oProcessor.LoadDatasource = true;
-            m_oQueries.LoadDatasources(true, "processor", ScenarioId);
+            m_oQueries.LoadDatasources(true, ReferenceProcessorScenarioForm.m_bUsingSqlite, "processor", ScenarioId);
             //
             //LOAD RX PACKAGE INFO
             //
@@ -4737,7 +4737,8 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Load trees from cut list...Stand By");
                     y++;
                     frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
-                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim().ToUpper(), m_oAdo.m_OleDbConnection.ConnectionString);
+                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim().ToUpper(), 
+                        m_oAdo.m_OleDbConnection.ConnectionString, ReferenceProcessorScenarioForm.m_bUsingSqlite);
                     if (!_bInactiveVarRxPackage)
                     {
                         m_intError = mainProcessor.LoadTrees(strVariant, strRxPackage, m_oQueries.m_oFIAPlot.m_strCondTable,

@@ -13,6 +13,7 @@ namespace FIA_Biosum_Manager
         private string m_strTvvTableName = "TreeVolValLowSlope";
         private string m_strDebugFile ="";
         private string m_strOpcostIdealTableName = "OpCost_Ideal_Output";
+        private bool m_bUsingSqlite = false;
         //private ado_data_access p_oAdo;
         private System.Collections.Generic.List<tree> m_trees;
         private scenarioHarvestMethod m_scenarioHarvestMethod;
@@ -22,10 +23,11 @@ namespace FIA_Biosum_Manager
         private escalators m_escalators;
         public System.Collections.Generic.List<string> m_standsWithNoYardingDistance;
 
-        public processor(string strDebugFile, string strScenarioId, string strConnectionString)
+        public processor(string strDebugFile, string strScenarioId, string strConnectionString, bool bUsingSqlite)
         {
             m_strDebugFile = strDebugFile;
             m_strScenarioId = strScenarioId;
+            m_bUsingSqlite = bUsingSqlite;
             m_oAdo = new ado_data_access();
             m_oAdo.OpenConnection(strConnectionString);
         }
@@ -60,7 +62,7 @@ namespace FIA_Biosum_Manager
             p_oQueries.m_oFvs.LoadDatasource = true;
             p_oQueries.m_oReference.LoadDatasource = true;
             p_oQueries.m_oProcessor.LoadDatasource = true;
-            p_oQueries.LoadDatasources(true, "processor", m_strScenarioId);
+            p_oQueries.LoadDatasources(true, m_bUsingSqlite, "processor", m_strScenarioId);
 
             //link to all the scenario rule definition tables
             oDao.CreateTableLink(p_oQueries.m_strTempDbFile,
