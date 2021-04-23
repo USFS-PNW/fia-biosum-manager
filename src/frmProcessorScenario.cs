@@ -2232,7 +2232,7 @@ namespace FIA_Biosum_Manager
             FIA_Biosum_Manager.ProcessorScenarioItem_Collection p_oProcessorScenarioItem_Collection)
         {
             // Access version used a temp file with links; Trying to skip that
-            string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+            string strScenarioDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
                 "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
             //ado_data_access oAdo = new ado_data_access();
             //oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
@@ -2240,17 +2240,17 @@ namespace FIA_Biosum_Manager
             //{
 
             ProcessorScenarioItem oItem = new ProcessorScenarioItem();
-                this.LoadGeneralSqlite(strScenarioMDB, p_strScenarioId, oItem);
-                this.LoadTreeDiameterGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
-                this.LoadTreeSpeciesGroupValuesSqlite(strScenarioMDB, p_strScenarioId, oItem);
-                //this.LoadHarvestMethod(oAdo, oAdo.m_OleDbConnection, oItem);
-                //this.LoadMoveInCosts(p_oQueries.m_strTempDbFile, oItem);
-                //this.LoadSpeciesAndDiameterGroupDollarValues(
-                //    oAdo, oAdo.m_OleDbConnection, oItem);
-                //this.LoadHarvestCostComponents(oAdo,
-                //    oAdo.m_OleDbConnection, oItem);
-                //this.LoadEscalators(oAdo, oAdo.m_OleDbConnection, p_oQueries, oItem);
-                p_oProcessorScenarioItem_Collection.Add(oItem);
+            this.LoadGeneralSqlite(strScenarioDB, p_strScenarioId, oItem);
+            this.LoadTreeDiameterGroupValuesSqlite(strScenarioDB, p_strScenarioId, oItem);
+            this.LoadTreeSpeciesGroupValuesSqlite(strScenarioDB, p_strScenarioId, oItem);
+            this.LoadHarvestMethodSqlite(strScenarioDB, oItem);
+            this.LoadMoveInCostsSqlite(strScenarioDB, oItem);
+            this.LoadSpeciesAndDiameterGroupDollarValuesSqlite(strScenarioDB, oItem);
+            //this.LoadHarvestCostComponents(oAdo,
+            //    oAdo.m_OleDbConnection, oItem);
+
+            this.LoadEscalatorsSqlite(p_oQueries, strScenarioDB, oItem);
+            p_oProcessorScenarioItem_Collection.Add(oItem);
 
             //}
             //m_intError = oAdo.m_intError;
@@ -2539,17 +2539,157 @@ namespace FIA_Biosum_Manager
             using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
             {
                 oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT * FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName + " WHERE TRIM(UPPER(scenario_id))='" + p_oProcessorScenarioItem.ScenarioId.Trim().ToUpper() + "'");
 
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            //
+                            //HARVEST METHOD SELECTION
+                            //
+                            string strHarvestMethodSelection = dataMgr.m_DataReader["HarvestMethodSelection"].ToString().Trim();
+                            if (strHarvestMethodSelection.Equals(HarvestMethodSelection.LOWEST_COST.Value))
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.SelectedHarvestMethod = HarvestMethodSelection.LOWEST_COST;
+                            }
+                            else if (strHarvestMethodSelection.Equals(HarvestMethodSelection.SELECTED.Value))
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.SelectedHarvestMethod = HarvestMethodSelection.SELECTED;
+                            }
+                            else
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.SelectedHarvestMethod = HarvestMethodSelection.RX;
+                            }
+                            //
+                            //HARVEST METHOD LOW SLOPE
+                            //
+                            if (dataMgr.m_DataReader["HarvestMethodLowSlope"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["HarvestMethodLowSlope"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.HarvestMethodLowSlope = dataMgr.m_DataReader["HarvestMethodLowSlope"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //HARVEST METHOD STEEP SLOPE
+                            //
+                            if (dataMgr.m_DataReader["HarvestMethodSteepSlope"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["HarvestMethodSteepSlope"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.HarvestMethodSteepSlope = dataMgr.m_DataReader["HarvestMethodSteepSlope"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MINIMUM CHIPS DBH
+                            //
+                            if (dataMgr.m_DataReader["min_chip_dbh"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["min_chip_dbh"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.MinDiaForChips = dataMgr.m_DataReader["min_chip_dbh"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MINIMUM DBH FOR SMALL LOGS
+                            //
+                            if (dataMgr.m_DataReader["min_sm_log_dbh"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["min_sm_log_dbh"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.MinDiaForSmallLogs = dataMgr.m_DataReader["min_sm_log_dbh"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MINIMUM DBH FOR LARGE LOGS
+                            //
+                            if (dataMgr.m_DataReader["min_lg_log_dbh"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["min_lg_log_dbh"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.MinDiaForLargeLogs = dataMgr.m_DataReader["min_lg_log_dbh"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //STEEP SLOPE PERCENT
+                            //
+                            if (dataMgr.m_DataReader["SteepSlope"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["SteepSlope"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.SteepSlopePercent = dataMgr.m_DataReader["SteepSlope"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MINIMUM DBH FOR STEEP SLOPE
+                            //
+                            if (dataMgr.m_DataReader["min_dbh_steep_slope"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["min_dbh_steep_slope"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.MinDiaForAllTreesSteepSlope = dataMgr.m_DataReader["min_dbh_steep_slope"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //PROCESS LOW AND STEEP SLOPE DURING RUN
+                            //
+                            if (dataMgr.m_DataReader["ProcessLowSlopeYN"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["ProcessLowSlopeYN"].ToString().Trim() == "Y")
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.ProcessLowSlope = true;
+                            }
+                            else
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.ProcessLowSlope = false;
+                            }
+                            if (dataMgr.m_DataReader["ProcessSteepSlopeYN"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["ProcessSteepSlopeYN"].ToString().Trim() == "Y")
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.ProcessSteepSlope = true;
+                            }
+                            else
+                            {
+                                p_oProcessorScenarioItem.m_oHarvestMethod.ProcessSteepSlope = false;
+                            }
+                            //
+                            //WOODLAND MERCH AS PCT OF TOTAL VOLUME
+                            //
+                            if (dataMgr.m_DataReader["WoodlandMerchAsPercentOfTotalVol"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["WoodlandMerchAsPercentOfTotalVol"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.WoodlandMerchAsPctOfTotalVol = dataMgr.m_DataReader["WoodlandMerchAsPercentOfTotalVol"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //SAPLING MERCH AS PCT OF TOTAL VOLUME
+                            //
+                            if (dataMgr.m_DataReader["SaplingMerchAsPercentOfTotalVol"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["SaplingMerchAsPercentOfTotalVol"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.SaplingMerchAsPctOfTotalVol = dataMgr.m_DataReader["SaplingMerchAsPercentOfTotalVol"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //CULL PCT THRESHOLD
+                            //
+                            if (dataMgr.m_DataReader["CullPctThreshold"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["CullPctThreshold"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oHarvestMethod.CullPctThreshold = dataMgr.m_DataReader["CullPctThreshold"].ToString().Trim();
+                                }
+                            }
+                        }
+                        dataMgr.m_DataReader.Close();
+                    }
+                }
             }
-                ado_data_access oAdo = new ado_data_access();
-            oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
-            if (oAdo.m_intError == 0)
-            {
-                this.LoadHarvestMethod(oAdo, oAdo.m_OleDbConnection, p_oProcessorScenarioItem);
-            }
-            m_intError = oAdo.m_intError;
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-            oAdo = null;
+            m_intError = dataMgr.m_intError;
         }
         public void LoadMoveInCosts(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
         {
@@ -2618,9 +2758,71 @@ namespace FIA_Biosum_Manager
                 }
             }
         }
-        public void LoadSpeciesAndDiameterGroupDollarValues(ado_data_access p_oAdo,
-                                                            System.Data.OleDb.OleDbConnection p_oConn,
-                                                            ProcessorScenarioItem p_oProcessorScenarioItem)
+        public void LoadMoveInCostsSqlite(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT * FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName + 
+                    " WHERE TRIM(UPPER(scenario_id)) = '" + p_oProcessorScenarioItem.ScenarioId.Trim().ToUpper() + "'");
+
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            //
+                            //YARDING DISTANCE THRESHOLD
+                            //
+                            if (dataMgr.m_DataReader["yard_dist_threshold"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["yard_dist_threshold"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oMoveInCosts.YardDistThreshold = dataMgr.m_DataReader["yard_dist_threshold"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //ASSUMED HARVEST AREA
+                            //
+                            if (dataMgr.m_DataReader["assumed_harvest_area_ac"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["assumed_harvest_area_ac"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oMoveInCosts.AssumedHarvestAreaAc = dataMgr.m_DataReader["assumed_harvest_area_ac"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MOVE-IN TIME MULTIPLIER
+                            //
+                            if (dataMgr.m_DataReader["move_in_time_multiplier"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["move_in_time_multiplier"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oMoveInCosts.MoveInTimeMultiplier = dataMgr.m_DataReader["move_in_time_multiplier"].ToString().Trim();
+                                }
+                            }
+                            //
+                            //MOVE-IN HOURS ADDEND
+                            //
+                            if (dataMgr.m_DataReader["move_in_hours_addend"] != System.DBNull.Value)
+                            {
+                                if (dataMgr.m_DataReader["move_in_hours_addend"].ToString().Trim().Length > 0)
+                                {
+                                    p_oProcessorScenarioItem.m_oMoveInCosts.MoveInHoursAddend = dataMgr.m_DataReader["move_in_hours_addend"].ToString().Trim();
+                                }
+                            }
+                        }
+                        dataMgr.m_DataReader.Close();
+                    }
+                }
+            }
+        }
+
+        private void CreateSpeciesDiameterGroupCollection(ProcessorScenarioItem p_oProcessorScenarioItem)
         {
             int x;
             for (x = p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Count - 1; x >= 0; x--)
@@ -2643,6 +2845,13 @@ namespace FIA_Biosum_Manager
                     p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Add(oItem);
                 }
             }
+        }
+
+        public void LoadSpeciesAndDiameterGroupDollarValues(ado_data_access p_oAdo,
+                                                            System.Data.OleDb.OleDbConnection p_oConn,
+                                                            ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            CreateSpeciesDiameterGroupCollection(p_oProcessorScenarioItem);
             //
             //UPDATE MERCH AND CHIP DOLLAR VALUE
             //
@@ -2704,7 +2913,7 @@ namespace FIA_Biosum_Manager
                     }
                     if (strSpcGrp.Length > 0 && strDbhGrp.Length > 0)
                     {
-                        for (x = 0; x <= p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Count - 1; x++)
+                        for (int x = 0; x <= p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Count - 1; x++)
                         {
                             string tempSpGrp = p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).SpeciesGroup;
                             string tempDbhGrp = p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).DbhGroup;
@@ -2730,6 +2939,104 @@ namespace FIA_Biosum_Manager
                 }
             }
             p_oAdo.m_OleDbDataReader.Close();
+        }
+        public void LoadSpeciesAndDiameterGroupDollarValuesSqlite(string p_strDbFile, ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            CreateSpeciesDiameterGroupCollection(p_oProcessorScenarioItem);
+
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT wood_bin,merch_value,chip_value,species_group,diam_group " +
+                    "FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName +
+                    " WHERE TRIM(scenario_id)='" + p_oProcessorScenarioItem.ScenarioId.Trim() + "'");
+
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            string strSpcGrp = "";
+                            string strDbhGrp = "";
+                            string strMerchValue = "0.00";
+                            string strChipValue = "0.00";
+                            string strWoodBin = "";
+
+                            if (dataMgr.m_DataReader["species_group"] != System.DBNull.Value)
+                            {
+                                int intSpcGrp = Convert.ToInt16(dataMgr.m_DataReader["species_group"]);
+                                foreach (ProcessorScenarioItem.SpcGroupItem objSpcGroup in p_oProcessorScenarioItem.m_oSpcGroupItem_Collection)
+                                {
+
+                                    if (objSpcGroup.SpeciesGroup == intSpcGrp)
+                                    {
+                                        strSpcGrp = objSpcGroup.SpeciesGroupLabel.Trim();
+                                        break; // Exit for loop when we've found the species group
+                                    }
+                                }
+                            }
+                            if (dataMgr.m_DataReader["diam_group"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["diam_group"].ToString().Trim().Length > 0)
+                            {
+                                string strDiamGroup = dataMgr.m_DataReader["diam_group"].ToString().Trim();
+                                foreach (ProcessorScenarioItem.TreeDiamGroupsItem objTreeDiam in p_oProcessorScenarioItem.m_oTreeDiamGroupsItem_Collection)
+                                {
+
+                                    if (objTreeDiam.DiamGroup.Equals(strDiamGroup))
+                                    {
+                                        strDbhGrp = objTreeDiam.DiamClass.Trim();
+                                        break; // Exit for loop when we've found the diameter group
+                                    }
+                                }
+                            }
+                            if (dataMgr.m_DataReader["merch_value"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["merch_value"].ToString().Trim().Length > 0)
+                            {
+                                strMerchValue = dataMgr.m_DataReader["merch_value"].ToString().Trim();
+                            }
+                            if (dataMgr.m_DataReader["chip_value"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["chip_value"].ToString().Trim().Length > 0)
+                            {
+                                strChipValue = dataMgr.m_DataReader["chip_value"].ToString().Trim();
+                            }
+                            if (dataMgr.m_DataReader["wood_bin"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["wood_bin"].ToString().Trim().Length > 0)
+                            {
+                                strWoodBin = dataMgr.m_DataReader["wood_bin"].ToString().Trim();
+                            }
+                            if (strSpcGrp.Length > 0 && strDbhGrp.Length > 0)
+                            {
+                                for (int x = 0; x <= p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Count - 1; x++)
+                                {
+                                    string tempSpGrp = p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).SpeciesGroup;
+                                    string tempDbhGrp = p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).DbhGroup;
+                                    //merch value is associated with each dbh and spc group
+                                    if (strSpcGrp.ToUpper() ==
+                                        p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).SpeciesGroup.Trim().ToUpper() &&
+                                        strDbhGrp.ToUpper() ==
+                                        p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).DbhGroup.Trim().ToUpper())
+                                    {
+                                        p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).MerchDollarPerCubicFootValue = strMerchValue;
+                                        p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).ChipsDollarPerCubicFootValue = strChipValue;
+                                        if (strWoodBin == "M")
+                                        {
+                                            p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).UseAsEnergyWood = false;
+                                        }
+                                        else
+                                        {
+                                            p_oProcessorScenarioItem.m_oTreeSpeciesAndDbhDollarValuesItem_Collection.Item(x).UseAsEnergyWood = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        dataMgr.m_DataReader.Close();
+                    }
+                }
+            }
         }
         public void LoadEscalators(string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
         {
@@ -2846,11 +3153,125 @@ namespace FIA_Biosum_Manager
 					p_oAdo.m_OleDbDataReader.Close();
 					
 				}
-				
-			
+
+
+
             if (p_oQueries != null)
 		    	p_oProcessorScenarioItem.m_oEscalators.CycleLength=Convert.ToInt32(p_oAdo.getSingleDoubleValueFromSQLQuery(p_oAdo.m_OleDbConnection,"SELECT TOP 1 rxcycle_length FROM " + p_oQueries.m_oFvs.m_strRxPackageTable,"temp"));            
 
+        }
+        public void LoadEscalatorsSqlite(Queries p_oQueries, string p_strDbFile, FIA_Biosum_Manager.ProcessorScenarioItem p_oProcessorScenarioItem)
+        {
+            SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+            string strConn = dataMgr.GetConnectionString(p_strDbFile);
+            using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+            {
+                oConn.Open();
+                dataMgr.SqlQueryReader(oConn, "SELECT EscalatorOperatingCosts_Cycle2, " + 
+                                         "EscalatorOperatingCosts_Cycle3," +
+                                         "EscalatorOperatingCosts_Cycle4," +
+                                         "EscalatorMerchWoodRevenue_Cycle2," +
+                                         "EscalatorMerchWoodRevenue_Cycle3," +
+                                         "EscalatorMerchWoodRevenue_Cycle4," +
+                                         "EscalatorEnergyWoodRevenue_Cycle2," +
+                                         "EscalatorEnergyWoodRevenue_Cycle3," +
+                                         "EscalatorEnergyWoodRevenue_Cycle4 " +
+                                  "FROM scenario_cost_revenue_escalators " +
+                                  "WHERE TRIM(scenario_id) = '" + p_oProcessorScenarioItem.ScenarioId.Trim() + "'");
+                if (dataMgr.m_intError == 0)
+                {
+                    if (dataMgr.m_DataReader.HasRows)
+                    {
+                        while (dataMgr.m_DataReader.Read())
+                        {
+                            //
+                            //OPERATING COSTS CYCLE2
+                            //
+                            if (dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle2"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle2"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.OperatingCostsCycle2 = dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle2"].ToString().Trim();
+                            }
+                            //
+                            //OPERATING COSTS CYCLE3
+                            //
+                            if (dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle3"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle3"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.OperatingCostsCycle3 = dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle3"].ToString().Trim();
+                            }
+                            //
+                            //OPERATING COSTS CYCLE4
+                            //
+                            if (dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle4"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle4"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.OperatingCostsCycle4 = dataMgr.m_DataReader["EscalatorOperatingCosts_Cycle4"].ToString().Trim();
+                            }
+                            //														//
+                            //MERCH WOOD REVENUE CYCLE2
+                            //
+                            if (dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle2"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle2"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.MerchWoodRevenueCycle2 = dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle2"].ToString().Trim();
+                            }
+                            //
+                            //MERCH WOOD REVENUE CYCLE3
+                            //
+                            if (dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle3"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle3"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.MerchWoodRevenueCycle3 = dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle3"].ToString().Trim();
+                            }
+                            //
+                            //MERCH WOOD REVENUE CYCLE4
+                            //
+                            if (dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle4"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle4"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.MerchWoodRevenueCycle4 = dataMgr.m_DataReader["EscalatorMerchWoodRevenue_Cycle4"].ToString().Trim();
+                            }
+                            //														//
+                            //ENERGY WOOD REVENUE CYCLE2
+                            //
+                            if (dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle2"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle2"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.EnergyWoodRevenueCycle2 = dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle2"].ToString().Trim();
+                            }
+                            //
+                            //ENERGY WOOD REVENUE CYCLE3
+                            //
+                            if (dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle3"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle3"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.EnergyWoodRevenueCycle3 = dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle3"].ToString().Trim();
+                            }
+                            //
+                            //ENERGY WOOD REVENUE CYCLE4
+                            //
+                            if (dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle4"] != System.DBNull.Value &&
+                                dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle4"].ToString().Trim().Length > 0)
+                            {
+                                p_oProcessorScenarioItem.m_oEscalators.EnergyWoodRevenueCycle4 = dataMgr.m_DataReader["EscalatorEnergyWoodRevenue_Cycle4"].ToString().Trim();
+                            }
+                        }
+                    }
+                    dataMgr.m_DataReader.Close();
+                }
+            }
+
+            // Retrieve cycle length from any rx package item
+            RxTools oRxTools = new RxTools();
+            RxPackageItem_Collection p_oRxPackageItemCollection = new RxPackageItem_Collection();
+            string rxPackageDb = p_oQueries.m_oDataSource.getFullPathAndFile("TREATMENT PACKAGES");
+            oRxTools.LoadAllRxPackageItemsFromTableIntoRxPackageCollection(rxPackageDb, p_oQueries, p_oRxPackageItemCollection);
+            if (p_oRxPackageItemCollection != null && p_oRxPackageItemCollection.Count > 0)
+            {
+                RxPackageItem rxPackageItem = p_oRxPackageItemCollection.Item(0);
+                p_oProcessorScenarioItem.m_oEscalators.CycleLength = rxPackageItem.RxCycleLength;
+            }
         }
         public void LoadHarvestCostComponents(ado_data_access p_oAdo,
                                               System.Data.OleDb.OleDbConnection p_oConn,

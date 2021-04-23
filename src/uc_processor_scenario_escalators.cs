@@ -309,41 +309,53 @@ namespace FIA_Biosum_Manager
 		#endregion
 		public void loadvalues()
 		{
-			int x,y;
-			string strField;
-			if (m_oAdo!=null && m_oAdo.m_OleDbConnection != null)
+            //
+            //SCENARIO ID
+            //
+            ScenarioId = this.ReferenceProcessorScenarioForm.uc_scenario1.txtScenarioId.Text.Trim().ToLower();
+            if (m_oAdo!=null && m_oAdo.m_OleDbConnection != null)
 				if (m_oAdo.m_OleDbConnection.State == System.Data.ConnectionState.Open) m_oAdo.CloseConnection(m_oAdo.m_OleDbConnection);
 
-			//
-			//SCENARIO MDB
-			//
-			string strScenarioMDB = 
-				frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +  
-				"\\processor\\db\\scenario_processor_rule_definitions.mdb";
-			//
-			//SCENARIO ID
-			//
-			ScenarioId = this.ReferenceProcessorScenarioForm.uc_scenario1.txtScenarioId.Text.Trim().ToLower();
-			//
-			//CREATE LINK IN TEMP MDB TO SCENARIO COST REVENUE ESCALATORS TABLE
-			//
-			dao_data_access oDao = new dao_data_access();
-			//link to tree species groups table
-            oDao.CreateTableLink(this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile,
-				"scenario_cost_revenue_escalators",
-				strScenarioMDB,"scenario_cost_revenue_escalators",true);
-			oDao.m_DaoWorkspace.Close();
-			oDao=null;
-			//
-			//OPEN CONNECTION TO TEMP DB FILE
-			//
-			m_oAdo = new ado_data_access();
-            m_oAdo.OpenConnection(m_oAdo.getMDBConnString(this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile, "", ""));
-			if (m_oAdo.m_intError==0)
-			{
-                ReferenceProcessorScenarioForm.m_oProcessorScenarioTools.LoadEscalators(
-                    m_oAdo, m_oAdo.m_OleDbConnection, ReferenceProcessorScenarioForm.LoadedQueries, ReferenceProcessorScenarioForm.m_oProcessorScenarioItem);
-                ProcessorScenarioItem.Escalators oEscalators = ReferenceProcessorScenarioForm.m_oProcessorScenarioItem.m_oEscalators;
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                //
+                //SCENARIO MDB
+                //
+                string strScenarioMDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+
+                //
+                //CREATE LINK IN TEMP MDB TO SCENARIO COST REVENUE ESCALATORS TABLE
+                //
+                dao_data_access oDao = new dao_data_access();
+                //link to tree species groups table
+                oDao.CreateTableLink(this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile,
+                    "scenario_cost_revenue_escalators",
+                    strScenarioMDB, "scenario_cost_revenue_escalators", true);
+                oDao.m_DaoWorkspace.Close();
+                oDao = null;
+                //
+                //OPEN CONNECTION TO TEMP DB FILE
+                //
+                m_oAdo = new ado_data_access();
+                m_oAdo.OpenConnection(m_oAdo.getMDBConnString(this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile, "", ""));
+                if (m_oAdo.m_intError == 0)
+                {
+                    ReferenceProcessorScenarioForm.m_oProcessorScenarioTools.LoadEscalators(
+                        m_oAdo, m_oAdo.m_OleDbConnection, ReferenceProcessorScenarioForm.LoadedQueries, ReferenceProcessorScenarioForm.m_oProcessorScenarioItem);
+                }
+            }
+            else
+            {
+                string strScenarioDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                ReferenceProcessorScenarioForm.m_oProcessorScenarioTools.LoadEscalatorsSqlite(ReferenceProcessorScenarioForm.LoadedQueries, 
+                    strScenarioDB, ReferenceProcessorScenarioForm.m_oProcessorScenarioItem);
+            }
+
+            ProcessorScenarioItem.Escalators oEscalators = ReferenceProcessorScenarioForm.m_oProcessorScenarioItem.m_oEscalators;
                 //
                 //UPDATE CYCLE ESCALATOR TEXT BOXES
                 //
@@ -439,14 +451,10 @@ namespace FIA_Biosum_Manager
                 }
 
 				
-			}
             this.uc_processor_scenario_escalators_value1.ReferenceProcessorScenarioForm = ReferenceProcessorScenarioForm;
             this.uc_processor_scenario_escalators_value2.ReferenceProcessorScenarioForm = ReferenceProcessorScenarioForm;
             this.uc_processor_scenario_escalators_value3.ReferenceProcessorScenarioForm = ReferenceProcessorScenarioForm;
-            lblCycleLength.Text = Convert.ToString(ReferenceProcessorScenarioForm.m_oProcessorScenarioItem.m_oEscalators.CycleLength);
-
-                
-			
+            lblCycleLength.Text = Convert.ToString(ReferenceProcessorScenarioForm.m_oProcessorScenarioItem.m_oEscalators.CycleLength);			
 		}
         public void loadvalues_FromProperties()
         {
