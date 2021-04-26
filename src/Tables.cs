@@ -4598,7 +4598,17 @@ namespace FIA_Biosum_Manager
                     "rx CHAR(3))";
                 // "water_barring_roads_cpa DOUBLE," +
                 // "brush_cutting_cpa DOUBLE)";
-
+            }
+            public void CreateSqliteAdditionalHarvestCostsTable(SQLite.ADO.DataMgr p_oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn, string p_strTableName)
+            {
+                p_oDataMgr.SqlNonQuery(p_oConn, Tables.Processor.CreateSqliteAdditionalHarvestCostsTableSQL(p_strTableName));               
+            }
+            static public string CreateSqliteAdditionalHarvestCostsTableSQL(string p_strTableName)
+            {
+                return "CREATE TABLE " + p_strTableName + " (" +
+                    "biosum_cond_id TEXT," +
+                    "rx TEXT," +
+                    "PRIMARY KEY(biosum_cond_id,rx))";
             }
             public void CreateHarvestTechniqueTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {

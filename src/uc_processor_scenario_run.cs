@@ -386,33 +386,75 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(strDebugFile, "START: Create Links to the Scenario tables - " + System.DateTime.Now.ToString() + "\r\n");
             dao_data_access oDao = new dao_data_access();
             //link to all the scenario rule definition tables
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                "scenario_cost_revenue_escalators",
-                strScenarioMDB, "scenario_cost_revenue_escalators", true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                "scenario_additional_harvest_costs",
-                strScenarioMDB, "scenario_additional_harvest_costs", true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-               "scenario_harvest_cost_columns",
-               strScenarioMDB, "scenario_harvest_cost_columns", true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-              "scenario_harvest_method",
-              strScenarioMDB, "scenario_harvest_method", true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName,
-                strScenarioMDB,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName, true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-             "scenario_tree_species_diam_dollar_values",
-             strScenarioMDB, "scenario_tree_species_diam_dollar_values", true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName,
-                strScenarioMDB,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName, true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
-                strScenarioMDB,
-                Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, true);
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    "scenario_cost_revenue_escalators",
+                    strScenarioMDB, "scenario_cost_revenue_escalators", true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    "scenario_additional_harvest_costs",
+                    strScenarioMDB, "scenario_additional_harvest_costs", true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                   "scenario_harvest_cost_columns",
+                   strScenarioMDB, "scenario_harvest_cost_columns", true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                  "scenario_harvest_method",
+                  strScenarioMDB, "scenario_harvest_method", true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName,
+                    strScenarioMDB,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName, true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                 "scenario_tree_species_diam_dollar_values",
+                 strScenarioMDB, "scenario_tree_species_diam_dollar_values", true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName,
+                    strScenarioMDB,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName, true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
+                    strScenarioMDB,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, true);
+            }
+            else
+            {
+                ODBCMgr odbcmgr = new ODBCMgr();
+                // Check to see if the input SQLite DSN exists and if so, delete so we can add
+                if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName))
+                {
+                    odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName);
+                }
+                odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    this.ReferenceProcessorScenarioForm.LoadedQueries.m_strTempDbFile);
+                string strScenarioDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                    strScenarioDB);
+            }
+
             //link scenario results tables
             oDao.CreateTableLink(m_oQueries.m_strTempDbFile, 
                 Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName,
