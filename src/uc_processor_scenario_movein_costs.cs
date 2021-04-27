@@ -115,7 +115,7 @@ namespace FIA_Biosum_Manager
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(696, 448);
+            this.groupBox1.Size = new System.Drawing.Size(900, 448);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             // 
@@ -140,16 +140,16 @@ namespace FIA_Biosum_Manager
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 50);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(690, 395);
+            this.panel1.Size = new System.Drawing.Size(894, 395);
             this.panel1.TabIndex = 31;
             // 
             // label10
             // 
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label10.Location = new System.Drawing.Point(268, 252);
+            this.label10.Location = new System.Drawing.Point(329, 283);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(49, 16);
+            this.label10.Size = new System.Drawing.Size(125, 25);
             this.label10.TabIndex = 68;
             this.label10.Text = "Hours";
             // 
@@ -157,9 +157,9 @@ namespace FIA_Biosum_Manager
             // 
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label9.Location = new System.Drawing.Point(268, 98);
+            this.label9.Location = new System.Drawing.Point(333, 112);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(49, 16);
+            this.label9.Size = new System.Drawing.Size(60, 20);
             this.label9.TabIndex = 67;
             this.label9.Text = "Acres";
             // 
@@ -167,7 +167,7 @@ namespace FIA_Biosum_Manager
             // 
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label8.Location = new System.Drawing.Point(268, 8);
+            this.label8.Location = new System.Drawing.Point(329, 8);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(49, 16);
             this.label8.TabIndex = 66;
@@ -176,7 +176,7 @@ namespace FIA_Biosum_Manager
             // txtMoveInAddend
             // 
             this.txtMoveInAddend.ForeColor = System.Drawing.Color.Black;
-            this.txtMoveInAddend.Location = new System.Drawing.Point(221, 252);
+            this.txtMoveInAddend.Location = new System.Drawing.Point(282, 283);
             this.txtMoveInAddend.Name = "txtMoveInAddend";
             this.txtMoveInAddend.Size = new System.Drawing.Size(45, 22);
             this.txtMoveInAddend.TabIndex = 65;
@@ -188,9 +188,9 @@ namespace FIA_Biosum_Manager
             // 
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label6.Location = new System.Drawing.Point(16, 272);
+            this.label6.Location = new System.Drawing.Point(16, 303);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(630, 36);
+            this.label6.Size = new System.Drawing.Size(847, 45);
             this.label6.TabIndex = 64;
             this.label6.Text = "Move-in Time will be calculated as the sum of Scaled Move-in Time and this Move-i" +
     "n Adjustment";
@@ -199,16 +199,16 @@ namespace FIA_Biosum_Manager
             // 
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label7.Location = new System.Drawing.Point(16, 252);
+            this.label7.Location = new System.Drawing.Point(16, 283);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(380, 16);
+            this.label7.Size = new System.Drawing.Size(200, 25);
             this.label7.TabIndex = 63;
             this.label7.Text = "Move-in Adjustment:";
             // 
             // txtMoveInTimeMultiplier
             // 
             this.txtMoveInTimeMultiplier.ForeColor = System.Drawing.Color.Black;
-            this.txtMoveInTimeMultiplier.Location = new System.Drawing.Point(221, 159);
+            this.txtMoveInTimeMultiplier.Location = new System.Drawing.Point(282, 177);
             this.txtMoveInTimeMultiplier.Name = "txtMoveInTimeMultiplier";
             this.txtMoveInTimeMultiplier.Size = new System.Drawing.Size(45, 22);
             this.txtMoveInTimeMultiplier.TabIndex = 62;
@@ -220,9 +220,9 @@ namespace FIA_Biosum_Manager
             // 
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label4.Location = new System.Drawing.Point(16, 180);
+            this.label4.Location = new System.Drawing.Point(16, 199);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(650, 56);
+            this.label4.Size = new System.Drawing.Size(875, 69);
             this.label4.TabIndex = 61;
             this.label4.Text = resources.GetString("label4.Text");
             // 
@@ -230,9 +230,9 @@ namespace FIA_Biosum_Manager
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label5.Location = new System.Drawing.Point(16, 160);
+            this.label5.Location = new System.Drawing.Point(16, 177);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(325, 16);
+            this.label5.Size = new System.Drawing.Size(250, 20);
             this.label5.TabIndex = 60;
             this.label5.Text = "Move-in Time Multiplier:";
             // 
@@ -240,16 +240,16 @@ namespace FIA_Biosum_Manager
             // 
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label2.Location = new System.Drawing.Point(16, 118);
+            this.label2.Location = new System.Drawing.Point(16, 133);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(486, 16);
+            this.label2.Size = new System.Drawing.Size(823, 20);
             this.label2.TabIndex = 59;
             this.label2.Text = "Per-acre move-in costs will be calculated based on this assumption";
             // 
             // txtAssumedHarvestArea
             // 
             this.txtAssumedHarvestArea.ForeColor = System.Drawing.Color.Black;
-            this.txtAssumedHarvestArea.Location = new System.Drawing.Point(221, 97);
+            this.txtAssumedHarvestArea.Location = new System.Drawing.Point(282, 112);
             this.txtAssumedHarvestArea.Name = "txtAssumedHarvestArea";
             this.txtAssumedHarvestArea.Size = new System.Drawing.Size(45, 22);
             this.txtAssumedHarvestArea.TabIndex = 58;
@@ -261,7 +261,7 @@ namespace FIA_Biosum_Manager
             // 
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(16, 98);
+            this.label3.Location = new System.Drawing.Point(16, 112);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(259, 16);
             this.label3.TabIndex = 57;
@@ -271,9 +271,9 @@ namespace FIA_Biosum_Manager
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.label1.Location = new System.Drawing.Point(16, 28);
+            this.label1.Location = new System.Drawing.Point(16, 37);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(566, 55);
+            this.label1.Size = new System.Drawing.Size(856, 55);
             this.label1.TabIndex = 56;
             this.label1.Text = "Distances shorter than this will be set to this value for cost estimation in OpCo" +
     "st. OpCost may apply a larger value for minimum yarding distance, if warranted f" +
@@ -282,7 +282,7 @@ namespace FIA_Biosum_Manager
             // txtYardDistThreshold
             // 
             this.txtYardDistThreshold.ForeColor = System.Drawing.Color.Black;
-            this.txtYardDistThreshold.Location = new System.Drawing.Point(221, 7);
+            this.txtYardDistThreshold.Location = new System.Drawing.Point(282, 7);
             this.txtYardDistThreshold.Name = "txtYardDistThreshold";
             this.txtYardDistThreshold.Size = new System.Drawing.Size(45, 22);
             this.txtYardDistThreshold.TabIndex = 55;
@@ -296,7 +296,7 @@ namespace FIA_Biosum_Manager
             this.lblYardDistThreshold.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
             this.lblYardDistThreshold.Location = new System.Drawing.Point(16, 8);
             this.lblYardDistThreshold.Name = "lblYardDistThreshold";
-            this.lblYardDistThreshold.Size = new System.Drawing.Size(240, 16);
+            this.lblYardDistThreshold.Size = new System.Drawing.Size(260, 20);
             this.lblYardDistThreshold.TabIndex = 52;
             this.lblYardDistThreshold.Text = "Yarding Distance Threshold:";
             // 
@@ -307,7 +307,7 @@ namespace FIA_Biosum_Manager
             this.lblTitle.ForeColor = System.Drawing.Color.Green;
             this.lblTitle.Location = new System.Drawing.Point(3, 18);
             this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(690, 32);
+            this.lblTitle.Size = new System.Drawing.Size(894, 32);
             this.lblTitle.TabIndex = 30;
             this.lblTitle.Text = "Move-in costs";
             // 
@@ -316,7 +316,7 @@ namespace FIA_Biosum_Manager
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.groupBox1);
             this.Name = "uc_processor_scenario_movein_costs";
-            this.Size = new System.Drawing.Size(696, 448);
+            this.Size = new System.Drawing.Size(900, 448);
             this.groupBox1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();

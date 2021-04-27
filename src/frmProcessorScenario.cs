@@ -244,7 +244,7 @@ namespace FIA_Biosum_Manager
             this.tlbScenario.Margin = new System.Windows.Forms.Padding(2);
             this.tlbScenario.Name = "tlbScenario";
             this.tlbScenario.ShowToolTips = true;
-            this.tlbScenario.Size = new System.Drawing.Size(982, 47);
+            this.tlbScenario.Size = new System.Drawing.Size(1052, 47);
             this.tlbScenario.TabIndex = 43;
             this.tlbScenario.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tlbScenario_ButtonClick);
             // 
@@ -573,7 +573,7 @@ namespace FIA_Biosum_Manager
             // frmProcessorScenario
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(982, 703);
+            this.ClientSize = new System.Drawing.Size(1052, 703);
             this.Controls.Add(this.tabControlScenario);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnHelp);
