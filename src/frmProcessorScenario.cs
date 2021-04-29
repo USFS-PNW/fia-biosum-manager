@@ -2241,7 +2241,7 @@ namespace FIA_Biosum_Manager
         {
             // Access version used a temp file with links; Trying to skip that
             string strScenarioDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
             //ado_data_access oAdo = new ado_data_access();
             //oAdo.OpenConnection(oAdo.getMDBConnString(p_strDbFile, "", ""));
             //if (oAdo.m_intError == 0)

@@ -1138,6 +1138,7 @@ namespace FIA_Biosum_Manager
 		private string m_strOptimizationAggregateSql="";
 		private string m_strOptimizationAggregateColumnName="";
         private ProcessorScenarioItem m_oProcessorScenarioItem = null;
+        ODBCMgr odbcMgr = new ODBCMgr();
         private RxTools m_oRxTools = new RxTools();
         private RxPackageItem_Collection m_oRxPackageItem_Collection = new RxPackageItem_Collection();
 		private FIA_Biosum_Manager.macrosubst m_oVarSub = new macrosubst();
@@ -1308,9 +1309,11 @@ namespace FIA_Biosum_Manager
 
                     CompactMDB(m_strSystemResultsDbPathAndFile, null);
 
-                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
-                        frmMain.g_oUtils.WriteText(m_strDebugFile,"--Delete Scenario Result Table Records--\r\n");
-					this.DeleteScenarioResultRecords();
+                    //28-APR-2021
+                    //This method should be obsolete; Commented out
+     //               if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+     //                   frmMain.g_oUtils.WriteText(m_strDebugFile,"--Delete Scenario Result Table Records--\r\n");
+					//this.DeleteScenarioResultRecords();
 
                     FIA_Biosum_Manager.uc_optimizer_scenario_run.UpdateThermPercent();
 
@@ -2228,12 +2231,34 @@ namespace FIA_Biosum_Manager
             frmMain.g_oTables.m_oOptimizerScenarioResults.CreateEconWeightedVariableRefTable(oAdo, oAdo.m_OleDbConnection, Tables.OptimizerScenarioResults.DefaultScenarioResultsEconWeightedVariablesRefTableName);
             frmMain.g_oTables.m_oOptimizerScenarioResults.CreateSpeciesGroupRefTable(oAdo, oAdo.m_OleDbConnection, Tables.OptimizerScenarioResults.DefaultScenarioResultsSpeciesGroupRefTableName);
             frmMain.g_oTables.m_oProcessorScenarioRuleDefinitions.CreateScenarioAdditionalHarvestCostsTable(oAdo, oAdo.m_OleDbConnection, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName + "_C");
-            
+
             // Add the ad hoc additional harvest cost columns to table
-            string strProcessorPath = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
-            oAdo.OpenConnection(oAdo.getMDBConnString(strProcessorPath, "", ""));
-            string strSourceColumnsList = oAdo.getFieldNames(oAdo.m_OleDbConnection, "SELECT * FROM scenario_additional_harvest_costs");
-            string[] strSourceColumnsArray = frmMain.g_oUtils.ConvertListToArray(strSourceColumnsList, ",");
+            string[] strSourceColumnsArray = null;
+            if (!ReferenceOptimizerScenarioForm.m_bProcessorUsingSqlite)
+            {
+                string strProcessorPath = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
+                oAdo.OpenConnection(oAdo.getMDBConnString(strProcessorPath, "", ""));
+                string strSourceColumnsList = oAdo.getFieldNames(oAdo.m_OleDbConnection, "SELECT * FROM scenario_additional_harvest_costs");
+                strSourceColumnsArray = frmMain.g_oUtils.ConvertListToArray(strSourceColumnsList, ",");
+            }
+            else
+            {
+                string strProcessorPath = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
+                string strConn = dataMgr.GetConnectionString(strProcessorPath);
+                using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+                {
+                    oConn.Open();
+                    strSourceColumnsArray = dataMgr.getFieldNamesArray(oConn, "SELECT * FROM scenario_additional_harvest_costs");
+                }
+                // Set up DSN for Processor config tables; We will need it later
+                // Check to see if the input SQLite DSN exists and if so, delete so we can add
+                if (odbcMgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName))
+                {
+                    odbcMgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName);
+                }
+                odbcMgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName, strProcessorPath);
+            }
 
             oAdo.OpenConnection(oAdo.getMDBConnString(m_strContextDbPathAndFile, "", ""));
             foreach (string strColumn in strSourceColumnsArray)
@@ -2366,9 +2391,22 @@ namespace FIA_Biosum_Manager
             p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName, strOptimizerDir, Tables.OptimizerDefinitions.DefaultCalculatedOptimizerVariablesTableName);
             p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName, strOptimizerDir, Tables.OptimizerDefinitions.DefaultCalculatedFVSVariablesTableName);
             p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName, strOptimizerDir, Tables.OptimizerDefinitions.DefaultCalculatedEconVariablesTableName);
-            string strProcessorDir = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
-            p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, strProcessorDir, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName);
-            p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, strProcessorDir, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName);
+            if (!ReferenceOptimizerScenarioForm.m_bProcessorUsingSqlite)
+            {
+                string strProcessorDir = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsDbFile;
+                p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, strProcessorDir, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName);
+                p_dao.CreateTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, strProcessorDir, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName);
+            }
+            else
+            {
+                string strProcessorDir = ((frmMain)this._frmScenario.ParentForm).frmProject.uc_project1.m_strProjectDirectory + "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                p_dao.CreateSQLiteTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, 
+                    ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName, strProcessorDir);
+                p_dao.CreateSQLiteTableLink(this.m_strTempMDBFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
+                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
+                    ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName, strProcessorDir);
+            }
 
             // We also need to create links to harvest_costs and tree vol val source tables in the context .accdb
             // so that we can create them directly with select into statement            
@@ -2894,7 +2932,7 @@ namespace FIA_Biosum_Manager
             }
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
-                frmMain.g_oUtils.WriteText(m_strDebugFile, "Harvest methods Table:" + this.m_strPSiteTable + "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Harvest methods Table:" + this.m_strHarvestMethodsTable + "\r\n");
 
             oValue = frmMain.g_oDelegate.GetValueExecuteControlMethodWithParam(ReferenceUserControlScenarioRun.ReferenceOptimizerScenarioForm.uc_datasource1,
                 "getDataSourcePathAndFile", arr1, true);
@@ -2908,7 +2946,7 @@ namespace FIA_Biosum_Manager
             }
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
-                frmMain.g_oUtils.WriteText(m_strDebugFile, "Harvest Methods Path and file:" + m_strPSitePathAndFile + "\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "Harvest Methods Path and file:" + this.m_strHarvestMethodsPathAndFile + "\r\n");
             this.m_strTreeVolValSumTable = Tables.OptimizerScenarioResults.DefaultScenarioResultsTreeVolValSumTableName;
 
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
@@ -8259,153 +8297,153 @@ namespace FIA_Biosum_Manager
 
 		}
 	
-		private void DeleteScenarioResultRecords()
-		{
+		//private void DeleteScenarioResultRecords()
+		//{
 
 			
-			ado_data_access oAdo = new ado_data_access();
-			string strConn=oAdo.getMDBConnString(this.m_strSystemResultsDbPathAndFile,"admin","");
-			oAdo.OpenConnection(strConn);
+		//	ado_data_access oAdo = new ado_data_access();
+		//	string strConn=oAdo.getMDBConnString(this.m_strSystemResultsDbPathAndFile,"admin","");
+		//	oAdo.OpenConnection(strConn);
 
-			/*************************************************
-			 **delete all records in the by plot tables
-			 *************************************************/
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_plots"))
-			{
-				this.m_strSQL = "delete from max_nr_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_plots"))
-			{
-				this.m_strSQL = "delete from max_pnr_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_plots"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_plots"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_pnr_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_plots"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_pnr_plots"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_pnr_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_plots"))
-			{
-				this.m_strSQL = "delete from min_merch_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_plots"))
-			{
-				this.m_strSQL = "delete from min_merch_pnr_plots";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-
-
-			/*************************************************
-			 **delete all records in the by ownership tables
-			 *************************************************/
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_sum_own"))
-			{
-				this.m_strSQL = "delete from max_nr_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_sum_own"))
-			{
-				this.m_strSQL = "delete from max_pnr_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_sum_own"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_sum_own"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_pnr_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_sum_own"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_pnr_sum_own"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_pnr_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_sum_own"))
-			{
-				this.m_strSQL = "delete from min_merch_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_sum_own"))
-			{
-				this.m_strSQL = "delete from min_merch_pnr_sum_own";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-
-			/******************************************************
-			 **delete all records in the by processing site tables
-			 ******************************************************/
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_nr_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_pnr_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_ti_imp_pnr_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_imp_pnr_sum_psite"))
-			{
-				this.m_strSQL = "delete from max_ci_imp_pnr_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_sum_psite"))
-			{
-				this.m_strSQL = "delete from min_merch_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-			if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_sum_psite"))
-			{
-				this.m_strSQL = "delete from min_merch_pnr_sum_psite";
-				oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
-			}
-
-			oAdo.CloseConnection(oAdo.m_OleDbConnection);
-			oAdo=null;
+		//	/*************************************************
+		//	 **delete all records in the by plot tables
+		//	 *************************************************/
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_nr_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_pnr_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_pnr_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_pnr_plots"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_pnr_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_plots"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_plots"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_pnr_plots";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
 
 
+		//	/*************************************************
+		//	 **delete all records in the by ownership tables
+		//	 *************************************************/
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_nr_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_pnr_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_pnr_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_pnr_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_pnr_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_sum_own"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_pnr_sum_own";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
 
-		}
+		//	/******************************************************
+		//	 **delete all records in the by processing site tables
+		//	 ******************************************************/
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_nr_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_nr_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_pnr_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_pnr_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ti_imp_pnr_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_ti_imp_pnr_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_ci_imp_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"max_imp_pnr_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from max_ci_imp_pnr_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+		//	if (oAdo.TableExist(oAdo.m_OleDbConnection,"min_merch_pnr_sum_psite"))
+		//	{
+		//		this.m_strSQL = "delete from min_merch_pnr_sum_psite";
+		//		oAdo.SqlNonQuery(oAdo.m_OleDbConnection,this.m_strSQL);
+		//	}
+
+		//	oAdo.CloseConnection(oAdo.m_OleDbConnection);
+		//	oAdo=null;
+
+
+
+		//}
 		
 		private void BestRxAcreageExpansionTableInsertForAirCurtainDestructionOld(string strTable,string strTypeField, string strRxField, string strWhereExpression)
 		{
