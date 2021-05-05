@@ -851,41 +851,65 @@ namespace FIA_Biosum_Manager
         }
 		public void savevalues()
 		{
-			//
-			//OPEN CONNECTION TO DB FILE CONTAINING PROCESSOR SCENARIO TABLES
-			//
-			//scenario mdb connection
-			ado_data_access oAdo = new ado_data_access();
-			string strScenarioMDB = 
-				frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + 
-				"\\processor\\db\\scenario_processor_rule_definitions.mdb";
-			oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB,"",""));	
-			if (oAdo.m_intError != 0)
-			{
-				m_intError=oAdo.m_intError;
-				m_strError=oAdo.m_strError;
-				oAdo = null;
-				return;
-			}
+            //
+            //OPEN CONNECTION TO DB FILE CONTAINING PROCESSOR SCENARIO TABLES
+            //
+            //scenario mdb connection
+            ado_data_access oAdo = null;
+            SQLite.ADO.DataMgr oDataMgr = null;
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite == true)
+            {
+                oAdo = new ado_data_access();
+                string strScenarioMDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
+                if (oAdo.m_intError != 0)
+                {
+                    m_intError = oAdo.m_intError;
+                    m_strError = oAdo.m_strError;
+                    oAdo = null;
+                    return;
+                }
+                m_intError = 0;
+                m_strError = "";
+                oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName + " " +
+                                  "WHERE TRIM(UCASE(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
+                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+            }
+            else
+            {
+                oDataMgr = new SQLite.ADO.DataMgr();
+                string strScenarioDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                oDataMgr.OpenConnection(oDataMgr.GetConnectionString(strScenarioDB));
+                if (oDataMgr.m_intError != 0)
+                {
+                    m_intError = oDataMgr.m_intError;
+                    m_strError = oDataMgr.m_strError;
+                    oDataMgr = null;
+                    return;
+                }
+                m_intError = 0;
+                m_strError = "";
+                oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName + " " +
+                                  "WHERE TRIM(UPPER(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+            }
 
-			m_intError=0;
-			m_strError="";
-            string strFields = "scenario_id,HarvestMethodSelection,HarvestMethodLowSlope," + 
-				             "HarvestMethodSteepSlope," +
-                             "min_chip_dbh,min_sm_log_dbh," + 
-				             "min_lg_log_dbh,SteepSlope,min_dbh_steep_slope," +
-                             "ProcessLowSlopeYN,ProcessSteepSlopeYN,WoodlandMerchAsPercentOfTotalVol," +
-                             "SaplingMerchAsPercentOfTotalVol,CullPctThreshold";
-			string strValues="";
-			
-			oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName + " " + 
-				              "WHERE TRIM(UCASE(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
-			oAdo.SqlNonQuery(oAdo.m_OleDbConnection,oAdo.m_strSQL);
+            string strFields = "scenario_id,HarvestMethodSelection,HarvestMethodLowSlope," +
+                 "HarvestMethodSteepSlope," +
+                 "min_chip_dbh,min_sm_log_dbh," +
+                 "min_lg_log_dbh,SteepSlope,min_dbh_steep_slope," +
+                 "ProcessLowSlopeYN,ProcessSteepSlopeYN,WoodlandMerchAsPercentOfTotalVol," +
+                 "SaplingMerchAsPercentOfTotalVol,CullPctThreshold";
+            string strValues = "";
 
-			//
-			//SCENARIOID
-			//
-			strValues="'" + ScenarioId + "',";
+            //
+            //SCENARIOID
+            //
+            strValues ="'" + ScenarioId + "',";
 			//
 			//HARVEST METHOD SELECTION
 			//
@@ -1012,15 +1036,25 @@ namespace FIA_Biosum_Manager
             {
                 strValues = strValues + "null";
             }
-			oAdo.m_strSQL=Queries.GetInsertSQL(strFields,strValues,Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName);
-			oAdo.SqlNonQuery(oAdo.m_OleDbConnection,oAdo.m_strSQL);
-			m_intError=oAdo.m_intError;
 
-			oAdo.CloseConnection(oAdo.m_OleDbConnection);
-			oAdo=null;
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite == true)
+            {
+                oAdo.m_strSQL = Queries.GetInsertSQL(strFields, strValues, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName);
+                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                m_intError = oAdo.m_intError;
 
-			
-			
+                oAdo.CloseConnection(oAdo.m_OleDbConnection);
+                oAdo = null;
+            }
+            else
+            {
+                oDataMgr.m_strSQL = Queries.GetInsertSQL(strFields, strValues, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName);
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                m_intError = oDataMgr.m_intError;
+
+                oDataMgr.CloseConnection(oDataMgr.m_Connection);
+                oDataMgr = null;
+            }			
 		}
 		private void cmbMethod_SelectedValueChanged(object sender, System.EventArgs e)
 		{

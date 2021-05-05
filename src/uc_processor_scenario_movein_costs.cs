@@ -371,33 +371,59 @@ namespace FIA_Biosum_Manager
 
 		public void savevalues()
 		{
+            string strFields = "scenario_id,yard_dist_threshold,assumed_harvest_area_ac," +
+                 "move_in_time_multiplier," +
+                 "move_in_hours_addend";
+            string strValues = "";
+
             //
             //OPEN CONNECTION TO DB FILE CONTAINING PROCESSOR SCENARIO TABLES
             //
             //scenario mdb connection
-            ado_data_access oAdo = new ado_data_access();
-            string strScenarioMDB =
-                frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
-            oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
-            if (oAdo.m_intError != 0)
+            ado_data_access oAdo = null;
+            SQLite.ADO.DataMgr oDataMgr = null;
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
             {
-                m_intError = oAdo.m_intError;
-                m_strError = oAdo.m_strError;
-                oAdo = null;
-                return;
+                oAdo = new ado_data_access();
+                string strScenarioMDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
+                if (oAdo.m_intError != 0)
+                {
+                    m_intError = oAdo.m_intError;
+                    m_strError = oAdo.m_strError;
+                    oAdo = null;
+                    return;
+                }
+                m_intError = 0;
+                m_strError = "";
+
+                oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName + " " +
+                                  "WHERE TRIM(UCASE(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
+                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
             }
+            else
+            {
+                oDataMgr = new SQLite.ADO.DataMgr();
+                string strScenarioDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                oDataMgr.OpenConnection(oDataMgr.GetConnectionString(strScenarioDB));
+                if (oDataMgr.m_intError != 0)
+                {
+                    m_intError = oDataMgr.m_intError;
+                    m_strError = oDataMgr.m_strError;
+                    oDataMgr = null;
+                    return;
+                }
+                m_intError = 0;
+                m_strError = "";
 
-            m_intError = 0;
-            m_strError = "";
-            string strFields = "scenario_id,yard_dist_threshold,assumed_harvest_area_ac," +
-                             "move_in_time_multiplier," +
-                             "move_in_hours_addend";
-            string strValues = "";
-
-            oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName + " " +
-                              "WHERE TRIM(UCASE(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
-            oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName + " " +
+                                  "WHERE TRIM(UPPER(scenario_id)) = '" + ScenarioId.Trim().ToUpper() + "'";
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+            }
 
             //
             //SCENARIOID
@@ -449,15 +475,24 @@ namespace FIA_Biosum_Manager
             }
             //
 
-            oAdo.m_strSQL = Queries.GetInsertSQL(strFields, strValues, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName);
-            oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
-            m_intError = oAdo.m_intError;
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                oAdo.m_strSQL = Queries.GetInsertSQL(strFields, strValues, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName);
+                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                m_intError = oAdo.m_intError;
 
-            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-            oAdo = null;
+                oAdo.CloseConnection(oAdo.m_OleDbConnection);
+                oAdo = null;
+            }
+            else
+            {
+                oDataMgr.m_strSQL = Queries.GetInsertSQL(strFields, strValues, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName);
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                m_intError = oDataMgr.m_intError;
 
-
-			
+                oDataMgr.CloseConnection(oDataMgr.m_Connection);
+                oDataMgr = null;
+            }			
 		}
 
 		private void label1_Click(object sender, System.EventArgs e)
