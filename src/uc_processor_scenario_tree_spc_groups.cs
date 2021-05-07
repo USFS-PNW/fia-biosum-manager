@@ -1387,46 +1387,72 @@ namespace FIA_Biosum_Manager
 				{
 					int x=0;
 					//save to the species groups table
-
-                    //
-                    //OPEN CONNECTION TO DB FILE CONTAINING PROCESSOR SCENARIO TABLES
-                    //
-                    //scenario mdb connection
-                    string strScenarioMDB =
-                        frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                        "\\processor\\db\\scenario_processor_rule_definitions.mdb";
-                    ado_data_access oAdo = new ado_data_access();
-                    oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
-
-					if (oAdo.m_intError==0)
+				    DialogResult result = MessageBox.Show("Save Tree Species Group Data? Y/N","Tree Species Groups",System.Windows.Forms.MessageBoxButtons.YesNoCancel,System.Windows.Forms.MessageBoxIcon.Question);
+					if (result == DialogResult.Yes)
 					{
-						DialogResult result = MessageBox.Show("Save Tree Species Group Data? Y/N","Tree Species Groups",System.Windows.Forms.MessageBoxButtons.YesNoCancel,System.Windows.Forms.MessageBoxIcon.Question);
-						if (result == DialogResult.Yes)
-						{
-							string str;
-							string strCommonName;
-                            int intSpCd;
-							int intSpcGrp;
-							string strSavedList="";
-							int intGrpCollection;
-							string strGrpLabel;
-							//delete the current groups
+						string str;
+						string strCommonName;
+                        int intSpCd;
+					    int intSpcGrp;
+						string strSavedList="";
+						int intGrpCollection;
+						string strGrpLabel;
+                        string strSql;
 
-							//delete all records from the tree species group table
-                            oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
-                                " WHERE TRIM(UCASE(scenario_id))='" + _strScenarioId.Trim().ToUpper() + " '";
-                            oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
-                            if (oAdo.m_intError != 0) return;
-                        
-							//delete all records from the tree species group list table
-                            oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
-                                " WHERE TRIM(UCASE(scenario_id))='" + _strScenarioId.Trim().ToUpper() + " '";
-                            oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
-
+                        //
+                        //OPEN CONNECTION TO DB FILE CONTAINING PROCESSOR SCENARIO TABLES
+                        //
+                        //scenario mdb connection                        
+                        ado_data_access oAdo = new ado_data_access();
+                        SQLite.ADO.DataMgr oDataMgr = null;
+                        if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+                        {
+                            string strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                                "\\processor\\db\\scenario_processor_rule_definitions.mdb";
+                            oAdo.OpenConnection(oAdo.getMDBConnString(strScenarioMDB, "", ""));
                             if (oAdo.m_intError == 0)
-							{
-                                for (x = 0; x <= this.spc_common_name_collection1.Count - 1; x++)
-                                {
+                            {
+                                //delete the current groups
+                                //delete all records from the tree species group table
+                                oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
+                                    " WHERE TRIM(UCASE(scenario_id))='" + _strScenarioId.Trim().ToUpper() + "'";
+                                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                                if (oAdo.m_intError != 0) return;
+
+                                //delete all records from the tree species group list table
+                                oAdo.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
+                                    " WHERE TRIM(UCASE(scenario_id))='" + _strScenarioId.Trim().ToUpper() + "'";
+                                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                            }
+                            m_intError = oAdo.m_intError;
+                        }
+                        else
+                        {
+                            oDataMgr = new SQLite.ADO.DataMgr();
+                            string strScenarioDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                                "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                            oDataMgr.OpenConnection(oDataMgr.GetConnectionString(strScenarioDB));
+                            if (oDataMgr.m_intError == 0)
+                            {
+                                //delete the current groups
+                                //delete all records from the tree species group table
+                                oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
+                                    " WHERE TRIM(UPPER(scenario_id))='" + _strScenarioId.Trim().ToUpper() + "'";
+                                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                                if (oDataMgr.m_intError != 0) return;
+
+                                //delete all records from the tree species group list table
+                                oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
+                                    " WHERE TRIM(UPPER(scenario_id))='" + _strScenarioId.Trim().ToUpper() + "'";
+                                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                            }
+                            m_intError = oDataMgr.m_intError;
+                        }
+
+                        if (m_intError == 0)
+                        {
+                            for (x = 0; x <= this.spc_common_name_collection1.Count - 1; x++)
+                            {
                                     if (this.spc_common_name_collection1.Item(x).SpeciesGroupIndex >= 0)
                                     {
 
@@ -1438,6 +1464,8 @@ namespace FIA_Biosum_Manager
                                         strGrpLabel = this.spc_groupings_collection1.Item(intSpcGrp).GroupLabel;
                                         strGrpLabel = strGrpLabel.Replace(' ', '_');
                                         str = "," + strGrpLabel.Trim() + ",";
+                                    if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+                                    {
                                         if (strSavedList.IndexOf(str, 0) < 0)
                                         {
                                             oAdo.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName + " " +
@@ -1453,21 +1481,45 @@ namespace FIA_Biosum_Manager
                                             intSpCd + " );";
                                         oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
                                     }
+                                    else
+                                    {
+                                        if (strSavedList.IndexOf(str, 0) < 0)
+                                        {
+                                            oDataMgr.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName + " " +
+                                                "(SPECIES_GROUP,SPECIES_LABEL,SCENARIO_ID) VALUES " +
+                                                "(" + Convert.ToString(intSpcGrp + 1).Trim() + ",'" + strGrpLabel.Trim() + "','" + _strScenarioId.Trim() + "');";
+                                            oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                                            strSavedList += str;
+                                        }
 
-									
+                                        oDataMgr.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName + " " +
+                                            "(SPECIES_GROUP,common_name,SCENARIO_ID,SPCD) VALUES " +
+                                            "(" + Convert.ToString(intSpcGrp + 1).Trim() + ",'" + strCommonName + "','" + _strScenarioId.Trim() + "', " +
+                                            intSpCd + " );";
+                                        oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                                    }
+
                                 }
-								this.btnSave.Enabled=false;
-							}
-						}
-                        else if (result == DialogResult.Cancel)
+                            }
+                            this.btnSave.Enabled = false;
+                        }
+                        if (oAdo != null && oAdo.m_OleDbConnection != null)
                         {
-                            this.ParentForm.DialogResult = DialogResult.Cancel;
+                            if (oAdo.m_OleDbConnection.State == System.Data.ConnectionState.Open)
+                                oAdo.CloseConnection(oAdo.m_OleDbConnection);
+                            oAdo = null;
+                        }
+                        else if (oDataMgr != null)
+                        {
+                            oDataMgr.CloseConnection(oDataMgr.m_Connection);
+                            oDataMgr = null;
                         }
 
-						if (oAdo.m_OleDbConnection.State == System.Data.ConnectionState.Open)
-                            oAdo.CloseConnection(oAdo.m_OleDbConnection);
-					}
-					
+                    }
+                    else if (result == DialogResult.Cancel)
+                    {
+                        this.ParentForm.DialogResult = DialogResult.Cancel;
+                    }					
 				}
 				catch (Exception e)
 				{
@@ -1478,9 +1530,7 @@ namespace FIA_Biosum_Manager
 						System.Windows.Forms.MessageBoxIcon.Exclamation);
 
 					this.m_intError=-1;
-
 				}
-
 			}
 
 
