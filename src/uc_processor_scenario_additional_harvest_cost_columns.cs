@@ -1265,7 +1265,7 @@ namespace FIA_Biosum_Manager
                 //
                 //delete all records of the current scenario
                 //
-                oDataMgr.m_strSQL = "DELETE FROM scenario_additional_harvest_costs WHERE UPPER(TRIM(scenario_id))='" + ScenarioId + "'";
+                oDataMgr.m_strSQL = "DELETE FROM scenario_additional_harvest_costs WHERE TRIM(scenario_id)='" + ScenarioId + "'";
                 oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
                 //
                 //append all the current scenario rows into the work table

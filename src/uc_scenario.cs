@@ -875,24 +875,45 @@ namespace FIA_Biosum_Manager
         public void UpdateDescription()
 		{
 			string strDesc="";
-			FIA_Biosum_Manager.ado_data_access oAdo = new ado_data_access();
-			string strScenarioDBDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
-			string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.mdb"; 
-			StringBuilder strScenarioFullPath = new StringBuilder(strScenarioDBDir);
-			strScenarioFullPath.Append("\\");
-			strScenarioFullPath.Append(strScenarioFile);
-			string strScenarioConn = oAdo.getMDBConnString(strScenarioFullPath.ToString(),"admin","");
-			oAdo.OpenConnection(strScenarioConn);
-			if (this.txtDescription.Text.Trim().Length > 0) strDesc=oAdo.FixString(this.txtDescription.Text.Trim(),"'","''");
-			oAdo.m_strSQL = "UPDATE scenario SET description='" + strDesc.Trim() + "' WHERE TRIM(scenario_id)='" + this.txtScenarioId.Text.Trim() + "'";
-			oAdo.SqlNonQuery(oAdo.m_OleDbConnection,oAdo.m_strSQL);
-			oAdo.m_OleDbConnection.Close();
-			while (oAdo.m_OleDbConnection.State != System.Data.ConnectionState.Closed)
-			{
-				oAdo.m_OleDbConnection.Close();
-				System.Threading.Thread.Sleep(1000);
-			}
-			oAdo=null;
+            string strScenarioDBDir = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" + ScenarioType + "\\db";
+            if ((ReferenceProcessorScenarioForm != null && !ReferenceProcessorScenarioForm.m_bUsingSqlite)
+                 || ScenarioType.Trim().ToUpper() == "OPTIMIZER")
+            {
+                ado_data_access oAdo = new ado_data_access();
+                string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.mdb";
+                StringBuilder strScenarioFullPath = new StringBuilder(strScenarioDBDir);
+                strScenarioFullPath.Append("\\");
+                strScenarioFullPath.Append(strScenarioFile);
+                string strScenarioConn = oAdo.getMDBConnString(strScenarioFullPath.ToString(), "admin", "");
+                oAdo.OpenConnection(strScenarioConn);
+                if (this.txtDescription.Text.Trim().Length > 0) strDesc = oAdo.FixString(this.txtDescription.Text.Trim(), "'", "''");
+                oAdo.m_strSQL = "UPDATE scenario SET description='" + strDesc.Trim() + "' WHERE TRIM(scenario_id)='" + this.txtScenarioId.Text.Trim() + "'";
+                oAdo.SqlNonQuery(oAdo.m_OleDbConnection, oAdo.m_strSQL);
+                oAdo.m_OleDbConnection.Close();
+                while (oAdo.m_OleDbConnection.State != System.Data.ConnectionState.Closed)
+                {
+                    oAdo.m_OleDbConnection.Close();
+                    System.Threading.Thread.Sleep(1000);
+                }
+                oAdo = null;
+            }
+            else
+            {
+                SQLite.ADO.DataMgr oDataMgr = new SQLite.ADO.DataMgr();
+                string strScenarioFile = "scenario_" + ScenarioType + "_rule_definitions.db";
+                StringBuilder strScenarioFullPath = new StringBuilder(strScenarioDBDir);
+                strScenarioFullPath.Append("\\");
+                strScenarioFullPath.Append(strScenarioFile);
+                string strConn = oDataMgr.GetConnectionString(strScenarioFullPath.ToString());
+                if (this.txtDescription.Text.Trim().Length > 0) strDesc = oDataMgr.FixString(this.txtDescription.Text.Trim(), "'", "''");
+                using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(strConn))
+                {
+                    conn.Open();
+                    oDataMgr.m_strSQL = "UPDATE scenario SET description='" + strDesc.Trim() + "' WHERE TRIM(scenario_id)='" + this.txtScenarioId.Text.Trim() + "'";
+                    oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
+                }
+                oDataMgr = null;
+            }
 		}
 		public string strScenarioId
 		{

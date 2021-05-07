@@ -897,7 +897,7 @@ namespace FIA_Biosum_Manager
                         while (dataMgr.m_DataReader.Read())
                         {
                             txtScenarioId.Text = dataMgr.m_DataReader["scenario_id"].ToString();
-                            txtScenarioPath.Text = dataMgr.m_DataReader["description"].ToString();
+                            txtDescription.Text = dataMgr.m_DataReader["description"].ToString();
                             txtScenarioPath.Text = dataMgr.m_DataReader["path"].ToString();
                             break;
 

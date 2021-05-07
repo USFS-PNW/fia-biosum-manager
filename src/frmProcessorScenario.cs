@@ -903,14 +903,14 @@ namespace FIA_Biosum_Manager
                       this.Width,
                       this.Top);
 
-                    this.uc_processor_scenario_harvest_method1.savevalues();
-                    this.m_intError = uc_processor_scenario_harvest_method1.m_intError;
-                    this.uc_processor_scenario_movein_costs1.savevalues();
-                    this.m_intError = uc_processor_scenario_movein_costs1.m_intError;
-                    this.uc_processor_scenario_merch_chip_value1.savevalues();
-                    if (m_intError == 0) m_intError = uc_processor_scenario_merch_chip_value1.m_intError;
-                    this.uc_processor_scenario_escalators1.savevalues();
-                    if (m_intError == 0) m_intError = uc_processor_scenario_escalators1.m_intError;
+                this.uc_processor_scenario_harvest_method1.savevalues();
+                this.m_intError = uc_processor_scenario_harvest_method1.m_intError;
+                this.uc_processor_scenario_movein_costs1.savevalues();
+                this.m_intError = uc_processor_scenario_movein_costs1.m_intError;
+                this.uc_processor_scenario_merch_chip_value1.savevalues();
+                if (m_intError == 0) m_intError = uc_processor_scenario_merch_chip_value1.m_intError;
+                this.uc_processor_scenario_escalators1.savevalues();
+                if (m_intError == 0) m_intError = uc_processor_scenario_escalators1.m_intError;
                 if (!m_bUsingSqlite)
                 {
                     this.uc_processor_scenario_additional_harvest_cost_columns1.savevalues();
@@ -920,8 +920,8 @@ namespace FIA_Biosum_Manager
                     this.uc_processor_scenario_additional_harvest_cost_columns1.savevaluesSqlite();
                 }
                 if (m_intError == 0) m_intError = uc_processor_scenario_additional_harvest_cost_columns1.m_intError;
-                    this.uc_scenario_notes1.SaveScenarioNotes();
-                    this.uc_scenario1.UpdateDescription();
+                this.uc_scenario_notes1.SaveScenarioNotes();
+                this.uc_scenario1.UpdateDescription();
 
                 frmMain.g_oFrmMain.DeactivateStandByAnimation();
 			}
