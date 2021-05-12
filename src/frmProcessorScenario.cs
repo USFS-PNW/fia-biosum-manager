@@ -1258,7 +1258,7 @@ namespace FIA_Biosum_Manager
         private void CopyScenario()
         {
             frmDialog frmTemp = new frmDialog();
-            frmTemp.Initialize_Processor_Scenario_Copy();
+            frmTemp.Initialize_Processor_Scenario_Copy(this);
             frmTemp.Text = "FIA Biosum";
 
             if (m_bRulesFirstTime == true)

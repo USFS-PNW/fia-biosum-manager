@@ -351,6 +351,14 @@ namespace FIA_Biosum_Manager
             string strScenarioResultsMDB =
                 frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
                 "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile;
+            if (ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                strScenarioMDB = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                strScenarioResultsMDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile;
+            }
             //
             //LOAD PROJECT DATATASOURCES INFO
             //
@@ -385,6 +393,7 @@ namespace FIA_Biosum_Manager
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                 frmMain.g_oUtils.WriteText(strDebugFile, "START: Create Links to the Scenario tables - " + System.DateTime.Now.ToString() + "\r\n");
             dao_data_access oDao = new dao_data_access();
+            ODBCMgr odbcmgr = new ODBCMgr();
             //link to all the scenario rule definition tables
             if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
             {
@@ -418,7 +427,6 @@ namespace FIA_Biosum_Manager
             }
             else
             {
-                ODBCMgr odbcmgr = new ODBCMgr();
                 // Check to see if the input SQLite DSN exists and if so, delete so we can add
                 if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName))
                 {
@@ -456,14 +464,34 @@ namespace FIA_Biosum_Manager
             }
 
             //link scenario results tables
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile, 
-                Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName,
-                strScenarioResultsMDB, 
-                Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName,true);
-            oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
-                Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName,
-                strScenarioResultsMDB,
-                Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName, true);
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName,
+                    strScenarioResultsMDB,
+                    Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName, true);
+                oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
+                    Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName,
+                    strScenarioResultsMDB,
+                    Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName, true);
+            }
+            else
+            {
+                // Check to see if the input SQLite DSN exists and if so, delete so we can add
+                if (odbcmgr.CurrentUserDSNKeyExist(ODBCMgr.DSN_KEYS.ProcessorResultsDsnName))
+                {
+                    odbcmgr.RemoveUserDSN(ODBCMgr.DSN_KEYS.ProcessorResultsDsnName);
+                }
+                odbcmgr.CreateUserSQLiteDSN(ODBCMgr.DSN_KEYS.ProcessorResultsDsnName,
+                    strScenarioResultsMDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName,
+                    Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName, ODBCMgr.DSN_KEYS.ProcessorResultsDsnName,
+                    strScenarioResultsMDB);
+                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName,
+                    Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName, ODBCMgr.DSN_KEYS.ProcessorResultsDsnName,
+                    strScenarioResultsMDB);
+            }
+
             // link to PRE_FVS_SUMMARY table
             oDao.CreateTableLink(m_oQueries.m_strTempDbFile,
                 Tables.FVS.DefaultPreFVSSummaryTableName,
@@ -531,7 +559,7 @@ namespace FIA_Biosum_Manager
                                   "INNER JOIN (" + m_oQueries.m_oFIAPlot.m_strPlotTable + " p " +
                                          "INNER JOIN " + m_oQueries.m_oFIAPlot.m_strCondTable + " c " +
                                          "ON p.biosum_plot_id=c.biosum_plot_id) " +
-                                  "ON a.biosum_cond_id=c.biosum_cond_id SET a.fvs_variant = p.fvs_variant;";
+                                  "ON trim(a.biosum_cond_id)=c.biosum_cond_id SET a.fvs_variant = p.fvs_variant;";
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(strDebugFile, "EXECUTE SQL: " + m_oAdo.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
                 m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
