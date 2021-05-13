@@ -391,7 +391,7 @@ namespace FIA_Biosum_Manager
 
                     }
                     else if ((Convert.ToInt16(m_strAppVerArray[APP_VERSION_MAJOR]) == 5 &&
-                            Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR1]) > 6)  &&
+                            Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR1]) > 6) &&
                            (Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MAJOR]) == 5 &&
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) <= 6))
                     {
@@ -458,7 +458,7 @@ namespace FIA_Biosum_Manager
                             Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR1]) >= 8 &&
                             Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR2]) >= 0) &&
                             (Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MAJOR]) == 5 &&
-                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) == 7 ))
+                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) == 7))
                     {
                         UpdateDatasources_5_8_0();
                         UpdateProjectVersionFile(strProjVersionFile);
@@ -518,11 +518,21 @@ namespace FIA_Biosum_Manager
                             Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR2]) >= 8) &&
                            (Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MAJOR]) == 5 &&
                             Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) <= 8 &&
-                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR2]) < 8))
+                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR2]) < 9))
                     {
                         UpdateDatasources_5_8_9(); // Allow v5.8.7 to upgrade to v5.8.9
                         UpdateProjectVersionFile(strProjVersionFile);
                         bPerformCheck = false;
+                    }
+                    //5.8.10 New columns required for national FIADB calculations
+                    else if ((Convert.ToInt16(m_strAppVerArray[APP_VERSION_MAJOR]) == 5 &&
+                            Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR1]) >= 8 &&
+                            Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR2]) >= 9) &&
+                           (Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MAJOR]) == 5 &&
+                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR1]) <= 8 &&
+                            Convert.ToInt16(m_strProjectVersionArray[APP_VERSION_MINOR2]) < 10))
+                    {
+                        UpdateDatsources_5_8_10();
                     }
                     else if ((Convert.ToInt16(m_strAppVerArray[APP_VERSION_MAJOR]) == 5 &&
                         Convert.ToInt16(m_strAppVerArray[APP_VERSION_MINOR1]) > 6) &&
@@ -6131,6 +6141,14 @@ namespace FIA_Biosum_Manager
             {
                 UpdateDatasources_5_8_8();
             }
+        }
+
+        private void UpdateDatsources_5_8_10()
+        {
+            //@sorgtyler: your schema upgrade code goes here
+            //You may want to check for one or more of the new fields before trying to add them
+            //I have had trouble in the past when needing to run the upgrade code twice on a project because it
+            //failed in the middle.
         }
 
 
