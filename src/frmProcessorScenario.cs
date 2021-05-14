@@ -1298,8 +1298,15 @@ namespace FIA_Biosum_Manager
                 frmMain.g_sbpInfo.Text = "Loading Scenario Revenue And Cost Escalator Rule Definitions...Stand By";
                 this.uc_processor_scenario_escalators1.loadvalues_FromProperties();
                 frmMain.g_sbpInfo.Text = "Loading Scenario Supplemental Harvest Component Rule Definitions...Stand By";
-                this.uc_processor_scenario_additional_harvest_cost_columns1.loadvaluesFromProperties();
-                
+                if (!this.m_bUsingSqlite)
+                {
+                    this.uc_processor_scenario_additional_harvest_cost_columns1.loadvaluesFromProperties();
+                }
+                else
+                {
+                    this.uc_processor_scenario_additional_harvest_cost_columns1.loadvaluesFromPropertiesSqlite();
+                }
+
                 frmMain.g_sbpInfo.Text = "Ready";
                 m_bSave = true;
                 MessageBox.Show("Done");
