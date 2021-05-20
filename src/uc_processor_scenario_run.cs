@@ -50,7 +50,9 @@ namespace FIA_Biosum_Manager
         private ListViewColumnSorter lvwColumnSorter;
         /* Indicates that inactive stands will be included in the analysis:
          * There is a PRE_FVS_COMPUTE table with a column named ACTIVITY  */
-        private bool m_bIncludeInactiveStands = true; 
+        private bool m_bIncludeInactiveStands = true;
+        private string m_strTempSqliteDbFile = null;
+        private SQLite.ADO.DataMgr m_oDataMgr = new SQLite.ADO.DataMgr();
 
         //reference variables
         private string _strScenarioId = "";
@@ -437,27 +439,27 @@ namespace FIA_Biosum_Manager
                 string strScenarioDB =
                     frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
                     "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
-                oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName,
-                    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
-                    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultCostRevenueEscalatorsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultAdditionalHarvestCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestCostColumnsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultHarvestMethodTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultMoveInCostsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesDollarValuesTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
+                //oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName,
+                //    Tables.ProcessorScenarioRuleDefinitions.DefaultTreeDiamGroupsTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
+                //    strScenarioDB);
                 oDao.CreateSQLiteTableLink(m_oQueries.m_strTempDbFile, Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName,
                     Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName, ODBCMgr.DSN_KEYS.ProcessorRuleDefinitionsDsnName,
                     strScenarioDB);
@@ -1651,16 +1653,16 @@ namespace FIA_Biosum_Manager
                          y++;
                          frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
                      }
-                    if (m_intError == 0 && bFRCS)
-                    {
-                        frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Append FRCS Data To Harvest Costs Work Table...Stand By");
-                        RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable",true,false);
-                    }
-                    if (m_intError == 0 && bOPCOST)
-                    {
-                        frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Append OPCOST Data To Harvest Costs Work Table...Stand By");
-                        RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable", false,false);
-                    }
+                    //if (m_intError == 0 && bFRCS)
+                    //{
+                    //    frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Append FRCS Data To Harvest Costs Work Table...Stand By");
+                    //    RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable",true,false);
+                    //}
+                    //if (m_intError == 0 && bOPCOST)
+                    //{
+                    //    frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Append OPCOST Data To Harvest Costs Work Table...Stand By");
+                    //    RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable", false,false);
+                    //}
                     if (m_intError == 0)
                     {
                         y++;
@@ -3875,7 +3877,7 @@ namespace FIA_Biosum_Manager
             
 
         }
-        private void RunScenario_AppendToHarvestCosts(string p_strHarvestCostTableName, bool bFRCS, bool bInactiveVarRxPackage)
+        private void RunScenario_AppendToHarvestCosts(string p_strHarvestCostTableName, bool bInactiveVarRxPackage)
         {
             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
             {
@@ -3884,14 +3886,39 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
             }
 
-            frmMain.g_oTables.m_oProcessor.CreateHarvestCostsTable(m_oAdo,m_oAdo.m_OleDbConnection, p_strHarvestCostTableName);
-
-            if (bFRCS)
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
             {
-                m_oAdo.m_strSQL = Queries.ProcessorScenarioRun.AppendToHarvestCostsTable(
-                    "FRCS_output", p_strHarvestCostTableName, m_strDateTimeCreated);
+                frmMain.g_oTables.m_oProcessor.CreateHarvestCostsTable(m_oAdo, m_oAdo.m_OleDbConnection, p_strHarvestCostTableName);
             }
-            else if (bInactiveVarRxPackage)
+            else
+            {
+                frmMain.g_oTables.m_oProcessor.CreateSqliteHarvestCostsTable(m_oDataMgr, m_oDataMgr.m_Connection, p_strHarvestCostTableName);
+                dao_data_access oDao = new dao_data_access();
+
+                oDao.CreateSQLiteTableLink(m_oAdo.m_OleDbConnection.DataSource, p_strHarvestCostTableName,
+                    p_strHarvestCostTableName, ODBCMgr.DSN_KEYS.ProcessorTemporaryDsnName,
+                    m_oDataMgr.m_Connection.FileName);
+                oDao.m_DaoWorkspace.Close();
+                oDao = null;
+                do
+                {
+                    // break out of loop if it runs too long
+                    int i = 0;
+                    if (i > 20)
+                    {
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+                        {
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "An error occurred while trying to link to the " + p_strHarvestCostTableName + " table! \r\n");
+                        }
+                        break;
+                    }
+                    System.Threading.Thread.Sleep(1000);
+                    i++;
+                }
+                while (!m_oAdo.TableExist(m_oAdo.m_OleDbConnection, p_strHarvestCostTableName));
+            }
+
+            if (bInactiveVarRxPackage)
             {
                 // Don't append anything; There is nothing to append
                 m_oAdo.m_strSQL = "";
@@ -3910,29 +3937,6 @@ namespace FIA_Biosum_Manager
 
                 if (m_oAdo.m_intError == 0) m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
             }
-
-            if (m_oAdo.m_intError == 0 & bFRCS)
-            {
-                //update with any warnings or fatal messages 
-                m_oAdo.m_strSQL = "UPDATE " + p_strHarvestCostTableName + " h " +
-                                  "INNER JOIN FRCS_fatal_error_messages f " +
-                                  "ON h.biosum_cond_id=f.biosum_cond_id AND " +
-                                     "h.RXPackage=f.RXPackage AND " +
-                                     "h.RX = f.RX AND " +
-                                     "h.RXCycle = f.RXCycle " +
-                                  "SET h.harvest_cpa_warning_msg = " +
-                                      "IIF(h.harvest_cpa_warning_msg IS NULL OR " +
-                                      "LEN(TRIM(h.harvest_cpa_warning_msg))=0," +
-                                         "'FRCS FATAL ERR:' + TRIM(f.FRCS_Fatal_Error_Message)," +
-                                         "TRIM(harvest_cpa_warning_msg) + ' FRCS FATAL ERR:' + TRIM(f.FRCS_Fatal_Error_Message))";
-
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
-                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
-            }
-            m_intError = m_oAdo.m_intError;
-            m_strError = m_oAdo.m_strError;
-
         }
         private void RunScenario_UpdateHarvestCostsTableWithAdditionalCosts(string p_strHarvestCostsTableName, string p_strInactiveStandsTableName)
         {
@@ -3947,23 +3951,55 @@ namespace FIA_Biosum_Manager
 
             string[] strRXArray = null;
             //create work table to hold total additional costs
-            if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "HarvestCostsTotalAdditionalWorkTable"))
-                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE HarvestCostsTotalAdditionalWorkTable");
-            frmMain.g_oTables.m_oProcessorScenarioRun.CreateTotalAdditionalHarvestCostsTable(
-                m_oAdo, m_oAdo.m_OleDbConnection, "HarvestCostsTotalAdditionalWorkTable");
-
-            if (m_oAdo.m_intError == 0)
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
             {
-                //insert plot+rx records for the current scenario
-                m_oAdo.m_strSQL = "INSERT INTO HarvestCostsTotalAdditionalWorkTable " +
-                                  "(biosum_cond_id,rx) SELECT biosum_cond_id,rx " +
-                                                      "FROM scenario_additional_harvest_costs " +
-                                                      "WHERE TRIM(UCASE(scenario_id)) = " +
-                                                      "'" + ScenarioId.ToUpper().Trim() + "'";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
-                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "HarvestCostsTotalAdditionalWorkTable"))
+                    m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE HarvestCostsTotalAdditionalWorkTable");
+                frmMain.g_oTables.m_oProcessorScenarioRun.CreateTotalAdditionalHarvestCostsTable(
+                    m_oAdo, m_oAdo.m_OleDbConnection, "HarvestCostsTotalAdditionalWorkTable");
+                if (m_oAdo.m_intError == 0)
+                {
+                    //insert plot+rx records for the current scenario
+                    m_oAdo.m_strSQL = "INSERT INTO HarvestCostsTotalAdditionalWorkTable " +
+                                      "(biosum_cond_id,rx) SELECT biosum_cond_id,rx " +
+                                                          "FROM scenario_additional_harvest_costs " +
+                                                          "WHERE TRIM(UCASE(scenario_id)) = " +
+                                                          "'" + ScenarioId.ToUpper().Trim() + "'";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
+                    m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                }
             }
+            else
+            {
+                if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "HarvestCostsTotalAdditionalWorkTable"))
+                    m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE HarvestCostsTotalAdditionalWorkTable");
+                frmMain.g_oTables.m_oProcessorScenarioRun.CreateSqliteTotalAdditionalHarvestCostsTable(
+                    m_oDataMgr, m_oDataMgr.m_Connection, "HarvestCostsTotalAdditionalWorkTable");
+                if (m_oDataMgr.m_intError == 0)
+                {
+                    //attach to scenario_rule_definitions.db
+                    string strScenarioDB =
+                        frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                        "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                    m_oDataMgr.m_strSQL = "attach database '" + strScenarioDB + "' as definitions";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + m_oDataMgr.m_strSQL + "\r\n");
+                    m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+
+                    //insert plot+rx records for the current scenario
+                    m_oDataMgr.m_strSQL = "INSERT INTO HarvestCostsTotalAdditionalWorkTable " +
+                                          "(biosum_cond_id,rx) SELECT biosum_cond_id,rx " +
+                                                          "FROM definitions.scenario_additional_harvest_costs " +
+                                                          "WHERE TRIM(scenario_id) = " +
+                                                          "'" + ScenarioId.Trim() + "'";
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
+                    m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                }
+
+            }
+
             if (m_oAdo.m_intError == 0)
             {
                 //
@@ -4244,30 +4280,90 @@ namespace FIA_Biosum_Manager
             }
 
             string strFvsComputeTable = Tables.FVS.DefaultPreFVSComputeTableName;
-            m_oAdo.m_strSQL = "SELECT " + strFvsComputeTable + ".biosum_cond_id, " + strFvsComputeTable + ".rxpackage, " +
-                              strFvsComputeTable + ".rx," + strFvsComputeTable + ".rxcycle, " + strFvsComputeTable + 
-                              ".fvs_variant, 0 as harvest_cpa, 0 as complete_cpa" +
-                              " INTO " + p_strInactiveStandsTableName +
-                              " from " + strFvsComputeTable +
-                              " left outer join " + p_strHarvestCostsTableName + " on " +
-                              p_strHarvestCostsTableName + ".biosum_cond_id=" + strFvsComputeTable + ".biosum_cond_id and " +
-                              p_strHarvestCostsTableName + ".rxpackage=" + strFvsComputeTable + ".rxpackage and " +
-                              p_strHarvestCostsTableName + ".rx=" + strFvsComputeTable + ".rx and " +
-                              p_strHarvestCostsTableName + ".rxcycle=" + strFvsComputeTable + ".rxcycle" +
-                              " where " + p_strHarvestCostsTableName + ".biosum_cond_id is null" +
-                              " and " + strFvsComputeTable + ".ACTIVITY  = 1 AND " +
-                              strFvsComputeTable + ".FVS_VARIANT = '" + p_strVariant + "' AND " +
-                              strFvsComputeTable + ".RXPACKAGE = '" + p_strRxPackage + "'";
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                m_oAdo.m_strSQL = "SELECT " + strFvsComputeTable + ".biosum_cond_id, " + strFvsComputeTable + ".rxpackage, " +
+                  strFvsComputeTable + ".rx," + strFvsComputeTable + ".rxcycle, " + strFvsComputeTable +
+                  ".fvs_variant, 0 as harvest_cpa, 0 as complete_cpa" +
+                  " INTO " + p_strInactiveStandsTableName +
+                  " from " + strFvsComputeTable +
+                  " left outer join " + p_strHarvestCostsTableName + " on " +
+                  p_strHarvestCostsTableName + ".biosum_cond_id=" + strFvsComputeTable + ".biosum_cond_id and " +
+                  p_strHarvestCostsTableName + ".rxpackage=" + strFvsComputeTable + ".rxpackage and " +
+                  p_strHarvestCostsTableName + ".rx=" + strFvsComputeTable + ".rx and " +
+                  p_strHarvestCostsTableName + ".rxcycle=" + strFvsComputeTable + ".rxcycle" +
+                  " where " + p_strHarvestCostsTableName + ".biosum_cond_id is null" +
+                  " and " + strFvsComputeTable + ".ACTIVITY  = 1 AND " +
+                  strFvsComputeTable + ".FVS_VARIANT = '" + p_strVariant + "' AND " +
+                  strFvsComputeTable + ".RXPACKAGE = '" + p_strRxPackage + "'";
 
-            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + m_oAdo.m_strSQL + "\r\n");
-            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + m_oAdo.m_strSQL + "\r\n");
+                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+            }
+            else
+            {
+                string strSql = "CREATE TABLE " + p_strInactiveStandsTableName + " (" +
+                    "biosum_cond_id TEXT," +
+                    "rxpackage TEXT," +
+                    "rx TEXT," +
+                    "rxcycle TEXT," +
+                    "fvs_variant TEXT," +
+                    "complete_cpa REAL DEFAULT 0," +
+                    "harvest_cpa REAL DEFAULT 0)";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, strSql);
+
+                dao_data_access oDao = new dao_data_access();
+                oDao.CreateSQLiteTableLink(m_oAdo.m_OleDbConnection.DataSource, p_strInactiveStandsTableName,
+                    p_strInactiveStandsTableName, ODBCMgr.DSN_KEYS.ProcessorTemporaryDsnName,
+                    m_oDataMgr.m_Connection.FileName);
+                oDao.m_DaoWorkspace.Close();
+                oDao = null;
+                do
+                {
+                    // break out of loop if it runs too long
+                    int i = 0;
+                    if (i > 20)
+                    {
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+                        {
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, "An error occurred while trying to link to the " + p_strInactiveStandsTableName + " table! \r\n");
+                        }
+                        break;
+                    }
+                    System.Threading.Thread.Sleep(1000);
+                    i++;
+                }
+                while (!m_oAdo.TableExist(m_oAdo.m_OleDbConnection, p_strInactiveStandsTableName));
+
+                strSql = "INSERT INTO " + p_strInactiveStandsTableName +
+                         " SELECT " + strFvsComputeTable + ".biosum_cond_id, " + strFvsComputeTable + ".rxpackage, " +
+                         strFvsComputeTable + ".rx," + strFvsComputeTable + ".rxcycle, " + strFvsComputeTable +
+                         ".fvs_variant, 0 as harvest_cpa, 0 as complete_cpa" +
+                         " FROM " + strFvsComputeTable +
+                         " left outer join " + p_strHarvestCostsTableName +
+                         " on trim(" + p_strHarvestCostsTableName + ".biosum_cond_id) = " + strFvsComputeTable + ".biosum_cond_id and" +
+                         " trim(" + p_strHarvestCostsTableName + ".rxpackage) = " + strFvsComputeTable + ".rxpackage and" +
+                         " trim(" + p_strHarvestCostsTableName + ".rx) = " + strFvsComputeTable + ".rx and" +
+                         " trim(" + p_strHarvestCostsTableName + ".rxcycle) = " + strFvsComputeTable + ".rxcycle" +
+                         " where " + p_strHarvestCostsTableName + ".biosum_cond_id is null" +
+                         " and " + strFvsComputeTable + ".ACTIVITY = 1 AND " +
+                         strFvsComputeTable + ".FVS_VARIANT = '" + p_strVariant + "' AND " +
+                         strFvsComputeTable + ".RXPACKAGE = '" + p_strRxPackage + "'";
+
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + strSql + "\r\n");
+                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, strSql);
+
+            }
 
             if (m_oAdo.m_intError != 0)
             {
                 m_bIncludeInactiveStands = false;
             }
-            
+
             m_intError = m_oAdo.m_intError;
             m_strError = m_oAdo.m_strError;
         }
@@ -4632,15 +4728,10 @@ namespace FIA_Biosum_Manager
             int x, y, z;
             int intCount = 0;
             int intRowCount = 0;
-            string strInputPath = "";
-            int intPercent = 0;
-
 
             dao_data_access oDao = new dao_data_access();
 
-
             string strRx1, strRx2, strRx3, strRx4, strRxPackage, strVariant, strCutCount;
-
 
             frmMain.g_oDelegate.CurrentThreadProcessName = "main";
             frmMain.g_oDelegate.CurrentThreadProcessStarted = true;
@@ -4691,7 +4782,7 @@ namespace FIA_Biosum_Manager
                         uc_filesize_monitor1.Information = "Work table containing table links";
                         uc_filesize_monitor2.BeginMonitoringFile(
                              frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                            "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsDbFile
+                            "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile
                             , 2000000000, "2GB");
                         uc_filesize_monitor2.Information = "Scenario results DB file containing Harvest Costs and Tree Volume and Value tables";
                     }
@@ -4780,12 +4871,18 @@ namespace FIA_Biosum_Manager
                         frmMain.g_oUtils.WriteText(m_strDebugFile, "// Dropping OpCost tables " + strVariant + strRxPackage + "\r\n");
                         frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
                     }
-                    
-                    if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "HarvestCostsWorkTable") == true)
-                        m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE HarvestCostsWorkTable");
 
-                    if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "InactiveStandsWorkTable") == true)
-                        m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE InactiveStandsWorkTable");
+                    m_strTempSqliteDbFile = frmMain.g_oUtils.getRandomFile(frmMain.g_oEnv.strTempDir, "db");
+                    m_oDataMgr.CreateDbFile(m_strTempSqliteDbFile);
+                    //@ToDo: Close this connection
+                    m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(m_strTempSqliteDbFile));
+
+                    // Connection for m_oAdo is opened during loadvalues()
+                    if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "HarvestCostsWorkTable") == true)
+                        m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE HarvestCostsWorkTable");
+
+                    if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "InactiveStandsWorkTable") == true)
+                        m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE InactiveStandsWorkTable");
 
                     if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "opcost_input") == true)
                         m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE opcost_input");
@@ -4807,8 +4904,9 @@ namespace FIA_Biosum_Manager
                     frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Load trees from cut list...Stand By");
                     y++;
                     frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
-                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim().ToUpper(), 
-                        m_oAdo.m_OleDbConnection.ConnectionString, ReferenceProcessorScenarioForm.m_bUsingSqlite);
+                    processor mainProcessor = new processor(m_strDebugFile, ScenarioId.Trim(), 
+                        m_oAdo.m_OleDbConnection.ConnectionString, ReferenceProcessorScenarioForm.m_bUsingSqlite,
+                        m_oDataMgr.m_Connection.ConnectionString);
                     if (!_bInactiveVarRxPackage)
                     {
                         m_intError = mainProcessor.LoadTrees(strVariant, strRxPackage, m_oQueries.m_oFIAPlot.m_strCondTable,
@@ -4892,7 +4990,7 @@ namespace FIA_Biosum_Manager
                             y++;
                             frmMain.g_oDelegate.SetControlPropertyValue(ReferenceProgressBarEx, "Value", y);
                             // Note: This function disposes of local ado_data_access object
-                            m_intError = mainProcessor.CreateTreeVolValWorkTable(m_strDateTimeCreated, false);
+                            m_intError = mainProcessor.CreateTreeVolValWorkTable(m_strDateTimeCreated);
 
                             if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             {
@@ -4910,7 +5008,7 @@ namespace FIA_Biosum_Manager
                     if (m_intError == 0)
                     {
                         frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Append OPCOST Data To Harvest Costs Work Table...Stand By");
-                        RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable", false, _bInactiveVarRxPackage);
+                        RunScenario_AppendToHarvestCosts("HarvestCostsWorkTable", _bInactiveVarRxPackage);
                     }
                     if (m_intError == 0)
                     {

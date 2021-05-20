@@ -197,6 +197,7 @@ namespace FIA_Biosum_Manager
             static public string OptimizerCalcVariableDsnName { get { return "FIABIOSUM_OPTIMIZER_CALC_VAR"; } }
             static public string ProcessorRuleDefinitionsDsnName { get { return "PROCESSOR_RULE_DEFINITIONS"; } }
             static public string ProcessorResultsDsnName { get { return "PROCESSOR_RESULTS"; } }
+            static public string ProcessorTemporaryDsnName { get { return "PROCESSOR_TEMPORARY"; } }
         }
 
     }

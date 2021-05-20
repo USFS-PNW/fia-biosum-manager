@@ -485,7 +485,7 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oTables.m_oProcessor.CreateSqliteHarvestCostsTable(dataMgr,
                                 conn, Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName);
                             frmMain.g_oTables.m_oProcessor.CreateSqliteTreeVolValSpeciesDiamGroupsTable(dataMgr,
-                                conn, Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName);
+                                conn, Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName, true);
                         }
                     }		
 				}

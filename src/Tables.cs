@@ -4670,25 +4670,29 @@ namespace FIA_Biosum_Manager
                     "place_holder CHAR(1) DEFAULT 'N'," +
                     "DateTimeCreated CHAR(22))";
             }
-            public void CreateSqliteTreeVolValSpeciesDiamGroupsTable(SQLite.ADO.DataMgr p_oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn, string p_strTableName)
+            public void CreateSqliteTreeVolValSpeciesDiamGroupsTable(SQLite.ADO.DataMgr p_oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn, 
+                string p_strTableName, bool p_bCreateIdColumn)
             {
-                p_oDataMgr.SqlNonQuery(p_oConn, Tables.Processor.CreateSqliteTreeVolValSpeciesDiamGroupsTableSQL(p_strTableName));
+                p_oDataMgr.SqlNonQuery(p_oConn, Tables.Processor.CreateSqliteTreeVolValSpeciesDiamGroupsTableSQL(p_strTableName, p_bCreateIdColumn));
                 p_oDataMgr.AddIndex(p_oConn, p_strTableName, p_strTableName + "_idx1", "biosum_cond_id,rxpackage,rx,rxcycle");
                 p_oDataMgr.AddIndex(p_oConn, p_strTableName, p_strTableName + "_idx2", "rx");
                 p_oDataMgr.AddIndex(p_oConn, p_strTableName, p_strTableName + "_idx3", "species_group");
                 p_oDataMgr.AddIndex(p_oConn, p_strTableName, p_strTableName + "_idx4", "diam_group");
             }
-            static public string CreateSqliteTreeVolValSpeciesDiamGroupsTableSQL(string p_strTableName)
+            static public string CreateSqliteTreeVolValSpeciesDiamGroupsTableSQL(string p_strTableName, bool p_bCreateIdColumn)
             {
-                return "CREATE TABLE " + p_strTableName + " (" +
-                    "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    "biosum_cond_id TEXT," +
+                string strSQL = "CREATE TABLE " + p_strTableName + " (";
+                if (p_bCreateIdColumn)
+                {
+                    strSQL = strSQL + "ID INTEGER PRIMARY KEY AUTOINCREMENT,";
+                }
+                strSQL = strSQL + "biosum_cond_id TEXT," +
                     "rxpackage TEXT," +
                     "rx TEXT," +
                     "rxcycle TEXT," +
                     "species_group INTEGER," +
                     "diam_group INTEGER DEFAULT 0," +
-                    "biosum_harvest_method_category INTEGER DEFAULT 0," +
+                    //"biosum_harvest_method_category INTEGER DEFAULT 0," +
                     "chip_vol_cf REAL," +
                     "chip_wt_gt REAL," +
                     "chip_val_dpa REAL," +
@@ -4702,6 +4706,7 @@ namespace FIA_Biosum_Manager
                     "stand_residue_wt_gt REAL," +
                     "place_holder TEXT DEFAULT 'N'," +
                     "DateTimeCreated TEXT)";
+                return strSQL;
             }
             public void CreateTreeVolValSpeciesDiamGroupsWorkTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {
@@ -5422,9 +5427,20 @@ namespace FIA_Biosum_Manager
                           "(biosum_cond_id text (25)," +
                             "RX text (3)," +
                             "complete_additional_cpa double)";
-
             }
-
+            public void CreateSqliteTotalAdditionalHarvestCostsTable(SQLite.ADO.DataMgr p_oDataMgr, System.Data.SQLite.SQLiteConnection p_oConn,
+                string p_strTableName)
+            {
+                p_oDataMgr.SqlNonQuery(p_oConn, CreateSqliteTotalAdditionalHarvestCostsTableSQL(p_strTableName));           
+            }
+            static public string CreateSqliteTotalAdditionalHarvestCostsTableSQL(string p_strTableName)
+            {
+                return "CREATE TABLE " + p_strTableName + " " +
+                          "(biosum_cond_id text," +
+                          "RX text," +
+                          "complete_additional_cpa real," +
+                          "PRIMARY KEY(biosum_cond_id, rx))";
+            }
 
 
 

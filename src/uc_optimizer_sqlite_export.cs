@@ -1576,7 +1576,7 @@ namespace FIA_Biosum_Manager
                     }
                     else if (strTableName.Equals(Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + "_C"))
                     {
-                        frmMain.g_oTables.m_oProcessor.CreateSqliteTreeVolValSpeciesDiamGroupsTable(oDataMgr, con, strTableName);
+                        frmMain.g_oTables.m_oProcessor.CreateSqliteTreeVolValSpeciesDiamGroupsTable(oDataMgr, con, strTableName, true);
                     }
                     else if (strTableName.Equals(frmMain.g_oTables.m_oFIAPlot.DefaultConditionTableName))
                     {
