@@ -471,12 +471,14 @@ namespace FIA_Biosum_Manager
 				if (!System.IO.Directory.Exists(this.txtScenarioPath.Text)) 
 				{
 					System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text);
-					System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text.ToString() + "\\db");
-
-					//copy default processor scenario_results database to the new project directory
-                    if (this.ScenarioType == "processor")
+					System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text.ToString() + "\\db");		
+				}
+                //copy default processor scenario_results database to the new project directory
+                if (this.ScenarioType == "processor")
+                {
+                    string strDestFile = this.txtScenarioPath.Text + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile;
+                    if (!System.IO.File.Exists(strDestFile))
                     {
-                        string strDestFile = this.txtScenarioPath.Text + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile;
                         dataMgr.CreateDbFile(strDestFile);
                         string strScenarioResultsConn = dataMgr.GetConnectionString(strDestFile);
                         using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(strScenarioResultsConn))
@@ -487,9 +489,9 @@ namespace FIA_Biosum_Manager
                             frmMain.g_oTables.m_oProcessor.CreateSqliteTreeVolValSpeciesDiamGroupsTable(dataMgr,
                                 conn, Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName, true);
                         }
-                    }		
-				}
-			}
+                    }
+                }
+            }
 			catch 
 			{
 				MessageBox.Show("Error Creating Empty scenario_results.db");
@@ -696,12 +698,14 @@ namespace FIA_Biosum_Manager
                 {
                     System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text);
                     System.IO.Directory.CreateDirectory(this.txtScenarioPath.Text.ToString() + "\\db");
-
-                    //copy default processor scenario_results database to the new project directory
-                    if (this.ScenarioType == "processor")
+                }
+                //copy default processor scenario_results database to the new project directory
+                if (this.ScenarioType == "processor")
+                {
+                    string strDestFile = this.txtScenarioPath.Text + "\\" + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableDbFile;
+                    if (!System.IO.File.Exists(strDestFile))
                     {
                         dao_data_access oDao = new dao_data_access();
-                        string strDestFile = this.txtScenarioPath.Text + "\\" + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableDbFile;
                         oDao.CreateMDB(strDestFile);
                         oDao.m_DaoWorkspace.Close();
                         oDao = null;

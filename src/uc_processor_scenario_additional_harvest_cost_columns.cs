@@ -313,7 +313,7 @@ namespace FIA_Biosum_Manager
                 //
                 //make sure columns exist in the additional harvest cost columns table
                 //
-                CreateColumns();
+                CreateColumns(null);
                 //
                 //get null counts for each column
                 //
@@ -621,7 +621,12 @@ namespace FIA_Biosum_Manager
                 //
                 //make sure columns exist in the additional harvest cost columns table
                 //
-                CreateColumns();
+                using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+                {
+                    oConn.Open();
+                    dataMgr.m_Connection = oConn;
+                    CreateColumns(dataMgr);
+                }
                 //
                 //get null counts for each column
                 //
@@ -958,7 +963,7 @@ namespace FIA_Biosum_Manager
                 //
                 //make sure columns exist in the additional harvest cost columns table
                 //
-                CreateColumns();
+                CreateColumns(null);
 
                 // Copy values from reference to target scenario
                 m_oAdo.m_strSQL = "";
@@ -1064,61 +1069,58 @@ namespace FIA_Biosum_Manager
                 //
                 SQLite.ADO.DataMgr dataMgr = new SQLite.ADO.DataMgr();
                 string strConn = dataMgr.GetConnectionString(strScenarioDB);
-                using (System.Data.SQLite.SQLiteConnection oConn = new System.Data.SQLite.SQLiteConnection(strConn))
+                dataMgr.OpenConnection(strConn);
+                //delete work table if it exists
+                if (dataMgr.TableExist(dataMgr.m_Connection, m_strAddHarvCostsWorkTable))
                 {
-                    oConn.Open();
-                    //delete work table if it exists
-                    if (dataMgr.TableExist(oConn, m_strAddHarvCostsWorkTable))
-                    {
-                        dataMgr.m_strSQL = "DROP TABLE " + m_strAddHarvCostsWorkTable;
-                        dataMgr.SqlNonQuery(oConn, dataMgr.m_strSQL);
-                    }
-                    //create a work table from the additional harvests costs table
-                    //
-                    //@ToDo: Switch to SQLite datatypes when ready
-                    //dataMgr.m_strSQL = Tables.Processor.CreateSqliteAdditionalHarvestCostsTableSQL(m_strAddHarvCostsWorkTable);
-                    dataMgr.m_strSQL = Tables.Processor.CreateAdditionalHarvestCostsTableSQL(m_strAddHarvCostsWorkTable);
+                    dataMgr.m_strSQL = "DROP TABLE " + m_strAddHarvCostsWorkTable;
+                    dataMgr.SqlNonQuery(dataMgr.m_Connection, dataMgr.m_strSQL);
+                }
+                //create a work table from the additional harvests costs table
+                //
+                //@ToDo: Switch to SQLite datatypes when ready
+                //dataMgr.m_strSQL = Tables.Processor.CreateSqliteAdditionalHarvestCostsTableSQL(m_strAddHarvCostsWorkTable);
+                dataMgr.m_strSQL = Tables.Processor.CreateAdditionalHarvestCostsTableSQL(m_strAddHarvCostsWorkTable);
 
-                    dataMgr.SqlNonQuery(oConn, dataMgr.m_strSQL);
-                    //
-                    //add columns from the SOURCE scenario additional harvest costs table to the DESTINATION work table
-                    //
-                    DataTable oSourceTableSchema = dataMgr.getTableSchema(oConn, "SELECT * FROM scenario_additional_harvest_costs");
-                    string strSourceColumnsList = dataMgr.getFieldNames(oConn, "SELECT * FROM scenario_additional_harvest_costs");
-                    string strDestColumnsList = dataMgr.getFieldNames(oConn, "SELECT * FROM " + m_strAddHarvCostsWorkTable);
-                    string[] strDestColumnsArray = frmMain.g_oUtils.ConvertListToArray(strDestColumnsList, ",");
-                    dataMgr.m_strSQL = "";
-                    for (z = 0; z <= oSourceTableSchema.Rows.Count - 1; z++)
+                dataMgr.SqlNonQuery(dataMgr.m_Connection, dataMgr.m_strSQL);
+                //
+                //add columns from the SOURCE scenario additional harvest costs table to the DESTINATION work table
+                //
+                DataTable oSourceTableSchema = dataMgr.getTableSchema(dataMgr.m_Connection, "SELECT * FROM scenario_additional_harvest_costs");
+                string strSourceColumnsList = dataMgr.getFieldNames(dataMgr.m_Connection, "SELECT * FROM scenario_additional_harvest_costs");
+                string strDestColumnsList = dataMgr.getFieldNames(dataMgr.m_Connection, "SELECT * FROM " + m_strAddHarvCostsWorkTable);
+                string[] strDestColumnsArray = frmMain.g_oUtils.ConvertListToArray(strDestColumnsList, ",");
+                dataMgr.m_strSQL = "";
+                for (z = 0; z <= oSourceTableSchema.Rows.Count - 1; z++)
+                {
+                    if (oSourceTableSchema.Rows[z]["ColumnName"] != System.DBNull.Value && oSourceTableSchema.Rows[z]["ColumnName"].ToString().Trim().ToUpper() != "SCENARIO_ID")
                     {
-                        if (oSourceTableSchema.Rows[z]["ColumnName"] != System.DBNull.Value && oSourceTableSchema.Rows[z]["ColumnName"].ToString().Trim().ToUpper() != "SCENARIO_ID")
+                        bFound = false;
+                        for (zz = 0; zz <= strDestColumnsArray.Length - 1; zz++)
                         {
-                            bFound = false;
-                            for (zz = 0; zz <= strDestColumnsArray.Length - 1; zz++)
-                            {
-                                if (oSourceTableSchema.Rows[z]["ColumnName"].ToString().Trim().ToUpper() ==
-                                    strDestColumnsArray[zz].Trim().ToUpper())
-                                {
-                                    bFound = true;
-                                    break;
-                                }
-                            }
-                            if (!bFound)
-                            {
-                                //column not found so let's add it
-                                dataMgr.m_strSQL = dataMgr.FormatCreateTableSqlFieldItem(oSourceTableSchema.Rows[z]);
-                                dataMgr.SqlNonQuery(oConn, "ALTER TABLE " + m_strAddHarvCostsWorkTable + " " +
-                                    "ADD COLUMN " + dataMgr.m_strSQL);
-                            }
+                          if (oSourceTableSchema.Rows[z]["ColumnName"].ToString().Trim().ToUpper() ==
+                              strDestColumnsArray[zz].Trim().ToUpper())
+                          {
+                                bFound = true;
+                                break;
+                          }
+                        }
+                        if (!bFound)
+                        {
+                            //column not found so let's add it
+                            dataMgr.m_strSQL = dataMgr.FormatCreateTableSqlFieldItem(oSourceTableSchema.Rows[z]);
+                            dataMgr.SqlNonQuery(dataMgr.m_Connection, "ALTER TABLE " + m_strAddHarvCostsWorkTable + " " +
+                                "ADD COLUMN " + dataMgr.m_strSQL);
                         }
                     }
-                    //
-                    //append all the current scenario rows into the work table
-                    //
-                    strDestColumnsList = dataMgr.getFieldNames(oConn, "SELECT * FROM " + m_strAddHarvCostsWorkTable);
-                    dataMgr.m_strSQL = "INSERT INTO " + m_strAddHarvCostsWorkTable + " (" + strDestColumnsList + ") " +
-                                        "SELECT " + strDestColumnsList + " FROM scenario_additional_harvest_costs WHERE TRIM(scenario_id)='" + this.ScenarioId + "'";
-                    dataMgr.SqlNonQuery(oConn, dataMgr.m_strSQL);
                 }
+                //
+                //append all the current scenario rows into the work table
+                //
+                strDestColumnsList = dataMgr.getFieldNames(dataMgr.m_Connection, "SELECT * FROM " + m_strAddHarvCostsWorkTable);
+                dataMgr.m_strSQL = "INSERT INTO " + m_strAddHarvCostsWorkTable + " (" + strDestColumnsList + ") " +
+                                    "SELECT " + strDestColumnsList + " FROM scenario_additional_harvest_costs WHERE TRIM(scenario_id)='" + this.ScenarioId + "'";
+                dataMgr.SqlNonQuery(dataMgr.m_Connection, dataMgr.m_strSQL);
 
                 //CREATE LINK IN TEMP MDB TO TEMPORARY SCENARIO ADDITIONAL HARVEST COSTS TABLE
                 //
@@ -1266,8 +1268,6 @@ namespace FIA_Biosum_Manager
                                     break;
                                 }
                             }
-
-
                         }
 
                     }
@@ -1275,29 +1275,30 @@ namespace FIA_Biosum_Manager
                 //
                 //make sure columns exist in the additional harvest cost columns table
                 //
-                CreateColumns();
+                CreateColumns(dataMgr);
 
                 // Copy values from reference to target scenario
-                m_oAdo.m_strSQL = "";
+                dataMgr.m_strSQL = "";
                 string strColumn = "";
 
                 for (int q = 0; q <= uc_collection.Count - 1; q++)
                 {
                     strColumn = uc_collection.Item(q).ColumnName.Trim();
                     //make sure the source scenario has this column
-                    if (m_oAdo.ColumnExist(m_oAdo.m_OleDbConnection, "scenario_additional_harvest_costs", strColumn))
+                    if (dataMgr.ColumnExist(dataMgr.m_Connection, "scenario_additional_harvest_costs", strColumn))
                     {
-
                         //make sure columnname not already referenced
-                        if (m_oAdo.m_strSQL.ToUpper().IndexOf("B." + strColumn.ToUpper() + " IS NOT NULL", 0) < 0)
+                        if (dataMgr.m_strSQL.ToUpper().IndexOf("B." + strColumn.ToUpper() + " IS NOT NULL", 0) < 0)
                         {
-                            m_oAdo.m_strSQL = m_oAdo.m_strSQL + "a." + strColumn + "= IIF(b." + strColumn + " IS NOT NULL,b." + strColumn + ",a." + strColumn + "),";
+                            dataMgr.m_strSQL = dataMgr.m_strSQL + strColumn + " = (SELECT COALESCE(b." + strColumn + ", a." + strColumn + ") " +
+                                               "FROM scenario_additional_harvest_costs as b " +
+                                               "WHERE a.biosum_cond_id = b.biosum_cond_id AND a.rx = b.rx), ";
                         }
 
 
                     }
                 }
-                if (m_oAdo.m_strSQL.Trim().Length > 0)
+                if (dataMgr.m_strSQL.Trim().Length > 0)
                 {
                     frmMain.g_oFrmMain.ActivateStandByAnimation(
                            this.ParentForm.WindowState,
@@ -1306,22 +1307,21 @@ namespace FIA_Biosum_Manager
                            this.ParentForm.Width,
                            this.ParentForm.Top);
                     //remove the comma at the end of the string
-                    m_oAdo.m_strSQL = m_oAdo.m_strSQL.Substring(0, m_oAdo.m_strSQL.Length - 1);
+                    dataMgr.m_strSQL = dataMgr.m_strSQL.Substring(0, dataMgr.m_strSQL.Length - 2);
 
                     String sourceScenarioId = ReferenceProcessorScenarioForm.m_oProcessorScenarioItem.SourceScenarioId;
-                    m_oAdo.m_strSQL = "UPDATE additional_harvest_costs_work_table a " +
-                                      "INNER JOIN  scenario_additional_harvest_costs b " +
-                                      "ON a.biosum_cond_id=b.biosum_cond_id AND a.rx=b.rx " +
-                                      "SET " + m_oAdo.m_strSQL +
-                                      " WHERE b.scenario_id = '" + sourceScenarioId + "' ";
-
+                    dataMgr.m_strSQL = "UPDATE additional_harvest_costs_work_table AS a SET " + dataMgr.m_strSQL +
+                                       " WHERE EXISTS( " +
+                                       "SELECT* FROM scenario_additional_harvest_costs AS b " +
+                                       "WHERE b.biosum_cond_id = a.biosum_cond_id AND b.RX = a.RX " +
+                                       "AND trim(b.scenario_id) = '" + sourceScenarioId.Trim() + "')";
                     frmMain.g_sbpInfo.Text = "Updating Harvest Cost Component $/A/C Values...Stand By";
 
-                    m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                    dataMgr.SqlNonQuery(dataMgr.m_Connection, dataMgr.m_strSQL);
 
                     frmMain.g_sbpInfo.Text = "Ready";
 
-                    if (m_oAdo.m_intError == 0)
+                    if (dataMgr.m_intError == 0)
                     {
                         UpdateNullCounts();
                         frmMain.g_oFrmMain.DeactivateStandByAnimation();
@@ -1329,8 +1329,8 @@ namespace FIA_Biosum_Manager
                     }
                     else
                         frmMain.g_oFrmMain.DeactivateStandByAnimation();
-
                 }
+                dataMgr.CloseAndDisposeConnection(dataMgr.m_Connection, true);
 
                 //
                 //get null counts for each column
@@ -1338,8 +1338,6 @@ namespace FIA_Biosum_Manager
                 UpdateNullCounts();
                 if (this.uc_collection.Count == 0)
                     uc_processor_scenario_additional_harvest_cost_column_item1.Visible = false;
-
-
 
             }
         }
@@ -1475,36 +1473,67 @@ namespace FIA_Biosum_Manager
                 m_strError = e.Message;
             }
         }
-        private void CreateColumns()
+        private void CreateColumns(SQLite.ADO.DataMgr p_DataMgr)
         {
             int x,y;
             string strColumnsAddedList = "";
             string strColumnName = "";
             string[] strColumnsArray = m_oAdo.getFieldNamesArray(m_oAdo.m_OleDbConnection, "SELECT * FROM additional_harvest_costs_work_table ");
-            for (y = 0; y <= uc_collection.Count - 1; y++)
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
             {
-                if (!m_oAdo.ColumnExist(m_oAdo.m_OleDbConnection, "additional_harvest_costs_work_table", uc_collection.Item(y).ColumnName.Trim()))
+                for (y = 0; y <= uc_collection.Count - 1; y++)
                 {
-                    if (strColumnsAddedList.IndexOf("," + uc_collection.Item(y).ColumnName.Trim().ToUpper() + ",", 0) < 0)
+                    if (!m_oAdo.ColumnExist(m_oAdo.m_OleDbConnection, "additional_harvest_costs_work_table", uc_collection.Item(y).ColumnName.Trim()))
                     {
-                        for (x = 0; x <= strColumnsArray.Length - 1; x++)
+                        if (strColumnsAddedList.IndexOf("," + uc_collection.Item(y).ColumnName.Trim().ToUpper() + ",", 0) < 0)
                         {
-                            strColumnName = strColumnsArray[x].Trim();
-                            if (uc_collection.Item(y).ColumnName.Trim().ToUpper() ==
-                                        strColumnName.ToUpper()) break;
+                            for (x = 0; x <= strColumnsArray.Length - 1; x++)
+                            {
+                                strColumnName = strColumnsArray[x].Trim();
+                                if (uc_collection.Item(y).ColumnName.Trim().ToUpper() ==
+                                            strColumnName.ToUpper()) break;
 
 
-                        }
-                        if (x > strColumnsArray.Length - 1)
-                        {
-                            m_oAdo.m_strSQL = "ALTER TABLE additional_harvest_costs_work_table  " +
-                                              "ADD COLUMN " + uc_collection.Item(y).ColumnName.Trim() + " DOUBLE ";
-                            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
-                            strColumnsAddedList = strColumnsAddedList + "," + strColumnName + ",";
+                            }
+                            if (x > strColumnsArray.Length - 1)
+                            {
+                                m_oAdo.m_strSQL = "ALTER TABLE additional_harvest_costs_work_table  " +
+                                                  "ADD COLUMN " + uc_collection.Item(y).ColumnName.Trim() + " DOUBLE ";
+                                m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                                strColumnsAddedList = strColumnsAddedList + "," + strColumnName + ",";
+                            }
                         }
                     }
                 }
             }
+            else
+            {
+                for (y = 0; y <= uc_collection.Count - 1; y++)
+                {
+                    if (!p_DataMgr.ColumnExist(p_DataMgr.m_Connection, "additional_harvest_costs_work_table", uc_collection.Item(y).ColumnName.Trim()))
+                    {
+                        if (strColumnsAddedList.IndexOf("," + uc_collection.Item(y).ColumnName.Trim().ToUpper() + ",", 0) < 0)
+                        {
+                            for (x = 0; x <= strColumnsArray.Length - 1; x++)
+                            {
+                                strColumnName = strColumnsArray[x].Trim();
+                                if (uc_collection.Item(y).ColumnName.Trim().ToUpper() ==
+                                            strColumnName.ToUpper()) break;
+
+
+                            }
+                            if (x > strColumnsArray.Length - 1)
+                            {
+                                p_DataMgr.m_strSQL = "ALTER TABLE additional_harvest_costs_work_table  " +
+                                                  "ADD COLUMN " + uc_collection.Item(y).ColumnName.Trim() + " DOUBLE ";
+                                p_DataMgr.SqlNonQuery(p_DataMgr.m_Connection, p_DataMgr.m_strSQL);
+                                strColumnsAddedList = strColumnsAddedList + "," + strColumnName + ",";
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         public void savevaluesSqlite()
         {

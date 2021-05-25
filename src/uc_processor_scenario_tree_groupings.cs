@@ -449,13 +449,13 @@ namespace FIA_Biosum_Manager
 
                         //delete all records from the tree species group table
                         oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsTableName +
-                                           " WHERE TRIM(UPPER(scenario_id))='" + strScenarioId.Trim().ToUpper() + " '";
+                                           " WHERE TRIM(UPPER(scenario_id))='" + strScenarioId.Trim().ToUpper() + "'";
                         oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
                         if (oDataMgr.m_intError != 0) return;
 
                         //delete all records from the tree species group list table
                         oDataMgr.m_strSQL = "DELETE FROM " + Tables.ProcessorScenarioRuleDefinitions.DefaultTreeSpeciesGroupsListTableName +
-                                          " WHERE TRIM(UPPER(scenario_id))='" + strScenarioId.Trim().ToUpper() + " '";
+                                          " WHERE TRIM(UPPER(scenario_id))='" + strScenarioId.Trim().ToUpper() + "'";
                         oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
 
                         if (oDataMgr.m_intError == 0)
