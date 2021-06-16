@@ -4564,10 +4564,14 @@ namespace FIA_Biosum_Manager
             static public string CreateSqliteHarvestCostsTableSQL(string p_strTableName)
             {
                 return "CREATE TABLE " + p_strTableName + " (" +
-                    "biosum_cond_id TEXT," +
-                    "rxpackage TEXT," +
-                    "rx TEXT," +
-                    "rxcycle TEXT," +
+                                        //"biosum_cond_id TEXT," +
+                                        //"rxpackage TEXT," +
+                                        //"rx TEXT," +
+                                        //"rxcycle TEXT," +
+                    "biosum_cond_id CHAR(25)," +    //@ToDo: Do Access datatypes allow me to delete rows?
+                    "rxpackage CHAR(3)," +
+                    "rx CHAR(3)," +
+                    "rxcycle CHAR(1)," +
                     "complete_cpa REAL DEFAULT 0," +
                     "harvest_cpa REAL," +
                     "chip_cpa REAL," +

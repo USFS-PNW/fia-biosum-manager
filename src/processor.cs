@@ -981,13 +981,17 @@ namespace FIA_Biosum_Manager
 
                     // create tree vol val work table (TreeVolValLowSlope); Re-use the sql from tree vol val but don't create the indexes
                     m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, Tables.Processor.CreateSqliteTreeVolValSpeciesDiamGroupsTableSQL(m_strTvvTableName, false));
-                    dao_data_access oDao = new dao_data_access();
 
-                    oDao.CreateSQLiteTableLink(m_oAdo.m_OleDbConnection.DataSource, m_strTvvTableName,
-                        m_strTvvTableName, ODBCMgr.DSN_KEYS.ProcessorTemporaryDsnName,
-                        m_oDataMgr.m_Connection.FileName);
-                    oDao.m_DaoWorkspace.Close();
-                    oDao = null;
+                    // check to see if table link exists; Create it if it doesn't
+                    if (! m_oAdo.TableExist(m_oAdo.m_OleDbConnection, m_strTvvTableName))
+                    {
+                        dao_data_access oDao = new dao_data_access();
+                        oDao.CreateSQLiteTableLink(m_oAdo.m_OleDbConnection.DataSource, m_strTvvTableName,
+                            m_strTvvTableName, ODBCMgr.DSN_KEYS.ProcessorTemporaryDsnName,
+                            m_oDataMgr.m_Connection.FileName);
+                        oDao.m_DaoWorkspace.Close();
+                        oDao = null;
+                    }
                 }
 
 
