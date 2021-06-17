@@ -367,6 +367,7 @@ namespace FIA_Biosum_Manager
             m_oQueries.m_oFvs.LoadDatasource = true;
             m_oQueries.m_oReference.LoadDatasource = true;
             m_oQueries.m_oProcessor.LoadDatasource = true;
+            // The following call creates the temp database that is used for running calculations
             m_oQueries.LoadDatasources(true, ReferenceProcessorScenarioForm.m_bUsingSqlite, "processor", ScenarioId);
             //
             //LOAD RX PACKAGE INFO
@@ -4231,15 +4232,6 @@ namespace FIA_Biosum_Manager
                 m_oDataMgr, m_oDataMgr.m_Connection, "HarvestCostsTotalAdditionalWorkTable");
             if (m_oDataMgr.m_intError == 0)
             {
-                //attach to scenario_rule_definitions.db
-                string strScenarioDB =
-                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
-                m_oDataMgr.m_strSQL = "attach database '" + strScenarioDB + "' as definitions";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + m_oDataMgr.m_strSQL + "\r\n");
-                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
-
                 //insert plot+rx records for the current scenario
                 m_oDataMgr.m_strSQL = "INSERT INTO HarvestCostsTotalAdditionalWorkTable " +
                                       "(biosum_cond_id,rx) SELECT biosum_cond_id,rx " +
@@ -4706,13 +4698,6 @@ namespace FIA_Biosum_Manager
             }
             else
             {
-                m_oDataMgr.m_strSQL = "attach '" + frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
-                                      "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile + 
-                                      "' as 'results'";
-                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
-                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
-
                 if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "TreeVolValLowSlope"))
                 {
                     //
@@ -4797,11 +4782,157 @@ namespace FIA_Biosum_Manager
                 frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
             }
 
+            if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                // TREE VOL VAL table
+                if (m_oAdo.m_intError == 0)
+                {
+                    // Query the conditions/rxpackage that have records in cycles 2,3, and 4 but not in cycle 1
+                    m_oAdo.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
+                        "FROM " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " t " +
+                        "WHERE t.rxcycle in ('2','3','4') " +
+                        "AND NOT EXISTS (" +
+                        "SELECT t1.biosum_cond_id, t1.rxpackage " +
+                        "FROM " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " t1 " +
+                        "WHERE t1.rxcycle = '1' " +
+                        "AND t.biosum_cond_id = t1.biosum_cond_id " +
+                        "AND t.rxpackage = t1.rxpackage) " +
+                        "GROUP BY t.biosum_cond_id, t.rxpackage, t.rx";
+
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oAdo.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
+                    m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "END SQL " + System.DateTime.Now.ToString() + "\r\n");
+
+                    if (m_oAdo.m_OleDbDataReader.HasRows)
+                    {
+                        long lngCount = 0;
+                        string strRxCycle = "1";
+                        int intGroupPlaceholder = 999;
+                        int intValuePlaceholder = 0;
+                        //For each condition id/rxPackage combination returned by the query above
+                        while (m_oAdo.m_OleDbDataReader.Read())
+                        {
+                            string cond_id = "";
+                            string rxpackage = "";
+                            string rx = "";
+                            if (m_oAdo.m_OleDbDataReader["biosum_cond_id"] != System.DBNull.Value)
+                                cond_id = m_oAdo.m_OleDbDataReader["biosum_cond_id"].ToString().Trim();
+                            if (m_oAdo.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
+                                rxpackage = m_oAdo.m_OleDbDataReader["rxpackage"].ToString().Trim();
+                            if (m_oAdo.m_OleDbDataReader["rx"] != System.DBNull.Value)
+                                rx = m_oAdo.m_OleDbDataReader["rx"].ToString().Trim();
+
+                            //Insert a placeholder row with default values
+                            m_oAdo.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " " +
+                                "(biosum_cond_id, rxpackage, rx, rxcycle, species_group, diam_group, " +
+                                "merch_wt_gt, merch_val_dpa, merch_vol_cf, merch_to_chipbin_YN, " +
+                                "chip_wt_gt, chip_val_dpa, chip_vol_cf, bc_vol_cf, bc_wt_gt, " +
+                                "DateTimeCreated, place_holder) " +
+                                "VALUES ('" + cond_id + "', '" + rxpackage + "', '" + rx + "', '" + strRxCycle + "', " +
+                                intGroupPlaceholder + ", " + intGroupPlaceholder + ", " +
+                                intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", 'N', " +
+                                intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder +
+                                ", '" + m_strDateTimeCreated + "', 'Y')";
+
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
+                            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                            if (m_oAdo.m_intError != 0) break;
+                            lngCount++;
+                            //Console.WriteLine("Condition -> " + cond_id);
+                        }
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, " \r\n END INSERTED " + lngCount + " RECORDS: " + System.DateTime.Now.ToString() + "\r\n");
+                    }
+                }
+
+                // HARVEST COSTS table
+                if (m_oAdo.m_intError == 0)
+                {
+                    // Query the conditions/rxpackage that have records in cycles 2,3, and 4 but not in cycle 1
+                    m_oAdo.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
+                        "FROM " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " t " +
+                        "WHERE t.rxcycle in ('2','3','4') " +
+                        "AND NOT EXISTS (" +
+                        "SELECT t1.biosum_cond_id, t1.rxpackage " +
+                        "FROM " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " t1 " +
+                        "WHERE t1.rxcycle = '1' " +
+                        "AND t.biosum_cond_id = t1.biosum_cond_id " +
+                        "AND t.rxpackage = t1.rxpackage) " +
+                        "GROUP BY t.biosum_cond_id, t.rxpackage, t.rx";
+
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oAdo.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
+                    m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                        frmMain.g_oUtils.WriteText(m_strDebugFile, "END SQL " + System.DateTime.Now.ToString() + "\r\n");
+
+                    if (m_oAdo.m_OleDbDataReader.HasRows)
+                    {
+                        long lngCount = 0;
+                        string strRxCycle = "1";
+                        int intValuePlaceholder = 0;
+                        //For each condition id/rxPackage combination returned by the query above
+                        while (m_oAdo.m_OleDbDataReader.Read())
+                        {
+                            string cond_id = "";
+                            string rxpackage = "";
+                            string rx = "";
+                            if (m_oAdo.m_OleDbDataReader["biosum_cond_id"] != System.DBNull.Value)
+                                cond_id = m_oAdo.m_OleDbDataReader["biosum_cond_id"].ToString().Trim();
+                            if (m_oAdo.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
+                                rxpackage = m_oAdo.m_OleDbDataReader["rxpackage"].ToString().Trim();
+                            if (m_oAdo.m_OleDbDataReader["rx"] != System.DBNull.Value)
+                                rx = m_oAdo.m_OleDbDataReader["rx"].ToString().Trim();
+
+                            //Insert a placeholder row with default values
+                            m_oAdo.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " " +
+                                "(biosum_cond_id, rxpackage, rx, rxcycle, " +
+                                "complete_cpa, harvest_cpa," +
+                                "DateTimeCreated, place_holder) " +
+                                "VALUES ('" + cond_id + "', '" + rxpackage + "', '" + rx + "', '" + strRxCycle + "', " +
+                                intValuePlaceholder + ", " + intValuePlaceholder +
+                                ", '" + m_strDateTimeCreated + "', 'Y')";
+
+                            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
+                            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                            if (m_oAdo.m_intError != 0) break;
+                            lngCount++;
+                            //Console.WriteLine("Condition -> " + cond_id);
+                        }
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, " \r\n END INSERTED " + lngCount + " RECORDS: " + System.DateTime.Now.ToString() + "\r\n");
+                    }
+                }
+
+
+                m_intError = m_oAdo.m_intError;
+                m_strError = m_oAdo.m_strError;
+            }
+            else
+            {
+                RunScenario_AppendPlaceholdersToSqliteTreeVolValAndHarvestCostsTables();
+            }
+
+        }
+
+        private void RunScenario_AppendPlaceholdersToSqliteTreeVolValAndHarvestCostsTables()
+        {
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+            {
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "\r\n//\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "// RunScenario_AppendPlaceholdersToSqliteTreeVolValAndHarvestCostsTables\r\n");
+                frmMain.g_oUtils.WriteText(m_strDebugFile, "//\r\n");
+            }
+
             // TREE VOL VAL table
-            if (m_oAdo.m_intError == 0)
+            if (m_oDataMgr.m_intError == 0)
             {
                 // Query the conditions/rxpackage that have records in cycles 2,3, and 4 but not in cycle 1
-                m_oAdo.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
+                m_oDataMgr.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
                     "FROM " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " t " +
                     "WHERE t.rxcycle in ('2','3','4') " +
                     "AND NOT EXISTS (" +
@@ -4813,32 +4944,32 @@ namespace FIA_Biosum_Manager
                     "GROUP BY t.biosum_cond_id, t.rxpackage, t.rx";
 
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oAdo.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
-                m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oDataMgr.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
+                m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(m_strDebugFile, "END SQL " + System.DateTime.Now.ToString() + "\r\n");
 
-                if (m_oAdo.m_OleDbDataReader.HasRows)
+                if (m_oDataMgr.m_DataReader.HasRows)
                 {
                     long lngCount = 0;
                     string strRxCycle = "1";
                     int intGroupPlaceholder = 999;
                     int intValuePlaceholder = 0;
                     //For each condition id/rxPackage combination returned by the query above
-                    while (m_oAdo.m_OleDbDataReader.Read())
+                    while (m_oDataMgr.m_DataReader.Read())
                     {
                         string cond_id = "";
                         string rxpackage = "";
                         string rx = "";
-                        if (m_oAdo.m_OleDbDataReader["biosum_cond_id"] != System.DBNull.Value)
-                            cond_id = m_oAdo.m_OleDbDataReader["biosum_cond_id"].ToString().Trim();
-                        if (m_oAdo.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
-                            rxpackage = m_oAdo.m_OleDbDataReader["rxpackage"].ToString().Trim();
-                        if (m_oAdo.m_OleDbDataReader["rx"] != System.DBNull.Value)
-                            rx = m_oAdo.m_OleDbDataReader["rx"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["biosum_cond_id"] != System.DBNull.Value)
+                            cond_id = m_oDataMgr.m_DataReader["biosum_cond_id"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["rxpackage"] != System.DBNull.Value)
+                            rxpackage = m_oDataMgr.m_DataReader["rxpackage"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["rx"] != System.DBNull.Value)
+                            rx = m_oDataMgr.m_DataReader["rx"].ToString().Trim();
 
                         //Insert a placeholder row with default values
-                        m_oAdo.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " " +
+                        m_oDataMgr.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultTreeVolValSpeciesDiamGroupsTableName + " " +
                             "(biosum_cond_id, rxpackage, rx, rxcycle, species_group, diam_group, " +
                             "merch_wt_gt, merch_val_dpa, merch_vol_cf, merch_to_chipbin_YN, " +
                             "chip_wt_gt, chip_val_dpa, chip_vol_cf, bc_vol_cf, bc_wt_gt, " +
@@ -4846,15 +4977,14 @@ namespace FIA_Biosum_Manager
                             "VALUES ('" + cond_id + "', '" + rxpackage + "', '" + rx + "', '" + strRxCycle + "', " +
                             intGroupPlaceholder + ", " + intGroupPlaceholder + ", " +
                             intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", 'N', " +
-                            intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + 
+                            intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder + ", " + intValuePlaceholder +
                             ", '" + m_strDateTimeCreated + "', 'Y')";
 
                         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
-                        m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
-                        if (m_oAdo.m_intError != 0) break;
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
+                        m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                        if (m_oDataMgr.m_intError != 0) break;
                         lngCount++;
-                        //Console.WriteLine("Condition -> " + cond_id);
                     }
                     if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         frmMain.g_oUtils.WriteText(m_strDebugFile, " \r\n END INSERTED " + lngCount + " RECORDS: " + System.DateTime.Now.ToString() + "\r\n");
@@ -4862,10 +4992,10 @@ namespace FIA_Biosum_Manager
             }
 
             // HARVEST COSTS table
-            if (m_oAdo.m_intError == 0)
+            if (m_oDataMgr.m_intError == 0)
             {
                 // Query the conditions/rxpackage that have records in cycles 2,3, and 4 but not in cycle 1
-                m_oAdo.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
+                m_oDataMgr.m_strSQL = "SELECT t.biosum_cond_id, t.rxpackage, t.rx " +
                     "FROM " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " t " +
                     "WHERE t.rxcycle in ('2','3','4') " +
                     "AND NOT EXISTS (" +
@@ -4877,31 +5007,31 @@ namespace FIA_Biosum_Manager
                     "GROUP BY t.biosum_cond_id, t.rxpackage, t.rx";
 
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                    frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oAdo.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
-                m_oAdo.SqlQueryReader(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "EXECUTE SQL: " + m_oDataMgr.m_strSQL + " " + System.DateTime.Now.ToString() + "\r\n");
+                m_oDataMgr.SqlQueryReader(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
                 if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                     frmMain.g_oUtils.WriteText(m_strDebugFile, "END SQL " + System.DateTime.Now.ToString() + "\r\n");
 
-                if (m_oAdo.m_OleDbDataReader.HasRows)
+                if (m_oDataMgr.m_DataReader.HasRows)
                 {
                     long lngCount = 0;
                     string strRxCycle = "1";
                     int intValuePlaceholder = 0;
                     //For each condition id/rxPackage combination returned by the query above
-                    while (m_oAdo.m_OleDbDataReader.Read())
+                    while (m_oDataMgr.m_DataReader.Read())
                     {
                         string cond_id = "";
                         string rxpackage = "";
                         string rx = "";
-                        if (m_oAdo.m_OleDbDataReader["biosum_cond_id"] != System.DBNull.Value)
-                            cond_id = m_oAdo.m_OleDbDataReader["biosum_cond_id"].ToString().Trim();
-                        if (m_oAdo.m_OleDbDataReader["rxpackage"] != System.DBNull.Value)
-                            rxpackage = m_oAdo.m_OleDbDataReader["rxpackage"].ToString().Trim();
-                        if (m_oAdo.m_OleDbDataReader["rx"] != System.DBNull.Value)
-                            rx = m_oAdo.m_OleDbDataReader["rx"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["biosum_cond_id"] != System.DBNull.Value)
+                            cond_id = m_oDataMgr.m_DataReader["biosum_cond_id"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["rxpackage"] != System.DBNull.Value)
+                            rxpackage = m_oDataMgr.m_DataReader["rxpackage"].ToString().Trim();
+                        if (m_oDataMgr.m_DataReader["rx"] != System.DBNull.Value)
+                            rx = m_oDataMgr.m_DataReader["rx"].ToString().Trim();
 
                         //Insert a placeholder row with default values
-                        m_oAdo.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " " +
+                        m_oDataMgr.m_strSQL = "INSERT INTO " + Tables.ProcessorScenarioRun.DefaultHarvestCostsTableName + " " +
                             "(biosum_cond_id, rxpackage, rx, rxcycle, " +
                             "complete_cpa, harvest_cpa," +
                             "DateTimeCreated, place_holder) " +
@@ -4910,20 +5040,17 @@ namespace FIA_Biosum_Manager
                             ", '" + m_strDateTimeCreated + "', 'Y')";
 
                         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
-                            frmMain.g_oUtils.WriteText(m_strDebugFile, m_oAdo.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
-                        m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, m_oAdo.m_strSQL);
-                        if (m_oAdo.m_intError != 0) break;
+                            frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + " \r\n INSERT RECORD: " + System.DateTime.Now.ToString() + "\r\n");
+                        m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                        if (m_oDataMgr.m_intError != 0) break;
                         lngCount++;
-                        //Console.WriteLine("Condition -> " + cond_id);
                     }
                     if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                         frmMain.g_oUtils.WriteText(m_strDebugFile, " \r\n END INSERTED " + lngCount + " RECORDS: " + System.DateTime.Now.ToString() + "\r\n");
                 }
             }
-
-
-            m_intError = m_oAdo.m_intError;
-            m_strError = m_oAdo.m_strError;
+            m_intError = m_oDataMgr.m_intError;
+            m_strError = m_oDataMgr.m_strError;
         }
 
         private string RunScenario_CopyOPCOSTTables(string p_strVariant, string p_strRxPackage, string p_strRx1, string p_strRx2,
@@ -5054,6 +5181,30 @@ namespace FIA_Biosum_Manager
             }
             frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Prepare for processing...Stand By");
 
+            // Create temp SQLite database; The temp Access database is created in loadValues
+            if (ReferenceProcessorScenarioForm.m_bUsingSqlite)
+            {
+                m_strTempSqliteDbFile = frmMain.g_oUtils.getRandomFile(frmMain.g_oEnv.strTempDir, "db");
+                m_oDataMgr.CreateDbFile(m_strTempSqliteDbFile);
+                //@ToDo: Close this connection
+                m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(m_strTempSqliteDbFile));
+                //attach to scenario_rule_definitions.db
+                string strScenarioDB =
+                    frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                    "\\processor\\" + Tables.ProcessorScenarioRuleDefinitions.DefaultSqliteDbFile;
+                m_oDataMgr.m_strSQL = "attach database '" + strScenarioDB + "' as definitions";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, "Execute SQL: " + m_oDataMgr.m_strSQL + "\r\n");
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+                //attach to scenario_results.db
+                m_oDataMgr.m_strSQL = "attach '" + frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() +
+                      "\\processor\\" + ScenarioId + "\\" + Tables.ProcessorScenarioRun.DefaultSqliteResultsDbFile +
+                      "' as 'results'";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(m_strDebugFile, m_oDataMgr.m_strSQL + " \r\n START: " + System.DateTime.Now.ToString() + "\r\n");
+                m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, m_oDataMgr.m_strSQL);
+            }
+
             string strOpcostInputPath = "";
             for (x = 0; x <= this.m_lvEx.Items.Count - 1; x++)
             {
@@ -5173,19 +5324,20 @@ namespace FIA_Biosum_Manager
 
                         if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "InactiveStandsWorkTable") == true)
                             m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE InactiveStandsWorkTable");
+
+                        if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "TreeVolValLowSlope") == true)
+                            m_oAdo.SqlNonQuery(m_oAdo.m_OleDbConnection, "DROP TABLE TreeVolValLowSlope");
                     }
                     else
                     {
-                        m_strTempSqliteDbFile = frmMain.g_oUtils.getRandomFile(frmMain.g_oEnv.strTempDir, "db");
-                        m_oDataMgr.CreateDbFile(m_strTempSqliteDbFile);
-                        //@ToDo: Close this connection
-                        m_oDataMgr.OpenConnection(m_oDataMgr.GetConnectionString(m_strTempSqliteDbFile));
-
                         if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "HarvestCostsWorkTable") == true)
                             m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE HarvestCostsWorkTable");
 
                         if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "InactiveStandsWorkTable") == true)
                             m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE InactiveStandsWorkTable");
+
+                        if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "TreeVolValLowSlope") == true)
+                            m_oDataMgr.SqlNonQuery(m_oDataMgr.m_Connection, "DROP TABLE TreeVolValLowSlope");
                     }
 
                     if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "opcost_input") == true)
@@ -5381,14 +5533,29 @@ namespace FIA_Biosum_Manager
                         frmMain.g_oDelegate.SetControlPropertyValue(lblMsg, "Text", "Finalizing Processor Scenario Database Tables...Stand By");
                         //update counts
                         intRowCount = 0;
-                        if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "TreeVolValLowSlope") && ! _bInactiveVarRxPackage)
-                            intRowCount = (int)m_oAdo.getRecordCount(m_oAdo.m_OleDbConnection, "SELECT COUNT(*) FROM TreeVolValLowSlope", "temp");
+                        if (!ReferenceProcessorScenarioForm.m_bUsingSqlite)
+                        {
+                            if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "TreeVolValLowSlope") && !_bInactiveVarRxPackage)
+                                intRowCount = (int)m_oAdo.getRecordCount(m_oAdo.m_OleDbConnection, "SELECT COUNT(*) FROM TreeVolValLowSlope", "temp");
 
-                        frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_VOLVAL, intRowCount.ToString());
+                            frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_VOLVAL, intRowCount.ToString());
 
-                        if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "HarvestCostsWorkTable"))
-                            intRowCount = (int)m_oAdo.getRecordCount(m_oAdo.m_OleDbConnection, "SELECT COUNT(*) FROM HarvestCostsWorkTable", "temp");
-                        frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_HVSTCOST, intRowCount.ToString());
+                            if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "HarvestCostsWorkTable"))
+                                intRowCount = (int)m_oAdo.getRecordCount(m_oAdo.m_OleDbConnection, "SELECT COUNT(*) FROM HarvestCostsWorkTable", "temp");
+                            frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_HVSTCOST, intRowCount.ToString());
+                        }
+                        else
+                        {
+                            if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "TreeVolValLowSlope") && !_bInactiveVarRxPackage)
+                                intRowCount = (int)m_oDataMgr.getRecordCount(m_oDataMgr.m_Connection, "SELECT COUNT(*) FROM TreeVolValLowSlope", "temp");
+
+                            frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_VOLVAL, intRowCount.ToString());
+
+                            if (m_oDataMgr.TableExist(m_oDataMgr.m_Connection, "HarvestCostsWorkTable"))
+                                intRowCount = (int)m_oDataMgr.getRecordCount(m_oDataMgr.m_Connection, "SELECT COUNT(*) FROM HarvestCostsWorkTable", "temp");
+                            frmMain.g_oDelegate.SetListViewTextValue(m_lvEx, x, COL_HVSTCOST, intRowCount.ToString());
+
+                        }
 
                         // Checking to see if opcost_input has > rows than harvest costs; If so, opcost dropped some records
                         if (m_oAdo.TableExist(m_oAdo.m_OleDbConnection, "opcost_input"))
