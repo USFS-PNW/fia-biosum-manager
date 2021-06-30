@@ -6428,9 +6428,16 @@ namespace FIA_Biosum_Manager
 			string strRptYr="";
 			string strNotes="";
 			int intAddedRows=0;
-			
-			      
-			this.lstFIADBInv.Clear();
+
+            if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 1)
+            {
+                frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "\r\n//\r\n");
+                frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "//uc_plot_input.FIADBLoadInv\r\n");
+                frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, "//\r\n");
+            }
+
+
+            this.lstFIADBInv.Clear();
 			this.lstFIADBInv.Columns.Add("EvalId", 50, HorizontalAlignment.Left);
 			this.lstFIADBInv.Columns.Add("RsCd", 30, HorizontalAlignment.Left);
 			this.lstFIADBInv.Columns.Add("StateCd", 50, HorizontalAlignment.Left);
