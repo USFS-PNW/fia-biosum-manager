@@ -3706,6 +3706,7 @@ namespace FIA_Biosum_Manager
             public string DefaultBiosumPopStratumAdjustmentFactorsTableDbFile { get { return @"db\master.mdb"; } }
             public string DefaultSiteTreeTableDbFile { get { return @"db\master.mdb"; } }
             public string DefaultSiteTreeTableName { get { return "sitetree"; } }
+            public string DefaultPopTableDbFile { get { return @"db\master.db"; } }
 
             public string DefaultDWMDbFile { get { return @"db\master_aux.accdb"; } }
             public string DefaultDWMCoarseWoodyDebrisName { get { return "DWM_COARSE_WOODY_DEBRIS"; } }
@@ -4101,19 +4102,19 @@ namespace FIA_Biosum_Manager
             public string CreateSqlitePopEstnUnitTableSQL(string p_strTableName)
             {
                 return "CREATE TABLE " + p_strTableName + " (" +
-                    "cn TEXT," +
-                    "eval_cn TEXT," +
-                    "rscd REAL," +
-                    "evalid REAL," +
-                    "estn_unit_descr TEXT," +
-                    "statecd REAL," +
-                    "arealand_eu REAL," +
-                    "areatot_eu REAL," +
-                    "area_used REAL," +
-                    "area_source TEXT," +
-                    "p1pntcnt_eu REAL," +
-                    "p1source TEXT," +
-                    "biosum_status_cd TEXT)";
+                    "cn VARCHAR (34)," +
+                    "eval_cn VARCHAR (34)," +
+                    "rscd INTEGER," +
+                    "evalid INTEGER," +
+                    "estn_unit_descr VARCHAR (255)," +
+                    "statecd INTEGER," +
+                    "arealand_eu FLOAT," +
+                    "areatot_eu FLOAT," +
+                    "area_used FLOAT," +
+                    "area_source VARCHAR (50)," +
+                    "p1pntcnt_eu INTEGER," +
+                    "p1source VARCHAR (50)," +
+                    "biosum_status_cd VARCHAR (1))";
             }
             public void CreatePopEvalTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {
@@ -4149,21 +4150,23 @@ namespace FIA_Biosum_Manager
             {
                 p_oDataMgr.AddIndex(p_oConn, p_strTableName, p_strTableName + "_idx1", "evalid");
             }
+            // These data types match FIADB from which the data is loaded
             public string CreateSqlitePopEvalTableSQL(string p_strTableName)
             {
                 return "CREATE TABLE " + p_strTableName + " (" +
-                    "cn TEXT," +
-                    "rscd REAL," +
-                    "evalid REAL," +
-                    "eval_descr TEXT," +
-                    "statecd REAL," +
-                    "location_nm TEXT," +
-                    "report_year_nm TEXT," +
-                    "notes TEXT," +
-                    "start_invyr REAL," +
-                    "end_invyr REAL," +
-                    "p1source TEXT," +
-                    "biosum_status_cd TEXT)";
+                    "cn VARCHAR (34)," +
+                    "rscd INTEGER," +
+                    "evalid INTEGER," +
+                    "eval_descr VARCHAR (255)," +
+                    "statecd INTEGER," +
+                    "location_nm VARCHAR (255)," +
+                    "report_year_nm VARCHAR (255)," +
+                    "notes VARCHAR (2000)," +
+                    "start_invyr INTEGER," +
+                    "end_invyr INTEGER," +
+                    "growth_acct VARCHAR (1)," +
+                    "land_only VARCHAR (1)," +
+                    "biosum_status_cd VARCHAR (1))";
             }
             public void CreatePopPlotStratumAssgnTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {
@@ -4203,19 +4206,19 @@ namespace FIA_Biosum_Manager
             public string CreateSqlitePopPlotStratumAssgnTableSQL(string p_strTableName)
             {
                 return "CREATE TABLE " + p_strTableName + " (" +
-                    "cn TEXT," +
-                    "stratum_cn TEXT," +
-                    "plt_cn TEXT," +
-                    "statecd REAL," +
+                    "cn VARCHAR (34)," +
+                    "stratum_cn VARCHAR (34)," +
+                    "plt_cn VARCHAR (34)," +
+                    "statecd INTEGER," +
                     "invyr INTEGER," +
                     "unitcd INTEGER," +
                     "countycd INTEGER," +
                     "plot INTEGER," +
-                    "rscd REAL," +
-                    "evalid REAL," +
+                    "rscd INTEGER," +
+                    "evalid INTEGER," +
                     "estn_unit INTEGER," +
                     "stratumcd INTEGER," +
-                    "biosum_status_cd TEXT)";
+                    "biosum_status_cd VARCHAR (1))";
             }
             public void CreatePopStratumTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {
@@ -4257,21 +4260,21 @@ namespace FIA_Biosum_Manager
             public string CreateSqlitePopStratumTableSQL(string p_strTableName)
             {
                 return "CREATE TABLE " + p_strTableName + " (" +
-                    "cn TEXT," +
-                    "estn_unit_cn TEXT," +
-                    "rscd REAL," +
-                    "evalid REAL," +
+                    "cn VARCHAR (34)," +
+                    "estn_unit_cn VARCHAR (34)," +
+                    "rscd INTEGER," +
+                    "evalid INTEGER," +
                     "estn_unit INTEGER," +
                     "stratumcd INTEGER," +
-                    "statum_desc TEXT," +
-                    "statecd REAL," +
-                    "p1pointcnt REAL," +
-                    "p2pointcnt REAL," +
-                    "expns REAL," +
-                    "adj_factor_macr REAL," +
-                    "adj_factor_subp REAL," +
-                    "adj_factor_micr REAL," +
-                    "biosum_status_cd TEXT)";
+                    "stratum_desc VARCHAR (255)," +
+                    "statecd INTEGER," +
+                    "p1pointcnt INTEGER," +
+                    "p2pointcnt INTEGER," +
+                    "expns FLOAT," +
+                    "adj_factor_macr FLOAT," +
+                    "adj_factor_subp FLOAT," +
+                    "adj_factor_micr FLOAT," +
+                    "biosum_status_cd VARCHAR (1))";
             }
             public void CreateBiosumPopStratumAdjustmentFactorsTable(FIA_Biosum_Manager.ado_data_access p_oAdo, System.Data.OleDb.OleDbConnection p_oConn, string p_strTableName)
             {

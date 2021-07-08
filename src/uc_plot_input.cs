@@ -77,7 +77,7 @@ namespace FIA_Biosum_Manager
 		private string m_strCurrentFiadbTable="";
 		private string m_strCurrentBiosumTable="";
 		private string m_strCurrentProcess="";
-
+        private string m_strMasterDbFile = "";
 
 
 		private string m_strTempMDBFile;
@@ -2430,6 +2430,7 @@ namespace FIA_Biosum_Manager
             {
                 //instatiate the oledb data access class
                 this.m_ado = new ado_data_access();
+                DataMgr oDataMgr = new DataMgr();
 
                 //progress bar 1: single process
                 this.SetThermValue(m_frmTherm.progressBar1,"Maximum", 100);
@@ -3001,14 +3002,12 @@ namespace FIA_Biosum_Manager
                         }
 
                         //Successfully imported and updated plot data. Set biosum_status_cd to 1
-                        foreach (string table in new string[]
-                        {
-                            m_strPlotTable, m_strCondTable, m_strTreeTable, m_strPopEvalTable, m_strPopStratumTable,
+                        string[] arrTables = new string[]{m_strPlotTable, m_strCondTable, m_strTreeTable, m_strPopEvalTable, m_strPopStratumTable,
                             m_strPpsaTable, m_strPopEstUnitTable, m_strSiteTreeTable,
                             m_strBiosumPopStratumAdjustmentFactorsTable, m_strTreeRegionalBiomassTable,
                             m_strDwmCwdTable, m_strDwmFwdTable, m_strDwmDuffLitterTable, m_strDwmTransectSegmentTable,
-                            m_strGrmStandTable, m_strGrmTreeTable
-                        })
+                            m_strGrmStandTable, m_strGrmTreeTable };
+                        foreach (string table in arrTables)
                         {
                             if (m_ado.TableExist(m_connTempMDBFile, table))
                             {
@@ -3020,11 +3019,28 @@ namespace FIA_Biosum_Manager
                             }
                         }
 
+                        // Set biosum_status_cd to 1 in master.mdb sqlite tables
+                        string strConn = oDataMgr.GetConnectionString(this.m_strMasterDbFile);
+                        using (System.Data.SQLite.SQLiteConnection conn = new System.Data.SQLite.SQLiteConnection(strConn))
+                        {
+                            conn.Open();
+                            foreach (string table in arrTables)
+                            {
+                                if (oDataMgr.TableExist(conn, table))
+                                {
+                                    oDataMgr.m_strSQL = "UPDATE " + table +
+                                                     " SET biosum_status_cd = 1 WHERE biosum_status_cd = 9;";
+                                    if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                        frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, oDataMgr.m_strSQL + "\r\n");
+                                    oDataMgr.SqlNonQuery(conn, oDataMgr.m_strSQL);
+                                }
+                            }
+                        }
 
                         SetThermValue(m_frmTherm.progressBar1, "Value",
-                            GetThermValue(m_frmTherm.progressBar1, "Maximum"));
+                        GetThermValue(m_frmTherm.progressBar1, "Maximum"));
                         SetThermValue(m_frmTherm.progressBar2, "Value",
-                            GetThermValue(m_frmTherm.progressBar2, "Maximum"));
+                        GetThermValue(m_frmTherm.progressBar2, "Maximum"));
                         frmMain.g_oDelegate.GetControlPropertyValue((System.Windows.Forms.Button) m_frmTherm.btnCancel,
                             "Visible", false);
 
@@ -8084,6 +8100,7 @@ namespace FIA_Biosum_Manager
                         m_intError = -1;
                         bLoad = false;
                     }
+                    oDataMgr.m_DataReader.Close();
                 } // Closing connection
 
                 if (bLoad)
@@ -8108,15 +8125,31 @@ namespace FIA_Biosum_Manager
                     }
                     this.m_strTempMDBFileConn = this.m_ado.getMDBConnString(this.m_strTempMDBFile, "", "");
                     this.m_ado.OpenConnection(m_strTempMDBFileConn);
+                    m_strMasterDbFile = frmMain.g_oFrmMain.frmProject.uc_project1.txtRootDirectory.Text.Trim() + "\\" +
+                        frmMain.g_oTables.m_oFIAPlot.DefaultPopTableDbFile;
+                    string strSqliteFileConn = oDataMgr.GetConnectionString(m_strMasterDbFile);
+                    oDataMgr.OpenConnection(strSqliteFileConn);
                     if (m_ado.m_intError == 0)
                     {
-
                         //delete the current eval records that have a value of 9
                         m_ado.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " WHERE biosum_status_cd=9";
                         if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
                             frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
                                 m_ado.m_strSQL + "\r\n");
                         m_ado.SqlNonQuery(m_ado.m_OleDbConnection, m_ado.m_strSQL);
+                        //delete the current eval records that have a value of 9
+                        oDataMgr.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " WHERE biosum_status_cd=9";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                                oDataMgr.m_strSQL + "\r\n");
+                        oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                        //attach FIADB database so we can copy records over
+                        oDataMgr.m_strSQL = "ATTACH DATABASE '" + this.txtFiadbInputFile.Text.Trim() + "' AS FIADB";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                                oDataMgr.m_strSQL + "\r\n");
+                        oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
                         if (m_ado.m_intError == 0)
                         {
                             //covert the string lists to arrays
@@ -8141,6 +8174,15 @@ namespace FIA_Biosum_Manager
                                     frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
                                         m_ado.m_strSQL + "\r\n");
                                 m_ado.SqlNonQuery(m_ado.m_OleDbConnection, m_ado.m_strSQL);
+                                oDataMgr.m_strSQL = "DELETE FROM " + this.m_strPopEvalTable + " " +
+                                    "WHERE TRIM(cn)='" + strCNArray[x].Trim() + "' AND " +
+                                    "rscd=" + strRsCdArray[x].Trim() + " AND " +
+                                    "evalid=" + strEvalIdArray[x].Trim();
+                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                                        oDataMgr.m_strSQL + "\r\n");
+                                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
                                 if (m_ado.m_intError != 0)
                                 {
                                     this.m_intError = m_ado.m_intError;
@@ -8167,10 +8209,31 @@ namespace FIA_Biosum_Manager
                                     this.m_intError = m_ado.m_intError;
                                     break;
                                 }
+                                //@ToDo: This could be more efficient if we don't have to load cn by cn
+                                oDataMgr.m_strSQL = "insert into " + this.m_strPopEvalTable + "(CN,RSCD,EVALID,EVAL_DESCR,STATECD," +
+                                    "LOCATION_NM,REPORT_YEAR_NM,NOTES," +
+                                    "START_INVYR,END_INVYR,GROWTH_ACCT,LAND_ONLY, BIOSUM_STATUS_CD)" +
+                                    "select CN,RSCD,EVALID,EVAL_DESCR,STATECD," +
+                                    "LOCATION_NM,REPORT_YEAR_NM,NOTES," +
+                                    "START_INVYR,END_INVYR,GROWTH_ACCT,LAND_ONLY,9 " +
+                                    "from FIADB." + this.m_strPopEvalTable +
+                                    " where cn = '" + strCNArray[x].Trim() + "' and rscd = " + strRsCdArray[x].Trim() +
+                                    " and evalid = " + strEvalIdArray[x].Trim();
+                                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                                        oDataMgr.m_strSQL + "\r\n");
+                                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
                             }
                         }
                         else m_intError = m_ado.m_intError;
                         m_ado.m_OleDbConnection.Close();
+                        //detach FIADB database
+                        oDataMgr.m_strSQL = "DETACH DATABASE FIADB";
+                        if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                            frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                                oDataMgr.m_strSQL + "\r\n");
+                        oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                        oDataMgr.CloseConnection(oDataMgr.m_Connection);
                         while (this.m_ado.m_OleDbConnection.State != System.Data.ConnectionState.Closed)
                             System.Threading.Thread.Sleep(1000);
                     }
@@ -8512,11 +8575,15 @@ namespace FIA_Biosum_Manager
 				//instatiate dao for creating links in the temp table
 				//to the fiadb plot, cond, and tree input tables
 				dao_data_access p_dao1 = new dao_data_access();
+                DataMgr oDataMgr = new DataMgr();
                 //add link to SQLite input
                 p_dao1.CreateSQLiteTableLink(this.m_strTempMDBFile, strSourceTable.Trim(), strSourceTableLink,
                     ODBCMgr.DSN_KEYS.PlotInputDsnName, strSourceFile.Trim());
                 //destroy the object and release it from memory
+                p_dao1.m_DaoWorkspace.Close();
+                p_dao1.m_DaoWorkspace = null;
                 p_dao1 = null;
+
 
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 1);
 
@@ -8537,13 +8604,22 @@ namespace FIA_Biosum_Manager
                 this.m_ado.SqlNonQuery(this.m_connTempMDBFile,this.m_ado.m_strSQL);
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 2);
 
-				/****************************************************************
+                //loading sqlite tables too; First delete the old records with this rscd and evalid
+                string strMasterConn = oDataMgr.GetConnectionString(m_strMasterDbFile);
+                oDataMgr.OpenConnection(strMasterConn);
+                oDataMgr.m_strSQL = "DELETE FROM " + strDestTable +
+                    " WHERE rscd = " + this.m_strCurrFIADBRsCd + " AND " +
+                    "evalid = " + this.m_strCurrFIADBEvalId;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile, oDataMgr.m_strSQL + "\r\n");
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
+                /****************************************************************
 				 **get the table structure that results from executing the sql
 				 ****************************************************************/
-				//get the fiabiosum table structures
-				System.Data.DataTable dtDestSchema = this.m_ado.getTableSchema(this.m_connTempMDBFile, "select * from " + strDestTable);
+                //get the fiabiosum table structures
+                System.Data.DataTable dtDestSchema = this.m_ado.getTableSchema(this.m_connTempMDBFile, "select * from " + strDestTable);
                 //get the fiadb table structures
-                DataMgr oDataMgr = new DataMgr();
                 string strConnection = oDataMgr.GetConnectionString(strSourceFile.Trim());
                 using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConnection))
                 {
@@ -8584,9 +8660,44 @@ namespace FIA_Biosum_Manager
                 this.m_ado.SqlNonQuery(this.m_connTempMDBFile,this.m_ado.m_strSQL);
 
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 3);
-				this.m_ado.m_strSQL = "UPDATE " + strDestTable + " d INNER JOIN " + strSourceTableLink + " s ON d.cn=s.cn " +
+				this.m_ado.m_strSQL = "UPDATE " + strDestTable + " d INNER JOIN " + strSourceTableLink + " s ON d.cn=trim(s.cn) " +
 					"SET d.biosum_status_cd=9";
 				this.m_ado.SqlNonQuery(this.m_connTempMDBFile,this.m_ado.m_strSQL);
+
+                // Attach the fiadb database before doing the inserts in sqlite
+                oDataMgr.OpenConnection(strMasterConn);
+                oDataMgr.m_strSQL = "ATTACH DATABASE '" + this.txtFiadbInputFile.Text.Trim() + "' AS FIADB";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                        oDataMgr.m_strSQL + "\r\n");
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
+                oDataMgr.m_strSQL = "INSERT INTO " + strDestTable + " (" + strFields + ")" +
+                    " SELECT " + strFields + " FROM FIADB." + strDestTable + "   " +
+                    "WHERE rscd = " + this.m_strCurrFIADBRsCd + " AND " +
+                          "evalid = " + this.m_strCurrFIADBEvalId;
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                        oDataMgr.m_strSQL + "\r\n");
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
+                oDataMgr.m_strSQL = "UPDATE " + strDestTable +
+                    " SET biosum_status_cd = 9" +
+                    " WHERE EXISTS(SELECT *" +
+                    " FROM FIADB." + strDestTable +
+                    " WHERE " + strDestTable + ".cn = FIADB." + strDestTable + ".cn)";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                        oDataMgr.m_strSQL + "\r\n");
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+
+                oDataMgr.m_strSQL = "DETACH DATABASE FIADB";
+                if (frmMain.g_bDebug && frmMain.g_intDebugLevel > 2)
+                    frmMain.g_oUtils.WriteText(frmMain.g_oFrmMain.frmProject.uc_project1.m_strDebugFile,
+                        oDataMgr.m_strSQL + "\r\n");
+                oDataMgr.SqlNonQuery(oDataMgr.m_Connection, oDataMgr.m_strSQL);
+                oDataMgr.CloseConnection(oDataMgr.m_Connection);
+
                 frmMain.g_oDelegate.SetControlPropertyValue((System.Windows.Forms.Control)this.m_frmTherm.progressBar1, "Value", 4);
 				this.m_connTempMDBFile.Close();
 				while (this.m_connTempMDBFile.State != System.Data.ConnectionState.Closed)

@@ -866,6 +866,7 @@ namespace FIA_Biosum_Manager
 			//check if new project
 			ado_data_access p_ado = new ado_data_access();
 			dao_data_access p_dao = new dao_data_access();
+            DataMgr p_dataMgr = new DataMgr();
 			if (this.m_strAction == "NEW") 
 			{
 				//new project
@@ -965,10 +966,27 @@ namespace FIA_Biosum_Manager
 
 				p_ado.CloseConnection(p_ado.m_OleDbConnection);
 
-				//
+                //master.db file: Migrating POP tables to SQLite
+                strDestFile = this.txtRootDirectory.Text.Trim() + "\\" + frmMain.g_oTables.m_oFIAPlot.DefaultPopTableDbFile;
+                p_dataMgr.CreateDbFile(strDestFile);
+                strConn = p_dataMgr.GetConnectionString(strDestFile);
+                using (System.Data.SQLite.SQLiteConnection con = new System.Data.SQLite.SQLiteConnection(strConn))
+                {
+                    con.Open();
+                    //pop estimation unit table
+                    frmMain.g_oTables.m_oFIAPlot.CreateSqlitePopEstnUnitTable(p_dataMgr, con, frmMain.g_oTables.m_oFIAPlot.DefaultPopEstnUnitTableName);
+                    //pop eval table
+                    frmMain.g_oTables.m_oFIAPlot.CreateSqlitePopEvalTable(p_dataMgr, con, frmMain.g_oTables.m_oFIAPlot.DefaultPopEvalTableName);
+                    //pop plot stratum assignment table
+                    frmMain.g_oTables.m_oFIAPlot.CreateSqlitePopPlotStratumAssgnTable(p_dataMgr, con, frmMain.g_oTables.m_oFIAPlot.DefaultPopPlotStratumAssgnTableName);
+                    //pop stratum table
+                    frmMain.g_oTables.m_oFIAPlot.CreateSqlitePopStratumTable(p_dataMgr, con, frmMain.g_oTables.m_oFIAPlot.DefaultPopStratumTableName);
+                }
+
+                //
                 //master_aux file: Where additional input tables are stored
                 //
-				strDestFile = this.txtRootDirectory.Text.Trim() + "\\db\\master_aux.accdb";
+                strDestFile = this.txtRootDirectory.Text.Trim() + "\\db\\master_aux.accdb";
 				p_frmTherm.Increment(4);
 				p_frmTherm.lblMsg.Text = strDestFile;
 				p_frmTherm.lblMsg.Refresh();
@@ -1465,6 +1483,7 @@ namespace FIA_Biosum_Manager
 				
 			}
 			p_ado=null;
+            p_dataMgr = null;
 			this.btnSave.Enabled=false;
 			this.btnCancel.Enabled=false;
 			this.btnEdit.Enabled=true;
